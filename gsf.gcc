@@ -1,0 +1,43 @@
+
+echo $(_InputFile) running under $(_System).
+
+PREFIX        = gsf 
+TGT           = lib$(PREFIX).dll
+STATIC_TGT    = lib$(PREFIX).a
+CFLAGS        = $(MACROS) -Wall -D_STRICT_ANSI -D_LARGEFILE64_SOURCE
+CPPFLAGS      = $(CFLAGS)
+LFLAGS        = -shared $(LINK_FLAGS)
+CC            = gcc
+CPP           = gcc
+LINKER        = gcc
+AR            = ar
+RM            = rm -f
+LIBS          = -lwsock32
+
+.cpp.o:
+        $(CPP) -c $(CPPFLAGS) $*.cpp -o$@
+.c.o:
+        $(CC) -c $(CFLAGS) $*.c -o$@
+
+OBJS = gsf.o gsf_enc.o gsf_dec.o gsf_indx.o gsf_info.o gsf_geo.o
+
+all : $(TGT)
+
+{-c $(CC) $(CPP) $(LIBS)}$(TGT): $(OBJS) $(_InputFile)
+        @echo Linking $@
+        $(LINKER) $(LFLAGS) $(OBJS) $(LIBS) -o$@
+        @echo Linking $(STATIC_TGT)
+        $(AR) -r $(STATIC_TGT) $(OBJS)
+        @echo Done...
+
+clean:
+        $(RM) $(TGT) $(STATIC_TGT) $(OBJS) *.c *.h *.bak
+
+#UPDATE#
+gsf.o:  gsf.h gsf_ft.h gsf_enc.h gsf_dec.h gsf_indx.h
+gsf_dec.o:      gsf.h
+gsf_enc.o:      gsf.h
+gsf_indx.o:     gsf_ft.h gsf.h
+gsf_info.o:	gsf.h
+gsf_geo.o:	gsf.h
+#ENDUPDATE#
