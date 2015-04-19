@@ -30,6 +30,9 @@ default:
 	@echo
 	@echo "  test     - C++ unittests"
 
+all:
+	(cd src && make -f Makefile all)
+
 DIST:=gsf-${shell cat VERSION}
 TAR:=${DIST}.tar
 tar:
