@@ -23,7 +23,7 @@ WARN += -Wextra
 DEBUG := -g3 -DDEBUG=1
 DEBUG += -O0
 
-OPT := -O3 
+OPT := -O3
 OPT += -funroll-loops -fexpensive-optimizations -ffast-math
 OPT += -DNDEBUG
 
