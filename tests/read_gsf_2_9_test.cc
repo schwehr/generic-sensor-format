@@ -188,6 +188,13 @@ TEST(GsfReadTest, ReadVersion2_9) {
   ASSERT_FALSE(data_id.checksumFlag);
   ASSERT_EQ(0, data_id.reserved);
   ASSERT_EQ(GSF_RECORD_ATTITUDE, data_id.recordID);
+  ASSERT_EQ(1, records.attitude.num_measurements);
+  ASSERT_EQ(947169765, records.attitude.attitude_time[0].tv_sec);
+  ASSERT_EQ(600000023, records.attitude.attitude_time[0].tv_nsec);
+  ASSERT_DOUBLE_EQ(-1.0, records.attitude.pitch[0]);
+  ASSERT_DOUBLE_EQ(-1.0, records.attitude.roll[0]);
+  ASSERT_DOUBLE_EQ(0.08, records.attitude.heave[0]);
+  ASSERT_DOUBLE_EQ(127.0, records.attitude.heading[0]);
 
   ++count;
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
@@ -195,6 +202,59 @@ TEST(GsfReadTest, ReadVersion2_9) {
   ASSERT_FALSE(data_id.checksumFlag);
   ASSERT_EQ(0, data_id.reserved);
   ASSERT_EQ(GSF_RECORD_SWATH_BATHYMETRY_PING, data_id.recordID);
+  ASSERT_EQ(947169765, records.mb_ping.ping_time.tv_sec);
+  ASSERT_EQ(600000023, records.mb_ping.ping_time.tv_nsec);
+  EXPECT_DOUBLE_EQ(38.0007082, records.mb_ping.latitude);
+  EXPECT_DOUBLE_EQ(-76.3465419, records.mb_ping.longitude);
+  EXPECT_DOUBLE_EQ(9999.9899999999998, records.mb_ping.height);
+  EXPECT_DOUBLE_EQ(9999.9899999999998, records.mb_ping.sep);
+  EXPECT_EQ(1, records.mb_ping.number_beams);
+  EXPECT_EQ(1, records.mb_ping.center_beam);
+  EXPECT_EQ(0, records.mb_ping.ping_flags);
+  EXPECT_EQ(0, records.mb_ping.reserved);
+  EXPECT_DOUBLE_EQ(-0.1, records.mb_ping.tide_corrector);
+  EXPECT_DOUBLE_EQ(99.989999999999995, records.mb_ping.gps_tide_corrector);
+  EXPECT_DOUBLE_EQ(99.989999999999995, records.mb_ping.depth_corrector);
+  EXPECT_DOUBLE_EQ(127, records.mb_ping.heading);
+  EXPECT_DOUBLE_EQ(-1.0, records.mb_ping.pitch);
+  EXPECT_DOUBLE_EQ(-1.0, records.mb_ping.roll);
+  EXPECT_DOUBLE_EQ(0.08, records.mb_ping.heave);
+  EXPECT_DOUBLE_EQ(131.41, records.mb_ping.course);
+  EXPECT_DOUBLE_EQ(6.04, records.mb_ping.speed);
+  ASSERT_EQ(26, records.mb_ping.scaleFactors.numArraySubrecords);
+  EXPECT_EQ(32, records.mb_ping.scaleFactors.scaleTable[0].compressionFlag);
+  EXPECT_DOUBLE_EQ(
+      10000, records.mb_ping.scaleFactors.scaleTable[0].multiplier);
+  EXPECT_DOUBLE_EQ(-13, records.mb_ping.scaleFactors.scaleTable[0].offset);
+  // double            *depth;
+  // double            *nominal_depth;
+  // double            *across_track;
+  // double            *along_track;
+  // double            *travel_time;
+  // double            *beam_angle;
+  // double            *mc_amplitude;
+  // double            *mr_amplitude;
+  // double            *echo_width;
+  // double            *quality_factor;
+  // double            *receive_heave;
+  // double            *depth_error;
+  // double            *across_track_error;
+  // double            *along_track_error;
+  // unsigned char     *quality_flags;
+  // unsigned char     *beam_flags;
+  // double            *signal_to_noise;
+  // double            *beam_angle_forward;
+  // double            *vertical_error;
+  // double            *horizontal_error;
+  // unsigned short    *sector_number;
+  // unsigned short    *detection_info;
+  // double            *incident_beam_adj;
+  // unsigned short    *system_cleaning;
+  // double            *doppler_corr;
+  // double            *sonar_vert_uncert;
+  // int                sensor_id;
+  // gsfSensorSpecific  sensor_data;
+  // gsfBRBIntensity   *brb_inten;
 
   for (; count < 288; ++count) {
     num_bytes =
