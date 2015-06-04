@@ -226,35 +226,40 @@ TEST(GsfReadTest, ReadVersion2_9) {
   EXPECT_DOUBLE_EQ(
       10000, records.mb_ping.scaleFactors.scaleTable[0].multiplier);
   EXPECT_DOUBLE_EQ(-13, records.mb_ping.scaleFactors.scaleTable[0].offset);
-  // double            *depth;
-  // double            *nominal_depth;
-  // double            *across_track;
-  // double            *along_track;
-  // double            *travel_time;
-  // double            *beam_angle;
-  // double            *mc_amplitude;
-  // double            *mr_amplitude;
-  // double            *echo_width;
-  // double            *quality_factor;
-  // double            *receive_heave;
-  // double            *depth_error;
-  // double            *across_track_error;
-  // double            *along_track_error;
-  // unsigned char     *quality_flags;
-  // unsigned char     *beam_flags;
-  // double            *signal_to_noise;
-  // double            *beam_angle_forward;
-  // double            *vertical_error;
-  // double            *horizontal_error;
-  // unsigned short    *sector_number;
-  // unsigned short    *detection_info;
-  // double            *incident_beam_adj;
-  // unsigned short    *system_cleaning;
-  // double            *doppler_corr;
-  // double            *sonar_vert_uncert;
-  // int                sensor_id;
-  // gsfSensorSpecific  sensor_data;
-  // gsfBRBIntensity   *brb_inten;
+  EXPECT_EQ(0, records.mb_ping.scaleFactors.scaleTable[25].compressionFlag);
+  EXPECT_DOUBLE_EQ(
+      1, records.mb_ping.scaleFactors.scaleTable[25].multiplier);
+  EXPECT_DOUBLE_EQ(0, records.mb_ping.scaleFactors.scaleTable[25].offset);
+
+  EXPECT_DOUBLE_EQ(13.116, records.mb_ping.depth[0]);
+  ASSERT_EQ(nullptr, records.mb_ping.nominal_depth);
+  EXPECT_DOUBLE_EQ(0.21715, records.mb_ping.across_track[0]);
+  EXPECT_DOUBLE_EQ(-0.2142, records.mb_ping.along_track[0]);
+  EXPECT_DOUBLE_EQ(0.0168, records.mb_ping.travel_time[0]);
+  EXPECT_DOUBLE_EQ(0, records.mb_ping.beam_angle[0]);
+  EXPECT_EQ(nullptr, records.mb_ping.mc_amplitude);
+  EXPECT_EQ(nullptr, records.mb_ping.mr_amplitude);
+  EXPECT_EQ(nullptr, records.mb_ping.echo_width);
+  EXPECT_EQ(nullptr, records.mb_ping.quality_factor);
+  EXPECT_EQ(nullptr, records.mb_ping.receive_heave);
+  EXPECT_EQ(nullptr, records.mb_ping.depth_error);
+  EXPECT_EQ(nullptr, records.mb_ping.across_track_error);
+  EXPECT_EQ(nullptr, records.mb_ping.along_track_error);
+  EXPECT_EQ(nullptr, records.mb_ping.quality_flags);
+  EXPECT_EQ(0, records.mb_ping.beam_flags[0]);
+  EXPECT_EQ(nullptr, records.mb_ping.signal_to_noise);
+  EXPECT_EQ(nullptr, records.mb_ping.beam_angle_forward);
+  EXPECT_EQ(nullptr, records.mb_ping.vertical_error);
+  EXPECT_EQ(nullptr, records.mb_ping.horizontal_error);
+  EXPECT_EQ(nullptr, records.mb_ping.sector_number);
+  EXPECT_EQ(nullptr, records.mb_ping.detection_info);
+  EXPECT_EQ(nullptr, records.mb_ping.incident_beam_adj);
+  EXPECT_EQ(nullptr, records.mb_ping.system_cleaning);
+  EXPECT_EQ(nullptr, records.mb_ping.doppler_corr);
+  EXPECT_EQ(nullptr, records.mb_ping.sonar_vert_uncert);
+  EXPECT_EQ(0, records.mb_ping.sensor_id);
+  // TODO(schwehr): gsfSensorSpecific  sensor_data.
+  EXPECT_EQ(nullptr, records.mb_ping.brb_inten);
 
   for (; count < 288; ++count) {
     num_bytes =
