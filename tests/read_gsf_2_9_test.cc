@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "gsf.h"
+#include <string>
+
 
 #include "gmock/gmock.h"
+#include "gsf.h"
+#include "gsf_test_util.h"
 #include "gtest/gtest.h"
 
 using ::testing::ElementsAre;
@@ -30,8 +33,10 @@ using std::vector;
 extern int gsfError;
 
 namespace generic_sensor_format {
+namespace test {
 namespace {
 
+#if 0
 class PacketCounts {
  public:
   PacketCounts() : counts_(NUM_REC_TYPES, 0) {}
@@ -44,39 +49,8 @@ class PacketCounts {
     }
   }
 };
-
-#if 0
-string RecordTypeStr(unsigned int record_id) {
-  switch (record_id) {
-  case GSF_RECORD_HEADER:
-    return "GSF_RECORD_HEADER";
-  case GSF_RECORD_SWATH_BATHYMETRY_PING:
-    return "GSF_RECORD_SWATH_BATHYMETRY_PING";
-  case GSF_RECORD_SOUND_VELOCITY_PROFILE:
-    return "GSF_RECORD_SOUND_VELOCITY_PROFILE";
-  case GSF_RECORD_PROCESSING_PARAMETERS:
-    return "GSF_RECORD_PROCESSING_PARAMETERS";
-  case GSF_RECORD_SENSOR_PARAMETERS:
-    return "GSF_RECORD_SENSOR_PARAMETERS";
-  case GSF_RECORD_COMMENT:
-    return "GSF_RECORD_COMMENT";
-  case GSF_RECORD_HISTORY:
-    return "GSF_RECORD_HISTORY";
-  case GSF_RECORD_NAVIGATION_ERROR:
-    return "GSF_RECORD_NAVIGATION_ERROR";
-  case GSF_RECORD_SWATH_BATHY_SUMMARY:
-    return "GSF_RECORD_SWATH_BATHY_SUMMARY";
-  case GSF_RECORD_SINGLE_BEAM_PING:
-    return "GSF_RECORD_SINGLE_BEAM_PING";
-  case GSF_RECORD_HV_NAVIGATION_ERROR:
-    return "GSF_RECORD_HV_NAVIGATION_ERROR";
-  case GSF_RECORD_ATTITUDE:
-    return "GSF_RECORD_ATTITUDE";
-
-  }
-  return "UNKNOWN";
-}
 #endif
+
 
 TEST(GsfRead2_9Test, CountPackets) {
   int handle;
@@ -295,4 +269,5 @@ TEST(GsfReadTest, ReadVersion2_9) {
 }
 
 }  // namespace
+}  // namespace test
 }  // namespace generic_sensor_format
