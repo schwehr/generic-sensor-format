@@ -116,6 +116,7 @@ TEST(GsfReadTest, ReadVersion2_9) {
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(28, num_bytes);
   VerifyDataId({false, 0, GSF_RECORD_ATTITUDE, 0}, data_id);
+  // TODO(schwehr): VerifyAttitude(expected_attitude, records.attitude);
   ASSERT_EQ(1, records.attitude.num_measurements);
   ASSERT_EQ(947169765, records.attitude.attitude_time[0].tv_sec);
   ASSERT_EQ(600000023, records.attitude.attitude_time[0].tv_nsec);

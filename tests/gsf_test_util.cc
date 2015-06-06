@@ -96,6 +96,19 @@ void PacketCounts::Verify(const vector<int> &expected) {
   }
 }
 
+void VerifyAttitude(const gsfAttitude &expected, const gsfAttitude &actual) {
+  EXPECT_EQ(expected.num_measurements, actual.num_measurements);
+  for (int i=0; i < expected.num_measurements; ++i) {
+    EXPECT_EQ(expected.attitude_time[i].tv_sec, actual.attitude_time[i].tv_sec);
+    EXPECT_EQ(expected.attitude_time[i].tv_nsec,
+              actual.attitude_time[i].tv_nsec);
+    EXPECT_DOUBLE_EQ(expected.pitch[i], actual.pitch[i]);
+    EXPECT_DOUBLE_EQ(expected.roll[i], actual.roll[i]);
+    EXPECT_DOUBLE_EQ(expected.heave[i], actual.heave[i]);
+    EXPECT_DOUBLE_EQ(expected.heading[i], actual.heading[i]);
+  }
+}
+
 void VerifyDataId(const gsfDataID &expected, const gsfDataID &actual) {
   EXPECT_EQ(expected.checksumFlag, actual.checksumFlag);
   EXPECT_EQ(expected.reserved, actual.reserved);

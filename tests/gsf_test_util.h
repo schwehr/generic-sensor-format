@@ -42,13 +42,13 @@ class PacketCounts {
   void Verify(const std::vector<int> &expected);
 };
 
+void VerifyAttitude(const gsfAttitude &expected, const gsfAttitude &actual);
+
 void VerifyDataId(const gsfDataID &expected, const gsfDataID &actual);
 
-void VerifyComment(const gsfComment &expected,
-                   const gsfComment &actual);
+void VerifyComment(const gsfComment &expected, const gsfComment &actual);
 
-void VerifyHistory(const gsfHistory &expected,
-                   const gsfHistory &actual);
+void VerifyHistory(const gsfHistory &expected, const gsfHistory &actual);
 
 void VerifySwathBathySummary(const gsfSwathBathySummary &expected,
                              const gsfSwathBathySummary &actual);
