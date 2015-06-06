@@ -20,13 +20,8 @@
 #include "gsf_test_util.h"
 #include "gtest/gtest.h"
 
-using ::testing::ElementsAre;
-using ::testing::ElementsAreArray;
 using std::string;
 using std::vector;
-
-// TODO(schwehr): Remove iostream.
-#include <iostream>
 
 // GSF error value.
 // TODO(schwehr):  Why is this not in the header?
@@ -35,22 +30,6 @@ extern int gsfError;
 namespace generic_sensor_format {
 namespace test {
 namespace {
-
-#if 0
-class PacketCounts {
- public:
-  PacketCounts() : counts_(NUM_REC_TYPES, 0) {}
-  void add(int packet_num) { ++counts_[packet_num]; }
-  vector<int> counts_;
-  void Verify(const vector<int> &expected) {
-    ASSERT_EQ(NUM_REC_TYPES, expected.size());
-    for (int i=0; i < NUM_REC_TYPES; ++i) {
-      EXPECT_EQ(expected[i], counts_[i]);
-    }
-  }
-};
-#endif
-
 
 TEST(GsfRead2_9Test, CountPackets) {
   int handle;
@@ -84,71 +63,48 @@ TEST(GsfReadTest, ReadVersion2_9) {
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(48, num_bytes);
 
-  ASSERT_FALSE(data_id.checksumFlag);
-  ASSERT_EQ(0, data_id.reserved);
-  ASSERT_EQ(9, data_id.recordID);
-  ASSERT_EQ(GSF_RECORD_SWATH_BATHY_SUMMARY, data_id.recordID);
-  // TODO(schwehr): Why does this sometimes fail?
-  // ASSERT_EQ(0, data_id.record_number);
+  VerifyDataId({false, 0, GSF_RECORD_SWATH_BATHY_SUMMARY, 0}, data_id);
 
-  ASSERT_EQ(947169642, records.summary.start_time.tv_sec);
-  ASSERT_EQ(799999952, records.summary.start_time.tv_nsec);
-  ASSERT_EQ(947171370, records.summary.end_time.tv_sec);
-  ASSERT_EQ(700000047, records.summary.end_time.tv_nsec);
-  ASSERT_DOUBLE_EQ(37.963955, records.summary.min_latitude);
-  ASSERT_DOUBLE_EQ(-76.3502001, records.summary.min_longitude);
-  ASSERT_DOUBLE_EQ(38.0030681, records.summary.max_latitude);
-  ASSERT_DOUBLE_EQ(-76.2895285, records.summary.max_longitude);
-  ASSERT_DOUBLE_EQ(12.12, records.summary.min_depth);
-  ASSERT_DOUBLE_EQ(13.12, records.summary.max_depth);
+  const gsfSwathBathySummary expected =
+      {
+        {947169642, 799999952},
+        {947171370, 700000047},
+        37.963955, -76.3502001,
+        38.0030681, -76.2895285,
+        12.12, 13.12 };
+  VerifySwathBathySummary(expected, records.summary);
 
   int count = 0;
 
   ++count;
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(84, num_bytes);
-  ASSERT_FALSE(data_id.checksumFlag);
-  ASSERT_EQ(0, data_id.reserved);
-  ASSERT_EQ(6, data_id.recordID);
-  ASSERT_EQ(GSF_RECORD_COMMENT, data_id.recordID);
-  // ASSERT_EQ(-2, data_id.record_number);
+  VerifyDataId({false, 0, GSF_RECORD_COMMENT, 0}, data_id);
 
-  ASSERT_EQ(947169642, records.comment.comment_time.tv_sec);
-  ASSERT_EQ(799999952, records.comment.comment_time.tv_nsec);
-  ASSERT_STREQ("Bathy converted from HIPS file: B_SB BH_SB 2000-001 6_184_1440",
-               records.comment.comment);
+  VerifyComment(GsfComment({947169642, 799999952},
+                           "Bathy converted from HIPS file: "
+                           "B_SB BH_SB 2000-001 6_184_1440"),
+                records.comment);
 
   ++count;
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(988, num_bytes);
-  ASSERT_FALSE(data_id.checksumFlag);
-  ASSERT_EQ(0, data_id.reserved);
-  ASSERT_EQ(4, data_id.recordID);
-  ASSERT_EQ(GSF_RECORD_PROCESSING_PARAMETERS, data_id.recordID);
-  // ASSERT_EQ(-2, data_id.record_number);
+  VerifyDataId({false, 0, GSF_RECORD_PROCESSING_PARAMETERS, 0}, data_id);
 
   ++count;
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(212, num_bytes);
-  ASSERT_FALSE(data_id.checksumFlag);
-  ASSERT_EQ(0, data_id.reserved);
-  ASSERT_EQ(3, data_id.recordID);
-  ASSERT_EQ(GSF_RECORD_SOUND_VELOCITY_PROFILE, data_id.recordID);
-  // ASSERT_EQ(-2, data_id.record_number);
+  VerifyDataId({false, 0, GSF_RECORD_SOUND_VELOCITY_PROFILE, 0}, data_id);
 
   ++count;
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(68, num_bytes);
-  ASSERT_FALSE(data_id.checksumFlag);
-  ASSERT_EQ(0, data_id.reserved);
-  ASSERT_EQ(6, data_id.recordID);
-  ASSERT_EQ(GSF_RECORD_COMMENT, data_id.recordID);
-  // ASSERT_EQ(-2, data_id.record_number);
+  VerifyDataId({false, 0, GSF_RECORD_COMMENT, 0}, data_id);
 
-  ASSERT_EQ(947169629, records.comment.comment_time.tv_sec);
-  ASSERT_EQ(799999952, records.comment.comment_time.tv_nsec);
-  ASSERT_STREQ("SVP_FILE_NAME: D:\\hips\\Svp\\SheetB\\all_Bsheet.svp",
-               records.comment.comment);
+  VerifyComment(GsfComment({947169629, 799999952},
+                           "SVP_FILE_NAME: D:\\hips\\Svp\\"
+                           "SheetB\\all_Bsheet.svp"),
+                records.comment);
 
   for (; count < 40; ++count) {
     num_bytes =
@@ -159,9 +115,7 @@ TEST(GsfReadTest, ReadVersion2_9) {
   ++count;
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(28, num_bytes);
-  ASSERT_FALSE(data_id.checksumFlag);
-  ASSERT_EQ(0, data_id.reserved);
-  ASSERT_EQ(GSF_RECORD_ATTITUDE, data_id.recordID);
+  VerifyDataId({false, 0, GSF_RECORD_ATTITUDE, 0}, data_id);
   ASSERT_EQ(1, records.attitude.num_measurements);
   ASSERT_EQ(947169765, records.attitude.attitude_time[0].tv_sec);
   ASSERT_EQ(600000023, records.attitude.attitude_time[0].tv_nsec);
@@ -173,9 +127,7 @@ TEST(GsfReadTest, ReadVersion2_9) {
   ++count;
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(412, num_bytes);
-  ASSERT_FALSE(data_id.checksumFlag);
-  ASSERT_EQ(0, data_id.reserved);
-  ASSERT_EQ(GSF_RECORD_SWATH_BATHYMETRY_PING, data_id.recordID);
+  VerifyDataId({false, 0, GSF_RECORD_SWATH_BATHYMETRY_PING, 0}, data_id);
   ASSERT_EQ(947169765, records.mb_ping.ping_time.tv_sec);
   ASSERT_EQ(600000023, records.mb_ping.ping_time.tv_nsec);
   EXPECT_DOUBLE_EQ(38.0007082, records.mb_ping.latitude);
@@ -239,29 +191,18 @@ TEST(GsfReadTest, ReadVersion2_9) {
     num_bytes =
         gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
     ASSERT_GE(num_bytes, 0);
-#if 0
-    std::cout << "rec: count: " << count
-         << " #" << data_id.record_number
-         << " id: " << data_id.recordID
-         << " size: " << num_bytes
-         << "   -->   " << RecordTypeStr(data_id.recordID)
-         << "\n";
-#endif
   }
 
   ++count;
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(60, num_bytes);
-  ASSERT_FALSE(data_id.checksumFlag);
-  ASSERT_EQ(0, data_id.reserved);
-  ASSERT_EQ(GSF_RECORD_HISTORY, data_id.recordID);
-  ASSERT_EQ(1253181992, records.history.history_time.tv_sec);
-  ASSERT_EQ(0, records.history.history_time.tv_nsec);
-  ASSERT_STREQ("PIXAR", records.history.host_name);
-  ASSERT_STREQ("ltyson", records.history.operator_name);
-  ASSERT_STREQ("HIPStoGSF", records.history.command_line);
-  ASSERT_STREQ("version 6.1", records.history.comment);
-
+  VerifyDataId({false, 0, GSF_RECORD_HISTORY, 0}, data_id);
+  VerifyHistory(GsfHistory({1253181992, 0},
+                           "PIXAR",
+                           "ltyson",
+                           "HIPStoGSF",
+                           "version 6.1"),
+                records.history);
 
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(-1, num_bytes);

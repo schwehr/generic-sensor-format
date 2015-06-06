@@ -26,6 +26,14 @@ namespace test {
 
 std::string RecordTypeStr(unsigned int record_id);
 
+// Do not modify the string inside the resulting gsfComment or gsfHistory.
+gsfComment GsfComment(const struct timespec &when, const char *comment);
+gsfHistory GsfHistory(const struct timespec &when,
+                      const char *host_name,
+                      const char *operator_name,
+                      const char *command_line,
+                      const char *comment);
+
 class PacketCounts {
  public:
   PacketCounts() : counts_(NUM_REC_TYPES, 0) {}
@@ -34,12 +42,16 @@ class PacketCounts {
   void Verify(const std::vector<int> &expected);
 };
 
-void VerifySwathBathySummary(const gsfSwathBathySummary &expected,
-                             const gsfSwathBathySummary &actual);
+void VerifyDataId(const gsfDataID &expected, const gsfDataID &actual);
 
 void VerifyComment(const gsfComment &expected,
                    const gsfComment &actual);
 
+void VerifyHistory(const gsfHistory &expected,
+                   const gsfHistory &actual);
+
+void VerifySwathBathySummary(const gsfSwathBathySummary &expected,
+                             const gsfSwathBathySummary &actual);
 
 }  // namespace test
 }  // namespace generic_sensor_format
