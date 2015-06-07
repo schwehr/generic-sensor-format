@@ -28,10 +28,6 @@ using std::string;
 // TODO(schwehr): Remove iostream.
 #include <iostream>
 
-// GSF error value.
-// TODO(schwehr):  Why is this not in the header?
-extern int gsfError;
-
 namespace generic_sensor_format {
 namespace test {
 namespace {
@@ -41,7 +37,7 @@ char kComment[] =
     "\\HDCS_Data\\EX1502L2\\Okeanos_March_2011\\2015-081"
     "\\0175_20150322_232639_EX1502L2_MB";
 
-TEST(GsfRead2_9Test, CountPackets) {
+TEST(GsfRead3_6Test, CountPackets) {
   int handle;
   ASSERT_EQ(0, gsfOpen("../data/0175_20150322_232639_EX1502L2_MB.gsf.mb121",
                        GSF_READONLY, &handle));
@@ -58,11 +54,11 @@ TEST(GsfRead2_9Test, CountPackets) {
     num_bytes
         = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   }
-  ASSERT_EQ(GSF_READ_TO_END_OF_FILE, gsfError);
+  ASSERT_EQ(GSF_READ_TO_END_OF_FILE, gsfIntError());
   counts.Verify({0, 0, 4, 1, 1, 0, 2, 1, 0, 1, 0, 0, 34});
 }
 
-TEST(GsfReadTest, ReadVersion2_9) {
+TEST(GsfReadTest, ReadVersion3_6) {
   int handle;
   ASSERT_EQ(0, gsfOpen("../data/0175_20150322_232639_EX1502L2_MB.gsf.mb121",
                        GSF_READONLY, &handle));
@@ -74,9 +70,7 @@ TEST(GsfReadTest, ReadVersion2_9) {
   int num_bytes;
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(48, num_bytes);
-  ASSERT_FALSE(data_id.checksumFlag);
-  ASSERT_EQ(0, data_id.reserved);
-  ASSERT_EQ(GSF_RECORD_SWATH_BATHY_SUMMARY, data_id.recordID);
+  VerifyDataId({false, 0, GSF_RECORD_SWATH_BATHY_SUMMARY, 0}, data_id);
 
   const gsfSwathBathySummary expected =
       {
@@ -89,10 +83,7 @@ TEST(GsfReadTest, ReadVersion2_9) {
 
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(168, num_bytes);
-  ASSERT_FALSE(data_id.checksumFlag);
-  ASSERT_EQ(0, data_id.reserved);
-  ASSERT_EQ(6, data_id.recordID);
-  ASSERT_EQ(GSF_RECORD_COMMENT, data_id.recordID);
+  VerifyDataId({false, 0, GSF_RECORD_COMMENT, 0}, data_id);
 
   const gsfComment expected_comment =
     {{1427066789, 653000116}, 147, kComment};
@@ -100,19 +91,14 @@ TEST(GsfReadTest, ReadVersion2_9) {
 
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(2236, num_bytes);
-  ASSERT_FALSE(data_id.checksumFlag);
-  ASSERT_EQ(0, data_id.reserved);
-  ASSERT_EQ(4, data_id.recordID);
-  ASSERT_EQ(GSF_RECORD_PROCESSING_PARAMETERS, data_id.recordID);
+  VerifyDataId({false, 0, GSF_RECORD_PROCESSING_PARAMETERS, 0}, data_id);
 
   // TODO(schwehr): VerifyProcessingParameters().
 
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(1388, num_bytes);
-  ASSERT_FALSE(data_id.checksumFlag);
-  ASSERT_EQ(0, data_id.reserved);
-  ASSERT_EQ(3, data_id.recordID);
   ASSERT_EQ(GSF_RECORD_SOUND_VELOCITY_PROFILE, data_id.recordID);
+  VerifyDataId({false, 0, GSF_RECORD_SOUND_VELOCITY_PROFILE, 0}, data_id);
 
   // TODO(schwehr): VerifySoundVelocityProfile().
 

@@ -23,10 +23,6 @@
 using std::string;
 using std::vector;
 
-// GSF error value.
-// TODO(schwehr):  Why is this not in the header?
-extern int gsfError;
-
 namespace generic_sensor_format {
 namespace test {
 namespace {
@@ -47,7 +43,7 @@ TEST(GsfRead2_9Test, CountPackets) {
     num_bytes
         = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   }
-  ASSERT_EQ(GSF_READ_TO_END_OF_FILE, gsfError);
+  ASSERT_EQ(GSF_READ_TO_END_OF_FILE, gsfIntError());
   counts.Verify({0, 0, 132, 21, 1, 0, 2, 1, 0, 1, 0, 0, 132});
 }
 
@@ -207,7 +203,7 @@ TEST(GsfReadTest, ReadVersion2_9) {
 
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(-1, num_bytes);
-  ASSERT_EQ(GSF_READ_TO_END_OF_FILE, gsfError);
+  ASSERT_EQ(GSF_READ_TO_END_OF_FILE, gsfIntError());
 }
 
 }  // namespace
