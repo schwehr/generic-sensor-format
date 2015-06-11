@@ -27,6 +27,12 @@ namespace test {
 std::string RecordTypeStr(unsigned int record_id);
 
 // Do not modify the string inside the resulting gsfComment or gsfHistory.
+gsfAttitude GsfAttitude(short num_measurements,
+                        const struct timespec *attitude_time,
+                        const double *pitch,
+                        const double *roll,
+                        const double *heave,
+                        const double *heading);
 gsfComment GsfComment(const struct timespec &when, const char *comment);
 gsfHistory GsfHistory(const struct timespec &when,
                       const char *host_name,
@@ -49,6 +55,9 @@ void VerifyDataId(const gsfDataID &expected, const gsfDataID &actual);
 void VerifyComment(const gsfComment &expected, const gsfComment &actual);
 
 void VerifyHistory(const gsfHistory &expected, const gsfHistory &actual);
+
+void VerifySwathBathyPing(const gsfSwathBathyPing &expected,
+                          const gsfSwathBathyPing &actual);
 
 void VerifySwathBathySummary(const gsfSwathBathySummary &expected,
                              const gsfSwathBathySummary &actual);

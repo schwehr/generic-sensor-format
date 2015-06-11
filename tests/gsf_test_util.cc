@@ -64,6 +64,22 @@ string RecordTypeStr(unsigned int record_id) {
   return "UNKNOWN";
 }
 
+gsfAttitude GsfAttitude(short num_measurements,
+                        const struct timespec *attitude_time,
+                        const double *pitch,
+                        const double *roll,
+                        const double *heave,
+                        const double *heading) {
+  gsfAttitude attitude;
+  attitude.num_measurements = num_measurements;
+  attitude.attitude_time = const_cast<struct timespec *>(attitude_time);
+  attitude.pitch = const_cast<double *>(pitch);
+  attitude.roll = const_cast<double *>(roll);
+  attitude.heave = const_cast<double *>(heave);
+  attitude.heading = const_cast<double *>(heading);
+  return attitude;
+}
+
 gsfComment GsfComment(const struct timespec &when, const char *comment) {
   gsfComment ret = {
     { when.tv_sec, when.tv_nsec },
@@ -115,6 +131,73 @@ void VerifyDataId(const gsfDataID &expected, const gsfDataID &actual) {
   EXPECT_EQ(expected.recordID, actual.recordID);
   // TODO(schwehr): When should this number match?
   // EXPECT_EQ(expected.record_number, actual.record_number);
+}
+
+void VerifySwathBathyPing(const gsfSwathBathyPing &expected,
+                          const gsfSwathBathyPing &actual) {
+  EXPECT_EQ(expected.ping_time.tv_sec, actual.ping_time.tv_sec);
+  EXPECT_EQ(expected.ping_time.tv_nsec, actual.ping_time.tv_nsec);
+  EXPECT_DOUBLE_EQ(expected.latitude, actual.latitude);
+  EXPECT_DOUBLE_EQ(expected.longitude, actual.longitude);
+  EXPECT_DOUBLE_EQ(expected.height, actual.height);
+  EXPECT_DOUBLE_EQ(expected.sep, actual.sep);
+  EXPECT_EQ(expected.number_beams, actual.number_beams);
+  EXPECT_EQ(expected.center_beam, actual.center_beam);
+  EXPECT_EQ(expected.ping_flags, actual.ping_flags);
+  EXPECT_EQ(expected.reserved, actual.reserved);
+  EXPECT_DOUBLE_EQ(expected.tide_corrector, actual.tide_corrector);
+  EXPECT_DOUBLE_EQ(expected.gps_tide_corrector, actual.gps_tide_corrector);
+  EXPECT_DOUBLE_EQ(expected.depth_corrector, actual.depth_corrector);
+  EXPECT_DOUBLE_EQ(expected.heading, actual.heading);
+  EXPECT_DOUBLE_EQ(expected.pitch, actual.pitch);
+  EXPECT_DOUBLE_EQ(expected.roll, actual.roll);
+  EXPECT_DOUBLE_EQ(expected.heave, actual.heave);
+  EXPECT_DOUBLE_EQ(expected.course, actual.course);
+  EXPECT_DOUBLE_EQ(expected.speed, actual.speed);
+  ASSERT_EQ(expected.scaleFactors.numArraySubrecords,
+            actual.scaleFactors.numArraySubrecords);
+  if (expected.scaleFactors.scaleTable == nullptr ||
+      actual.scaleFactors.scaleTable == nullptr) {
+    EXPECT_EQ(expected.scaleFactors.scaleTable, actual.scaleFactors.scaleTable);
+  } else {
+    for (int i=0; i < expected.scaleFactors.numArraySubrecords; ++i) {
+      EXPECT_EQ(expected.scaleFactors.scaleTable[i].compressionFlag,
+                actual.scaleFactors.scaleTable[i].compressionFlag);
+      EXPECT_DOUBLE_EQ(expected.scaleFactors.scaleTable[i].multiplier,
+                       actual.scaleFactors.scaleTable[i].multiplier);
+      EXPECT_DOUBLE_EQ(expected.scaleFactors.scaleTable[i].offset,
+                       actual.scaleFactors.scaleTable[i].offset);
+    }
+  }
+  // EXPECT_DOUBLE_EQ(, actual.depth[0]);
+  // EXPECT_EQ(nullptr, actual.nominal_depth);
+  // EXPECT_DOUBLE_EQ(, actual.across_track[0]);
+  // EXPECT_DOUBLE_EQ(, actual.along_track[0]);
+  // EXPECT_DOUBLE_EQ(, actual.travel_time[0]);
+  // EXPECT_DOUBLE_EQ(, actual.beam_angle[0]);
+  // EXPECT_EQ(, actual.mc_amplitude);
+  // EXPECT_EQ(, actual.mr_amplitude);
+  // EXPECT_EQ(, actual.echo_width);
+  // EXPECT_EQ(, actual.quality_factor);
+  // EXPECT_EQ(, actual.receive_heave);
+  // EXPECT_EQ(, actual.depth_error);
+  // EXPECT_EQ(, actual.across_track_error);
+  // EXPECT_EQ(, actual.along_track_error);
+  // EXPECT_EQ(, actual.quality_flags);
+  // EXPECT_EQ(, actual.beam_flags[0]);
+  // EXPECT_EQ(, actual.signal_to_noise);
+  // EXPECT_EQ(, actual.beam_angle_forward);
+  // EXPECT_EQ(, actual.vertical_error);
+  // EXPECT_EQ(, actual.horizontal_error);
+  // EXPECT_EQ(, actual.sector_number);
+  // EXPECT_EQ(, actual.detection_info);
+  // EXPECT_EQ(, actual.incident_beam_adj);
+  // EXPECT_EQ(, actual.system_cleaning);
+  // EXPECT_EQ(, actual.doppler_corr);
+  // EXPECT_EQ(, actual.sonar_vert_uncert);
+  // EXPECT_EQ(0, actual.sensor_id);
+  // TODO(schwehr): gsfSensorSpecific  sensor_data.
+  // EXPECT_EQ(, actual.brb_inten);
 }
 
 void VerifySwathBathySummary(const gsfSwathBathySummary &expected,
