@@ -109,6 +109,8 @@
 #include "gsf_indx.h"
 #include "gsf_ft.h"
 
+/* TODO(schwehr): Do this properly. */
+#if 0
 #undef fseek
 #undef ftell
 #if (defined _WIN32) && (defined _MSC_VER)
@@ -120,6 +122,8 @@
 #define fseek(x, y, z) fseeko64((x), (y), (z))
 #define ftell(x)   ftello64((x))
 #endif
+#endif
+
 /*  Error flag defined in gsf.c */
 extern int      gsfError;
 

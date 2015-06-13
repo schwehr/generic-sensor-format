@@ -165,6 +165,8 @@
 #include "gsf_indx.h"
 
 /* Macros required for this module */
+/* TODO(schwehr): Do this properly. */
+#if 0
 #undef fseek
 #undef ftell
 #if (defined _WIN32) && (defined _MSC_VER)
@@ -175,6 +177,7 @@
 #define fopen(x, y)  fopen64((x), (y))
 #define fseek(x, y, z) fseeko64((x), (y), (z))
 #define ftell(x)   ftello64((x))
+#endif
 #endif
 
 #define GSF_FILL_SIZE 8                   /* gsf packaging with no checksum */
