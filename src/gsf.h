@@ -135,7 +135,7 @@
  *
  * References : DoDBL Generic Sensor Format Sept. 30, 1993
  *
- * copyright 2014 Leidos, Inc.
+ * Copyright 2014 Leidos, Inc.
  * There is no charge to use the library, and it may be accessed at: https://www.leidos.com/maritime/gsf
  * This library may be redistributed and/or modified under the terms of the GNU Lesser General Public License
  * version 2.1, as published by the Free Software Foundation.  A copy of the LGPL 2.1 license is included
