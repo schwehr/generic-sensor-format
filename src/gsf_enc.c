@@ -49,9 +49,9 @@
  * dwc          1-9-98    Added EncodeElacMkIISpecific to support the Elac
  *                        Bottomchart MkII sonar.
  * jsb          09/28/98  Added gsfEncodeHVNavigationError. This change made
- *                        in responce to CRs: GSF-98-001, and GSF-98-002. Also
+ *                        in response to CRs: GSF-98-001, and GSF-98-002. Also
  *                        added support for horizontal error ping array subrecord
- *                        in responce to CR: GSF-98-003. Removed the computation of
+ *                        in response to CR: GSF-98-003. Removed the computation of
  *                        error_sum from gsfEncodeSwathBathymetryPing, now the library
  *                        will write horizontal and vertical depth estimates for each
  *                        ping if the array pointers are non-null.
@@ -60,7 +60,7 @@
  * wkm          8-02-99   Updated EncodeCmpSassSpecific to include lntens (heave) with CMP SASS data.
  * bac          10-24-00  Updated EncodeEM3Specific to include data fields from updated
  *                        EM series runtime parameter datagram.
- * bac          07-18-01  Added support for the Reson 8100 series of sonars.  Also removed the useage
+ * bac          07-18-01  Added support for the Reson 8100 series of sonars.  Also removed the usage
  *                        of C++ reserved words "class" and "operator".
  * bac          10-12-01  Added a new attitude record definition.  The attitude record provides
  *                        a method for logging full time-series attitude measurements in the GSF
@@ -70,9 +70,9 @@
  *                        because of the way in which measurement times are stored, a single
  *                        attitude record should never contain more than sixty seconds worth of
  *                        data.
- * jsb          01-19-02  Added support for Simrad EM120, and removed references to unsued variables.
+ * jsb          01-19-02  Added support for Simrad EM120, and removed references to unused variables.
  * bac          06-19-03  Added support for bathymetric receive beam time series intensity data (i.e., Simrad
- *                        "Seabed image" and Reson "snippets").  Inlcluded RWL updates of 12-19-02 for adding
+ *                        "Seabed image" and Reson "snippets").  Included RWL updates of 12-19-02 for adding
  *                        sensor-specific singlebeam information to the MB sensor specific subrecords.
  * bac          12-28-04  Added support for Navisound singlebeam, EM3000D, EM3002, and EM3002D.  Fixed
  *                        encoding of 1-byte BRB intensity values.  Corrected the encode/decode of Reson
@@ -103,7 +103,7 @@
  * This library may be redistributed and/or modified under the terms of
  * the GNU Lesser General Public License version 2.1, as published by the
  * Free Software Foundation.  A copy of the LGPL 2.1 license is included with
- * the GSF distribution and is avaialbe at: http://opensource.org/licenses/LGPL-2.1.
+ * the GSF distribution and is available at: http://opensource.org/licenses/LGPL-2.1.
  *
  * Leidos, Inc. configuration manages GSF, and provides GSF releases. Users are
  * strongly encouraged to communicate change requests and change proposals to Leidos, Inc.
@@ -582,7 +582,7 @@ EncodeNOSHDBSpecific(unsigned char *sptr, gsfSBSensorSpecific * sdata)
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_UNRECOGNIZED_SENSOR_ID
@@ -832,7 +832,7 @@ gsfEncodeSinglebeam(unsigned char *sptr, gsfSingleBeamPing * ping)
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_UNRECOGNIZED_SENSOR_ID
@@ -1841,7 +1841,7 @@ EncodeScaleFactors(unsigned char *sptr, gsfScaleFactors *sf)
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -1924,7 +1924,7 @@ EncodeTwoByteArray(unsigned char *sptr, double *array, int num_beams,
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2007,7 +2007,7 @@ EncodeSignedTwoByteArray(unsigned char *sptr, double *array, int num_beams,
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2089,7 +2089,7 @@ EncodeFourByteArray(unsigned char *sptr, double *array, int num_beams,
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2172,7 +2172,7 @@ EncodeSignedFourByteArray(unsigned char *sptr, double *array, int num_beams,
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2254,7 +2254,7 @@ EncodeByteArray(unsigned char *sptr, double *array, int num_beams,
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2328,7 +2328,7 @@ EncodeSignedByteArray (unsigned char *sptr, double *array, int num_beams, gsfSca
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -3880,7 +3880,7 @@ EncodeEM3Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE 
     *p = (unsigned char) (sdata->gsfEM3Specific.offset_multiplier);
     p += 1;
 
-    /* Encode and write the run-time paremeters if any of them have changed. */
+    /* Encode and write the run-time parameters if any of them have changed. */
     run_time_id = 1;
 
     /* JSB 3/31/99 Commented out the following code block.  For now we will encode all of the
