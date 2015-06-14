@@ -1772,7 +1772,7 @@ typedef struct t_gsfMBOffsets
     double           transducer_z_offset[GSF_MAX_OFFSETS];       /* sonar Z installation offset in meters, from ship alignment survey */
     double           transducer_pitch_offset[GSF_MAX_OFFSETS];   /* sonar pitch installation angle in degrees, from ship alignment survey */
     double           transducer_roll_offset[GSF_MAX_OFFSETS];    /* sonar roll installation angle in degrees, from ship alignment survey */
-    double           transducer_heading_offset[GSF_MAX_OFFSETS]; /* sonar heading installation  angle in degrees, from ship alignment survey */
+    double           transducer_heading_offset[GSF_MAX_OFFSETS]; /* sonar heading installation angle in degrees, from ship alignment survey */
     double           mru_pitch_bias;                             /* MRU installation pitch angle in degrees, from ship alignment survey */
     double           mru_roll_bias;                              /* MRU installation roll angle in degrees, from ship alignment survey */
     double           mru_heading_bias;                           /* MRU installation heading angle in degrees, from ship alignment survey */

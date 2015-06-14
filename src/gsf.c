@@ -100,7 +100,7 @@
  *                Updated gsfFree to free and set to NULL the quality_flags, vertical_error, horizontal_error,
  *                and brb_inten arrays.  Added vertical_error and horizontal_error processing to gsfCopyRecords.
  * bac 06-28-06   Updated gsfIsStarboardPing to work with EM3000D and EM3002D.  Updated gsfCopyRecords
- *                to copy the hv_nav_error record.  Added  for EM121A data received via Kongsberg SIS.
+ *                to copy the hv_nav_error record.  Added for EM121A data received via Kongsberg SIS.
  *                Replaced references to long types with int types, for compilation on 64-bit architectures.
  * jsb 11-06-07   Updates to utilize the subrecord size in termining the field size for the array subrecords
  *                that support more than one field size.  Also replaced use of strstr with strcmp in gsfGetMBParams
@@ -3149,7 +3149,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
 
     gsfError = 0;
 
-    /* Copy the GSF header over to the  target */
+    /* Copy the GSF header over to the target */
     memcpy(&target->header, &source->header, sizeof(target->header));
 
     /* Copy the ping summary record over to the target */

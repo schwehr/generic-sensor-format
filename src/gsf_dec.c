@@ -4955,7 +4955,7 @@ DecodeGeoSwathPlusSpecific(gsfSensorSpecific *sdata, unsigned char *sptr)
     sdata->gsfGeoSwathPlusSpecific.surface_velocity = dtemp / 20.0;
     p += 2;
 
-    /* Next 2 bytes is the  valid_beams */
+    /* Next 2 bytes is the valid_beams */
     memcpy(&stemp, p, 2);
     sdata->gsfGeoSwathPlusSpecific.valid_beams  = (int) ntohs(stemp);
     p += 2;
