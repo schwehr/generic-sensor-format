@@ -5,7 +5,7 @@
  * Author/Date : J. S. Byrne / 3 May 1994
  *
  * Description :
- *  This source file contains the gsf functions for decoding a gsf byte
+ *  This source file contains the GSF functions for decoding a GSF byte
  *   stream given host data structures containing the data in engineering
  *   units.  Refer to gsf.h for a definition of the structures describing
  *   the internal form of the data.
@@ -122,7 +122,7 @@
 #include <winsock.h>
 #endif
 
-/* gsf library interface description */
+/* GSF library interface description */
 #include "gsf.h"
 #include "gsf_enc.h"
 #include "gsf_dec.h"
@@ -206,12 +206,12 @@ static int      DecodeR2SonicImagerySpecific(gsfSensorImagery *sdata, unsigned c
  * Function Name : gsfDecodeHeader
  *
  * Description :
- *  This function decodes a gsf header data record from external to internal
+ *  This function decodes a GSF header data record from external to internal
  *  form.
  *
  * Inputs :
  *  header = a pointer to a gsfHeader structure to be populated
- *  sptr = a pointer to the gsf byte stream containing the header record.
+ *  sptr = a pointer to the GSF byte stream containing the header record.
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
@@ -235,12 +235,12 @@ gsfDecodeHeader(gsfHeader * header, unsigned char *sptr)
  * Function Name : gsfDecodeSwathBathySummary
  *
  * Description :
- *  This function decodes a gsf swath bathymetry summary data record from
+ *  This function decodes a GSF swath bathymetry summary data record from
  *   external to internal form.
  *
  * Inputs :
  *  header = a pointer to a gsfSwathBathySummary structure to be populated
- *  sptr = a pointer to the gsf byte stream containing the header record.
+ *  sptr = a pointer to the GSF byte stream containing the header record.
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
@@ -513,14 +513,14 @@ DecodeNOSHDBSpecific(gsfSBSensorSpecific * sdata, unsigned char *sptr)
  *
  * Function Name : gsfDecodeSinglebeam
  *
- * Description : This function decodes a gsf single beam ping record
+ * Description : This function decodes a GSF single beam ping record
  *  from external byte stream form to internal form.
  *
  * Inputs :
  *   ping = a pointer to the single beam ping structure to be populated
- *   sptr = a pointer to the gsf byte stream contain the ping record
+ *   sptr = a pointer to the GSF byte stream contain the ping record
  *   ft = a pointer to the GSF_FILE_TABLE entry for the data file being decoded
- *   handle = the handle to the gsf data file (used to track number beams)
+ *   handle = the handle to the GSF data file (used to track number beams)
  *   record_size = the number of bytes which ping byte stream occupies.
  *
  * Returns :
@@ -698,14 +698,14 @@ gsfDecodeSinglebeam(gsfSingleBeamPing * ping, unsigned char *sptr, GSF_FILE_TABL
  * Function Name : gsfDecodeSwathBathymetryPing
  *
  * Description :
- *  This function decodes a gsf swath bathymetry ping record from external
+ *  This function decodes a GSF swath bathymetry ping record from external
  *  to internal form.
  *
  * Inputs :
  *   ping = a pointer to the swath bathymetry ping structure to be populated
- *   sptr = a pointer to the gsf byte stream contain the ping record
+ *   sptr = a pointer to the GSF byte stream contain the ping record
  *   ft = a pointer to the GSF_FILE_TABLE entry for the data file being decoded
- *   handle = the handle to the gsf data file (used to track number beams)
+ *   handle = the handle to the GSF data file (used to track number beams)
  *   record_size = the number of bytes which ping byte stream occupies.
  *
  * Returns :
@@ -1687,7 +1687,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
  *  stream form to internal form.
  *
  * Inputs :
- *    ping = a pointer to the gsf swath bathymetry ping structure into which
+ *    ping = a pointer to the GSF swath bathymetry ping structure into which
  *           the scale factors will be loaded.
  *    sptr = a pointer to an unsigned char containing the byte stream to read
  *
@@ -2515,7 +2515,7 @@ DecodeSignedByteArray(double **array, char *sptr, int num_beams,
  * Function Name : DecodeBeamFlagsArray
  *
  * Description :
- *  This function is used to decode the ping flags array from gsf byte stream
+ *  This function is used to decode the ping flags array from GSF byte stream
  *  form into internal format.
  *
  * Inputs :
@@ -6926,7 +6926,7 @@ DecodeBRBIntensity(gsfBRBIntensity ** idata, unsigned char *sptr, int num_beams,
  *
  * Function Name : gsfDecodeSoundVelocityProfile
  *
- * Description : This function decodes a gsf sound velocity profile record
+ * Description : This function decodes a GSF sound velocity profile record
  *  from external byte stream form into internal form.  Memory for the
  *  depth/sound speed arrays is allocated (or reallocted) each time this
  *  record is encountered since the number of points in the profile can
@@ -7076,7 +7076,7 @@ gsfDecodeSoundVelocityProfile(gsfSVP *svp, GSF_FILE_TABLE *ft, unsigned char *sp
  * Function Name : gsfDecodeProcessingParameters
  *
  * Description : This function decodes a processing parameters record
- *  from external gsf byte stream form into internal form.
+ *  from external GSF byte stream form into internal form.
  *
  * Inputs :
  *   param = a pointer to the gsfProcessingParamters structure to populate
@@ -7166,7 +7166,7 @@ gsfDecodeProcessingParameters(gsfProcessingParameters *param, GSF_FILE_TABLE *ft
  *
  * Function Name : gsfDecodeSensorParameters
  *
- * Description : This function decodes a gsf sensor parameters record
+ * Description : This function decodes a GSF sensor parameters record
  *  from external byte stream form into internal form.
  *
  * Inputs :
@@ -7256,7 +7256,7 @@ gsfDecodeSensorParameters(gsfSensorParameters *param, GSF_FILE_TABLE *ft, unsign
  *
  * Function Name : gsfDecodeComment
  *
- * Description :  This function is used to decode a gsf comment record
+ * Description :  This function is used to decode a GSF comment record
  *  from external byte stream from to internal form.
  *
  * Inputs :
@@ -7333,11 +7333,11 @@ gsfDecodeComment(gsfComment *comment, GSF_FILE_TABLE *ft, unsigned char *sptr)
  *
  * Function Name : gsfDecodeHistory
  *
- * Description : This function is used to decode a gsf history record
+ * Description : This function is used to decode a GSF history record
  *  from external byte stream form to internal form.
  *
  * Inputs :
- *    history = a pointer to the gsf history structure to load
+ *    history = a pointer to the GSF history structure to load
  *    ft = a pointer to the GSF_FILE_TABLE entry for the data file being decoded
  *    sptr = a pointer to an unsigned char buffer to read from
  *
@@ -7472,7 +7472,7 @@ gsfDecodeHistory(gsfHistory * history, GSF_FILE_TABLE *ft, unsigned char *sptr)
  *
  * Function Name : gsfDecodeNavigationError
  *
- * Description : This function decodes a gsf byte stream containing a
+ * Description : This function decodes a GSF byte stream containing a
  *  navigation error record into internal form.
  *
  * Inputs :
@@ -7533,7 +7533,7 @@ gsfDecodeNavigationError(gsfNavigationError * nav_error, unsigned char *sptr)
  *
  * Function Name : gsfDecodeHVNavigationError
  *
- * Description : This function decodes a gsf byte stream containing
+ * Description : This function decodes a GSF byte stream containing
  *  the new horizontal and vertical navigation error record.
  *
  * Inputs :
@@ -7658,7 +7658,7 @@ static void LocalAddTimes (struct timespec *base_time, double delta_time, struct
  *
  * Function Name : gsfDecodeAttitude
 
- * Description : This function decodes a gsf attitude record
+ * Description : This function decodes a GSF attitude record
  *  from external byte stream form into internal form.  Memory for the
  *  pitch/roll/heave arrays is allocated (or reallocted) each time this
  *  record is encountered since the number of points in the profile can

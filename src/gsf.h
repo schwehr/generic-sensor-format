@@ -21,7 +21,7 @@
  *               APIs for sequential and direct access, now both use gsfRead
  *               and gsfWrite. This is version GSF-v01.01.
  * jsb 11/01/95  Completed modifications to indexing to support increase in
- *               gsf file size after initial index file creation.  The size
+ *               GSF file size after initial index file creation.  The size
  *               of the file is now stored in the index file header. Index
  *               files without the expected header are recreated on the first
  *               open. This is still version GSF-v01.01. Also added a unique
@@ -33,7 +33,7 @@
  *               library version GSF-v01.02.
  * hem 08/20/96  Added gsfSingleBeamPing Record structure; added Type III
  *               Seabeam, Echotrac, Bathy200, MGD77, BDB, & NOS HDB subrecord
- *               IDs & subrecords; added gsfStringError.  This is gsf library
+ *               IDs & subrecords; added gsfStringError.  This is GSF library
  *               version GSF-v1.03.
  * jsb 09/27/96  Added support for SeaBeam with amplitude data.
  * jsb 03/24/97  Added gsfSeaBatIISpecific data structure to replace
@@ -251,7 +251,7 @@ gsfDataID;
 #define             NUM_REC_TYPES  13
 
 /* Put a ceiling on the maximum number of swath bathymetry ping array
- * subrecords allowed in a gsf file.  This define dimensions the scale
+ * subrecords allowed in a GSF file.  This define dimensions the scale
  * factors structure.
  */
 #define GSF_MAX_PING_ARRAY_SUBRECORDS 27
@@ -1733,7 +1733,7 @@ typedef struct t_gsfRecords
 } gsfRecords;
 
 /* Define a data structure to hold offsets needed to correct multibeam
- * bathymetric data. Currently gsf supports tracking of up to two pairs
+ * bathymetric data. Currently GSF supports tracking of up to two pairs
  * of each of the relavent offsets.  This is required for systems such as
  * HydroChart II and Reson 9002 which have two pairs of transmit/receive
  * arrays per installation.
@@ -2011,9 +2011,9 @@ typedef struct t_gsf_pos_offsets{
 
 int OPTLK       gsfOpen(const char *filename, const int mode, int *handle);
 /*
- * Description : This function attempts to open a gsf data file.  If the
- *  file exits and is opened readonly or update the gsf header is read
- *  to confirm that this is a gsf data file.  If the file is opened create,
+ * Description : This function attempts to open a GSF data file.  If the
+ *  file exits and is opened readonly or update the GSF header is read
+ *  to confirm that this is a GSF data file.  If the file is opened create,
  *  the GSF header containing the version number of the software library is
  *  written into the header.  This function passes an integer handle back to
  *  the calling application.  The handle is used for all further access to the
@@ -2024,11 +2024,11 @@ int OPTLK       gsfOpen(const char *filename, const int mode, int *handle);
  *  GSF_MAX_OPEN_FILES files may be open by an application at a time.
  *
  * Inputs :
- *  filename = a fully qualified path to the gsf file to open
+ *  filename = a fully qualified path to the GSF file to open
  *  mode may have the following values:
  *     GSF_READONLY = open an existing file for read only access
  *     GSF_UPDATE   = open an existing file for reading an writing
- *     GSF_CREATE   = create a new gsf file
+ *     GSF_CREATE   = create a new GSF file
  *     GSF_READONLY_INDEX = open an existing file for read only access with index
  *     GSF_UPDATE_INDEX   = open an existing file for reading an writing with index
  *  handle = a pointer to an integer to be assigned a handle which will be
@@ -2047,9 +2047,9 @@ int OPTLK       gsfOpen(const char *filename, const int mode, int *handle);
 
 int OPTLK       gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size);
 /*
- * Description : This function attempts to open a gsf data file.  If the
- *  file exits and is opened readonly or update the gsf header is read
- *  to confirm that this is a gsf data file.  If the file is opened create,
+ * Description : This function attempts to open a GSF data file.  If the
+ *  file exits and is opened readonly or update the GSF header is read
+ *  to confirm that this is a GSF data file.  If the file is opened create,
  *  the GSF header containing the version number of the software library is
  *  written into the header.  This function passes an integer handle back to
  *  the calling application.  The handle is used for all further access to the
@@ -2063,11 +2063,11 @@ int OPTLK       gsfOpenBuffered(const char *filename, const int mode, int *handl
  *  I/O buffer size.
  *
  * Inputs :
- *  filename = a fully qualified path to the gsf file to open
+ *  filename = a fully qualified path to the GSF file to open
  *  mode may have the following values:
  *     GSF_READONLY = open an existing file for read only access
  *     GSF_UPDATE   = open an existing file for reading an writing
- *     GSF_CREATE   = create a new gsf file
+ *     GSF_CREATE   = create a new GSF file
  *     GSF_READONLY_INDEX = open an existing file for read only access with index
  *     GSF_UPDATE_INDEX   = open an existing file for reading an writing with index
  *  handle = a pointer to an integer to be assigned a handle which will be
@@ -2087,11 +2087,11 @@ int OPTLK       gsfOpenBuffered(const char *filename, const int mode, int *handl
 
 int OPTLK       gsfClose(const int handle);
 /*
- * Description : This function closes a gsf file previously opened
+ * Description : This function closes a GSF file previously opened
  *  using gsfOpen.
  *
  * Inputs :
- *  handle = the handle of the gsf file to be closed.
+ *  handle = the handle of the GSF file to be closed.
  *
  * Returns :
  *  This function returns zero if successful, or -1 if an error occurred.
@@ -2104,10 +2104,10 @@ int OPTLK       gsfClose(const int handle);
 int OPTLK       gsfSeek(int handle, int option);
 /*
  * Description : This function may be used to move the file pointer
- *  for a previously opened gsf file.
+ *  for a previously opened GSF file.
  *
  * Inputs :
- *  handle = the integer handle returned from gsf Open
+ *  handle = the integer handle returned from GSF Open
  *  option = the desired action for moving the file pointer, where:
  *    GSF_REWIND, move pointer to first record in the file.
  *    GSF_END_OF_FILE, move pointer to the end of the file.
@@ -2126,7 +2126,7 @@ int OPTLK       gsfSeek(int handle, int option);
 int OPTLK       gsfRead(int handle, int desiredRecord, gsfDataID * dataID, gsfRecords * rec, unsigned char *stream, int max_size);
 /* Description : gsfRead supports both direct and sequential access. If the
  *  file is opened for sequential access, this function reads the desired
- *  record from the gsf data file specified by handle.  The "desiredRecord"
+ *  record from the GSF data file specified by handle.  The "desiredRecord"
  *  argument may be set to GSF_NEXT_RECORD to read the next record in the
  *  data file, or "desiredRecord" record may be set to the id of the record
  *  of interest, in which case the file will be read, skipping past
@@ -2158,7 +2158,7 @@ int OPTLK       gsfRead(int handle, int desiredRecord, gsfDataID * dataID, gsfRe
  *    rptr = a pointer to a gsfRecords structure to be populated with the
  *           data from the input record in internal form.
  *    stream = an optional pointer to caller memory to be populated with a copy
- *          of the gsf byte stream for this record.
+ *          of the GSF byte stream for this record.
  *    max_size = an optional maximum size to copy into buf
  *
  * Returns :
@@ -2235,7 +2235,7 @@ int OPTLK       gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID
  * Description : gsfLoadScaleFactors should be used to load the swath
  *  bathymetry ping record scale factor structure.  This function assures
  *  that the multiplier and offset fields of the scale factor structure
- *  have a precision equal to that which will be stored in the gsf data file.
+ *  have a precision equal to that which will be stored in the GSF data file.
  *  This function should be called once for each beam array data type
  *  contained in your data.
  *
@@ -2294,7 +2294,7 @@ void OPTLK      gsfFree(gsfRecords *rec);
 void OPTLK      gsfPrintError(FILE * fp);
 /* Description : This function is used to print a short message describing
  *  the most recent error encountered.  This function need only be called if
- *  a -1 is returned from one of the gsf functions.
+ *  a -1 is returned from one of the GSF functions.
  *
  * Inputs :
  *  fp = a pointer to a FILE to which to write the message.
@@ -2307,7 +2307,7 @@ void OPTLK      gsfPrintError(FILE * fp);
 int gsfIntError(void);
 /* Description : This function is used to return the most recent
  *  error encountered.  This function need only be called if
- *  a -1 is returned from one of the gsf functions.
+ *  a -1 is returned from one of the GSF functions.
  *
  * Inputs : none
  *
@@ -2319,7 +2319,7 @@ int gsfIntError(void);
 const char *gsfStringError(void);
 /* Description : This function is used to return a short message describing
  *  the most recent error encountered.  This function need only be called if
- *  a -1 is returned from one of the gsf functions.
+ *  a -1 is returned from one of the GSF functions.
  *
  * Inputs : none
  *
@@ -2334,7 +2334,7 @@ int OPTLK       gsfIndexTime(int, int, int, time_t *, long *);
  *  that was read.
  *
  * Inputs :
- *  handle = gsf file handle assigned by gsfOpen or gsfOpenBuffered
+ *  handle = GSF file handle assigned by gsfOpen or gsfOpenBuffered
  *  record_type = record type to be retrieved
  *  record_number = record number to be retrieved (-1 will get the time
  *                  and record number of the last record of this type)
@@ -2353,11 +2353,11 @@ int OPTLK       gsfPercent (int handle);
 /* Description : This function returns an integer value representing
  *  the location of the file pointer as a percentage of the total file
  *  size.  It may be used to obtain an indication of how far along a
- *  program is in reading a gsf data file.  The file size is obtained
+ *  program is in reading a GSF data file.  The file size is obtained
  *  when the file is opened.
  *
  * Inputs :
- *  handle = gsf file handle assigned by gsfOpen or gsfOpenBuffered
+ *  handle = GSF file handle assigned by gsfOpen or gsfOpenBuffered
  *
  * Returns :
  *  This function returns the current file position as a percentage of
@@ -2843,7 +2843,7 @@ int gsfStat (const char *filename, long long *sz);
  *               Supports 64 bit file size.
  *
  * Inputs :
- *  filename = a fully qualified path to the gsf file
+ *  filename = a fully qualified path to the GSF file
  *  sz       = pointer to an 8 byte long long for return
  *             of the GSF file size from the stat64 system call.
  *

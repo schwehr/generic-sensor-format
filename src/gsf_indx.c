@@ -25,7 +25,7 @@
  * jsb  08/25/95  Consolidated the gsfReadIndex and gsfWriteIndex functions
  *                into gsfRead and gsfWrite.
  * jsb  11/01/95  Completed modifications to indexing to support increase in
- *                gsf file size after initial index file creation.  The size
+ *                GSF file size after initial index file creation.  The size
  *                of the file is now stored in the index file header. Index
  *                files without the expected header are recreated on the first
  *                open.
@@ -104,7 +104,7 @@
     #include <unistd.h>
 #endif
 
-/* gsf library interface description.  */
+/* GSF library interface description.  */
 #include "gsf.h"
 #include "gsf_indx.h"
 #include "gsf_ft.h"
@@ -182,7 +182,7 @@ void gsf_register_progress_callback (GSF_PROGRESS_CALLBACK progressCB)
  * Function Name : gsfOpenIndex
  *
  * Description : This function attempts to open an index file associated
- *  with a gsf file.  If the file exists it is opened and the header
+ *  with a GSF file.  If the file exists it is opened and the header
  *  information is read into memory.  If it does not exist it is created.
  *  Creating the index file is a two pass process.  First, all of the gsf
  *  file is read and the index records are written to a number of small
@@ -192,7 +192,7 @@ void gsf_register_progress_callback (GSF_PROGRESS_CALLBACK progressCB)
  *      Type      Description
  *      ----      -----------
  *      char[16]  Text header containing "INDEX-GSF-"<"version">
- *      int       The size of the gsf file when the index file was created.
+ *      int       The size of the GSF file when the index file was created.
  *      int       Endian indicator (0x00010203 or 0x03020100 depending
  *                upon sex of machine, if 0x03020100 then the index
  *                data must be byte swapped).
@@ -219,7 +219,7 @@ void gsf_register_progress_callback (GSF_PROGRESS_CALLBACK progressCB)
  *
  *      time_t    Posix.4 proposed time seconds.
  *      int       Posix.4 proposed time nanoseconds.
- *      int       Address of the associated record within the gsf file for the
+ *      int       Address of the associated record within the GSF file for the
  *                specified record type.
  *      .
  *      .
@@ -233,8 +233,8 @@ void gsf_register_progress_callback (GSF_PROGRESS_CALLBACK progressCB)
  *
  *
  * Inputs :
- *  filename = a fully qualified path to the gsf file
- *  handle = gsf file handle assigned by gsfOpen or gsfOpenBuffered
+ *  filename = a fully qualified path to the GSF file
+ *  handle = GSF file handle assigned by gsfOpen or gsfOpenBuffered
  *  ft = a pointer to the GSF_FILE_TABLE entry for the file specified by
  *     handle.
  *
@@ -362,7 +362,7 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
         return (-1);
     }
 
-    /* If the expected header is found then compair the current gsf file
+    /* If the expected header is found then compair the current GSF file
      * size to the size that existed when the index was file was created,
      * and append to the index file if necessary.
      */
@@ -377,7 +377,7 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
     }
     if (index_header.gsfFileSize > ft->file_size)
     {
-        /* if the indexed file size is greater than the current gsf file
+        /* if the indexed file size is greater than the current GSF file
          *  size, then the file has gotten smaller and the index file is
          *  invalid.  delete it and create it again.  bac, 05-06-03
          */
@@ -491,11 +491,11 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
  *
  * Function Name : gsfCreateIndexFile
  *
- * Description : This function is called to create a new gsf index file.
+ * Description : This function is called to create a new GSF index file.
  *
  * Inputs :
- *  filename = a fully qualified path to the gsf file
- *  handle = gsf file handle assigned by gsfOpen or gsfOpenBuffered
+ *  filename = a fully qualified path to the GSF file
+ *  handle = GSF file handle assigned by gsfOpen or gsfOpenBuffered
  *  ft = a pointer to the GSF_FILE_TABLE entry for the file specified by
  *     handle.
  *
@@ -558,13 +558,13 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
     old_percent = -1;
     current = 0;
 
-    /*  Read each gsf record and write the time and address to the
+    /*  Read each GSF record and write the time and address to the
      *  temp index files.
      */
     do
     {
         long long rc;
-        /*  Save the current address within the gsf file.   */
+        /*  Save the current address within the GSF file.   */
 
         if ((rc = ftell(ft->fp)) == -1 )
         {
@@ -573,7 +573,7 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
         }
         index_rec.addr = rc;
 
-        /*  Read the gsf record and check for end of file.  */
+        /*  Read the GSF record and check for end of file.  */
 
         if ((err = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records,
                     NULL, 0)) != -1)
@@ -1046,7 +1046,7 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
              *  j is the counter for the record types stored in the
              *  index file, times 16 (size of the header info for each
              *  record type), plus 48 bytes for the format version
-             *  id, gsf file size, endian indicator, total number of record
+             *  id, GSF file size, endian indicator, total number of record
              *  types, and reserved space.
              */
             fseek(ft->index_data.fp, (j * 16) + 48, 0);
@@ -1110,8 +1110,8 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
  *   to an existing index file
  *
  * Inputs :
- *  filename = a fully qualified path to the gsf file
- *  handle = gsf file handle assigned by gsfOpen or gsfOpenBuffered
+ *  filename = a fully qualified path to the GSF file
+ *  handle = GSF file handle assigned by gsfOpen or gsfOpenBuffered
  *  ft = a pointer to the GSF_FILE_TABLE entry for the file specified by
  *     handle.
  *
@@ -1309,7 +1309,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
     save_pos = ftell(ft->fp);
 
     /* If the last indexed record is not the ping record we just loaded, then
-     * go load the last indexed record so that the gsf file pointer is one
+     * go load the last indexed record so that the GSF file pointer is one
      * record beyond the last record we have an index for.
      */
 
@@ -1346,14 +1346,14 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
     old_percent = -1;
     current = 0;
 
-    /*  Read each gsf record and write the time and address to the
+    /*  Read each GSF record and write the time and address to the
      *  temp index files.
      */
     do
     {
         long long rc;
 
-        /*  Save the current address within the gsf file.   */
+        /*  Save the current address within the GSF file.   */
 
         if ((rc = ftell(ft->fp)) == -1 )
         {
@@ -1375,7 +1375,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
 
         index_rec.addr = rc;
 
-        /*  Read the gsf record and check for end of file.  */
+        /*  Read the GSF record and check for end of file.  */
 
         if ((err = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records,
                            NULL, 0)) != -1)
@@ -1878,7 +1878,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
              *  j is the counter for the record types stored in the
              *  index file, times 16 (size of the header info for each
              *  record type), plus 48 bytes for the format version
-             *  id, gsf file size, endian indicator, total number of record
+             *  id, GSF file size, endian indicator, total number of record
              *  types, and reserved space.
              */
             fseek(ft->index_data.fp, (j * 16) + 48, 0);
@@ -2058,10 +2058,10 @@ close_temp_file(int type, FILE * fp)
  * Function Name : gsfCloseIndex
  *
  * Description : This function closes the index file associated with
- *  the gsf file handle passed.
+ *  the GSF file handle passed.
  *
  * Inputs :
- *  handle = gsf file handle assigned by gsfOpen or gsfOpenBuffered
+ *  handle = GSF file handle assigned by gsfOpen or gsfOpenBuffered
  *
  * Returns :
  *  This function returns zero if successfull, or -1

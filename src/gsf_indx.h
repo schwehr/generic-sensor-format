@@ -5,7 +5,7 @@
  * Author/Date : J. S. Byrne / 23 Aug 1995
  *
  * Description : This header file contains function prototypes and
- *    definitions required for direct access to gsf files.  This header
+ *    definitions required for direct access to GSF files.  This header
  *    file is internal to the library, and none of these functions are
  *    intended to be exported from the library.
  *

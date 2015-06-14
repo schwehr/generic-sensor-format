@@ -5,7 +5,7 @@
  * Author/Date : J. S. Byrne / 3 May 1994
  *
  * Description :
- *  This source file contains the gsf functions for encoding a gsf byte
+ *  This source file contains the GSF functions for encoding a GSF byte
  *   stream from host data structures.
  *
  * Restrictions/Limitations :
@@ -127,7 +127,7 @@
 #include <winsock.h>
 #endif
 
-/* gsf library interface description */
+/* GSF library interface description */
 #include "gsf.h"
 #include "gsf_enc.h"
 
@@ -196,7 +196,7 @@ static int      EncodeR2SonicSpecific(unsigned char *sptr, gsfSensorSpecific * s
  *
  * Function Name : gsfEncodeHeader
  *
- * Description : This function encodes a gsf header into external byte stream
+ * Description : This function encodes a GSF header into external byte stream
  *  form from the passed gsfHeader structure.
  *
  * Inputs :
@@ -227,7 +227,7 @@ gsfEncodeHeader(unsigned char *sptr, gsfHeader * header)
  *
  * Function Name : gsfEncodeSwathBathySummary
  *
- * Description : This function encodes a gsf swath bathymetry summary record
+ * Description : This function encodes a GSF swath bathymetry summary record
  *  into external byte stream form from the passed gsfHeader structure.
  *
  * Inputs :
@@ -569,13 +569,13 @@ EncodeNOSHDBSpecific(unsigned char *sptr, gsfSBSensorSpecific * sdata)
  *
  * Function Name : gsfEncodeSinglebeam
  *
- * Description : This function encodes a gsf single beam ping record
+ * Description : This function encodes a GSF single beam ping record
  *  in external byte stream form from a gsfSwathBathyPing structure.
  *
  * Inputs :
  *    sptr = a pointer to the unsigned char buffer to write into
  *    ping = a pointer to the gsfSwathBathPing record to read from
- *    handle = an integer handle to the gsf data file, used to track the
+ *    handle = an integer handle to the GSF data file, used to track the
  *             number of beams.
  *    ft = a pointer to the gsfFileTable, where the scale factors are
  *         maintained.
@@ -819,13 +819,13 @@ gsfEncodeSinglebeam(unsigned char *sptr, gsfSingleBeamPing * ping)
  *
  * Function Name : gsfEncodeSwathBathymetryPing
  *
- * Description : This function encodes a gsf swath bathymetry ping record
+ * Description : This function encodes a GSF swath bathymetry ping record
  *  in external byte stream form from a gsfSwathBathyPing structure.
  *
  * Inputs :
  *    sptr = a pointer to the unsigned char buffer to write into
  *    ping = a pointer to the gsfSwathBathPing record to read from
- *    handle = an integer handle to the gsf data file, used to track the
+ *    handle = an integer handle to the GSF data file, used to track the
  *             number of beams.
  *    ft = a pointer to the gsfFileTable, where the scale factors are
  *         maintained.
@@ -1836,7 +1836,7 @@ EncodeScaleFactors(unsigned char *sptr, gsfScaleFactors *sf)
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of doubles from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
@@ -1919,7 +1919,7 @@ EncodeTwoByteArray(unsigned char *sptr, double *array, int num_beams,
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of doubles from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
@@ -2002,7 +2002,7 @@ EncodeSignedTwoByteArray(unsigned char *sptr, double *array, int num_beams,
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of doubles from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
@@ -2084,7 +2084,7 @@ EncodeFourByteArray(unsigned char *sptr, double *array, int num_beams,
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of doubles from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
@@ -2167,7 +2167,7 @@ EncodeSignedFourByteArray(unsigned char *sptr, double *array, int num_beams,
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of doubles from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
@@ -2249,7 +2249,7 @@ EncodeByteArray(unsigned char *sptr, double *array, int num_beams,
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of doubles from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
@@ -2323,7 +2323,7 @@ EncodeSignedByteArray (unsigned char *sptr, double *array, int num_beams, gsfSca
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of ints from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
@@ -2512,7 +2512,7 @@ EncodeQualityFlagsArray(unsigned char *sptr, unsigned char *array, int num_beams
  *
  * Inputs :
  *    sptr = a pointer to an unsigned char to write into
- *    sdata = a pointer to a union of gsf sensor specific data
+ *    sdata = a pointer to a union of GSF sensor specific data
  *
  * Returns : This function returns the number of bytes encoded.
  *
@@ -3791,7 +3791,7 @@ EncodeElacMkIISpecific(unsigned char *sptr, gsfSensorSpecific *sdata)
  * Inputs :
  *    sptr = a pointer to an unsigned char buffer to write into
  *    sdata = a pointer to a union of sensor specific data.
- *    ft = a pointer to the gsf file table, this is used to determine
+ *    ft = a pointer to the GSF file table, this is used to determine
  *        is the run-time parameters should be written with this record.
  *
  * Returns : This function returns the number of bytes encoded.
@@ -4236,7 +4236,7 @@ EncodeEM3Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE 
  * Inputs :
  *    sptr = a pointer to an unsigned char buffer to write into
  *    sdata = a pointer to a union of sensor specific data.
- *    ft = a pointer to the gsf file table, this is used to determine
+ *    ft = a pointer to the GSF file table, this is used to determine
  *        is the run-time parameters should be written with this record.
  *
  * Returns : This function returns the number of bytes encoded.
@@ -4738,7 +4738,7 @@ EncodeEM3RawSpecific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TAB
  * Inputs :
  *    sptr = a pointer to an unsigned char buffer to write into
  *    sdata = a pointer to a union of sensor specific data.
- *    ft = a pointer to the gsf file table, this is used to determine
+ *    ft = a pointer to the GSF file table, this is used to determine
  *        is the run-time parameters should be written with this record.
  *
  * Returns : This function returns the number of bytes encoded.
@@ -7440,7 +7440,7 @@ EncodeBRBIntensity(unsigned char *sptr, gsfBRBIntensity *idata, int num_beams, i
  *
  * Function Name : gsfEncodeSoundVelocityProfile
  *
- * Description : This function encodes a gsf sound velocity profile record
+ * Description : This function encodes a GSF sound velocity profile record
  *  from internal form to external byte stream form.
  *
  * Inputs :
@@ -7566,7 +7566,7 @@ gsfEncodeSoundVelocityProfile(unsigned char *sptr, gsfSVP * svp)
  *
  * Function Name : gsfEncodeProcessingParameters
  *
- * Description : This function encodes into external gsf byte stream form
+ * Description : This function encodes into external GSF byte stream form
  *  a record of processing parameters.
  *
  * Inputs :
@@ -7627,7 +7627,7 @@ gsfEncodeProcessingParameters(unsigned char *sptr, gsfProcessingParameters * par
  *
  * Function Name : gsfEncodeSensorParameters
  *
- * Description : This function encodes into external gsf byte stream form
+ * Description : This function encodes into external GSF byte stream form
  *  a record of sonar parameters.
  *
  * Inputs :
@@ -7737,7 +7737,7 @@ gsfEncodeComment(unsigned char *sptr, gsfComment * comment)
  *
  * Function Name : gsfEncodeHistory
  *
- * Description : This function encodes a gsf history record from internal
+ * Description : This function encodes a GSF history record from internal
  *  to external byte stream form.
  *
  * Inputs :
@@ -8015,7 +8015,7 @@ static void LocalSubtractTimes (struct timespec *base_time, struct timespec *sub
  *
  * Function Name : gsfEncodeAttitude
  *
- * Description : This function encodes a gsf attitude record from internal
+ * Description : This function encodes a GSF attitude record from internal
  *  to external byte stream form.
  *
  * Inputs :

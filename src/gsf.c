@@ -4,7 +4,7 @@
  *
  * Author/Date : J. S. Byrne / 3 May 1994
  *
- * Description : This source file contains the gsf library entry point
+ * Description : This source file contains the GSF library entry point
  *  functions for accessesing multibeam sonar data in a generic byte stream
  *  format.  Each record in these binary files contains an ID and a size,
  *  and these two values are used to read and decode the rest of the data
@@ -27,7 +27,7 @@
  *                allocated memory are now maintained by the library.
  *                Call this version "GSF-v01.01".
  * jsb  11/01/95  Completed modifications to indexing to support increase in
- *                gsf file size after initial index file creation.  The size
+ *                GSF file size after initial index file creation.  The size
  *                of the file is now stored in the index file header. Index
  *                files without the expected header are recreated on the first
  *                open. This is still version GSF-v01.01. Also added a unique
@@ -39,16 +39,16 @@
  *                library version GSF-v01.02.
  * fd   04/15/96  Corrected the internals of gsfIsStarboardPing
  * hem  08/20/96  Added support for single beam pings; added gsfStringError;
- *                fixed 4 byte boundary padding.  This is gsf library
+ *                fixed 4 byte boundary padding.  This is GSF library
  *                version GSF-v1.03.
  * jsb  10/04/96  Changed fopen argument from "wb" to "a+b" for the GSF_APPEND
  *                access mode.  Also added logic to set file pointer to top prior
- *                to trying to read the gsf header record in gsfOpen/gsfOpenBuffered
+ *                to trying to read the GSF header record in gsfOpen/gsfOpenBuffered
  *                when the file access mode is GSF_APPEND.  Replaced use of
  *                numOpenFiles with *handle as argument to gsfRead and gsfWrite
  *                within gsfOpen and gsfOpenBuffered.  This repairs problems which
  *                can occur when a single application is accessing multiple files.
- * jsb  04/18/97  Added gsf version dependancy on approach to padding records out
+ * jsb  04/18/97  Added GSF version dependancy on approach to padding records out
  *                to four byte boundary. This is required in order to support the
  *                update access modes for versions prior to 1.03.  Replaced use of
  *                fgetpos, fsetpos with ftell, fseek.  This was done so that we can
@@ -226,7 +226,7 @@ static int      gsfNumberParams(char *param);
  *               Supports 64 bit file size.
  *
  * Inputs :
- *  filename = a fully qualified path to the gsf file
+ *  filename = a fully qualified path to the GSF file
  *  sz       = pointer to an 8 byte long long for return
  *             of the GSF file size from the stat64 system call.
  *
@@ -276,9 +276,9 @@ gsfStat (const char *filename, long long *sz)
  *
  * Function Name : gsfOpen
  *
- * Description : This function attempts to open a gsf data file.  If the
- *  file exits and is opened readonly or update the gsf header is read
- *  to confirm that this is a gsf data file.  If the file is opened create,
+ * Description : This function attempts to open a GSF data file.  If the
+ *  file exits and is opened readonly or update the GSF header is read
+ *  to confirm that this is a GSF data file.  If the file is opened create,
  *  the GSF header containing the version number of the software library is
  *  written into the header.  This function passes an integer handle back to
  *  the calling application.  The handle is used for all further access to the
@@ -289,11 +289,11 @@ gsfStat (const char *filename, long long *sz)
  *  GSF_MAX_OPEN_FILES files may be open by an application at a time.
  *
  * Inputs :
- *  filename = a fully qualified path to the gsf file to open
+ *  filename = a fully qualified path to the GSF file to open
  *  mode may have the following values:
  *     GSF_READONLY = open an existing file for read only access
  *     GSF_UPDATE   = open an existing file for reading an writing
- *     GSF_CREATE   = create a new gsf file
+ *     GSF_CREATE   = create a new GSF file
  *     GSF_READONLY_INDEX = open an existing file for read only access with index
  *     GSF_UPDATE_INDEX   = open an existing file for reading an writing with index
  *  handle = a pointer to an integer to be assigned a handle which will be
@@ -374,7 +374,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
   }
 
     /* The file was successfully opened, load the gsf file table structure by
-  * searching the gsf file table for the caller's filename.  This is done
+  * searching the GSF file table for the caller's filename.  This is done
   * so that the same file table slot may be re-used.  Applications which
   * want their file closed frequently, such as real-time data collection
   * programs may do this to assure data integrity, and it makes sense
@@ -439,7 +439,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
   gsfFileTable[fileTableIndex].file_size = stsize;
 
     /* If this file was just created, (ie it has a size of 0 bytes) then
-  * write the gsf file header record. Also, set a flag to indicate
+  * write the GSF file header record. Also, set a flag to indicate
   * that the ping scale factors need to be written with the next swath
   * bathymetry ping record.
     */
@@ -608,9 +608,9 @@ gsfOpen(const char *filename, const int mode, int *handle)
  *
  * Function Name : gsfOpenBuffered
  *
- * Description : This function attempts to open a gsf data file.  If the
- *  file exits and is opened readonly or update the gsf header is read
- *  to confirm that this is a gsf data file.  If the file is opened create,
+ * Description : This function attempts to open a GSF data file.  If the
+ *  file exits and is opened readonly or update the GSF header is read
+ *  to confirm that this is a GSF data file.  If the file is opened create,
  *  the GSF header containing the version number of the software library is
  *  written into the header.  This function passes an integer handle back to
  *  the calling application.  The handle is used for all further access to the
@@ -624,11 +624,11 @@ gsfOpen(const char *filename, const int mode, int *handle)
  *  I/O buffer size.
  *
  * Inputs :
- *  filename = a fully qualified path to the gsf file to open
+ *  filename = a fully qualified path to the GSF file to open
  *  mode may have the following values:
  *     GSF_READONLY = open an existing file for read only access
  *     GSF_UPDATE   = open an existing file for reading an writing
- *     GSF_CREATE   = create a new gsf file
+ *     GSF_CREATE   = create a new GSF file
  *     GSF_READONLY_INDEX = open an existing file for read only access with index
  *     GSF_UPDATE_INDEX   = open an existing file for reading an writing with index
  *  handle = a pointer to an integer to be assigned a handle which will be
@@ -709,8 +709,8 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
         return (-1);
     }
 
-    /* The file was successfully opened, load the gsf file table structure by
-     * searching the gsf file table for the caller's filename.  This is done
+    /* The file was successfully opened, load the GSF file table structure by
+     * searching the GSF file table for the caller's filename.  This is done
      * so that the same file table slot may be re-used.  Applications which
      * want their file closed frequently, such as real-time data collection
      * programs may do this to assure data integrity, and it makes sense
@@ -775,7 +775,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
     gsfFileTable[fileTableIndex].file_size = stsize;
 
     /* If this file was just created, (ie it has a size of 0 bytes) then
-     * write the gsf file header record. Also, set a flag to indicate
+     * write the GSF file header record. Also, set a flag to indicate
      * that the ping scale factors need to be written with the next swath
      * bathymetry ping record.
      */
@@ -944,11 +944,11 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
  *
  * Function Name : gsfClose
  *
- * Description : This function closes a gsf file previously opened
+ * Description : This function closes a GSF file previously opened
  *  using gsfOpen.
  *
  * Inputs :
- *  handle = the handle of the gsf file to be closed.
+ *  handle = the handle of the GSF file to be closed.
  *
  * Returns :
  *  This function returns zero if successful, or -1 if an error occurred.
@@ -984,7 +984,7 @@ gsfClose(const int handle)
 
     /* jsb 05/14/97 Clear the contents of the gsfFileTable fields. We don't
      * want to clear the filename, this allows a performance improvement for
-     * programs which use append to log gsf files. (ie: data acquisition)
+     * programs which use append to log GSF files. (ie: data acquisition)
      */
     gsfFileTable[handle-1].major_version_number = 0;
     gsfFileTable[handle-1].minor_version_number = 0;
@@ -1017,10 +1017,10 @@ gsfClose(const int handle)
  * Function Name : gsfSeek
  *
  * Description : This function may be used to move the file pointer
- *  for a previously opened gsf file.
+ *  for a previously opened GSF file.
  *
  * Inputs :
- *  handle = the integer handle returned from gsf Open
+ *  handle = the integer handle returned from gsfOpen
  *  option = the desired action for moving the file pointer, where:
  *    GSF_REWIND, move pointer to first record in the file.
  *    GSF_END_OF_FILE, move pointer to the end of the file.
@@ -1109,7 +1109,7 @@ gsfSeek(int handle, int option)
  *
  * Description : gsfRead supports both direct and sequential access. If the
  *  file is opened for sequential access, this function reads the desired
- *  record from the gsf data file specified by handle.  The "desiredRecord"
+ *  record from the GSF data file specified by handle.  The "desiredRecord"
  *  argument may be set to GSF_NEXT_RECORD to read the next record in the
  *  data file, or "desiredRecord" record may be set to specify the record
  *  of interest, in which case the file will be read, skipping past
@@ -1141,7 +1141,7 @@ gsfSeek(int handle, int option)
  *    rptr = a pointer to a gsfRecords structure to be populated with the
  *           data from the input record in internal form.
  *    buf = an optional pointer to caller memory to be populated with a copy
- *          of the gsf byte stream for this record.
+ *          of the GSF byte stream for this record.
  *    max_size = an optional maximum size to copy into buf
  *
  * Returns :
@@ -1215,8 +1215,8 @@ gsfRead(int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *rptr, unsi
  *
  * Description : gsfUnpackStream is a static function (not available to
  *   application programs) which is used by gsfRead to read and decode
- *   gsf records. It performs the bulk of the processing required to read
- *   a gsf record.  This processing exists as a function separate from
+ *   GSF records. It performs the bulk of the processing required to read
+ *   a GSF record.  This processing exists as a function separate from
  *   gsfRead since it is required both by gsfRead and by gsfSeekRecord.
  *   gsfUnpackStream is used by gsfSeekRecord to read a ping record with
  *   scale factors, which is required to support direct access.
@@ -1229,7 +1229,7 @@ gsfRead(int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *rptr, unsi
  *    rptr = a pointer to a gsfRecords structure to be populated with the
  *           data from the input record in internal form.
  *    buf = an optional pointer to caller memory to be populated with a copy
- *          of the gsf byte stream for this record.
+ *          of the GSF byte stream for this record.
  *    max_size = an optional maximum size to copy into buf
  *
  * Returns :
@@ -1481,7 +1481,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
 
 
     /* Invoke the appropriate function for unpacking this record into a
-    * standard gsf structure.
+    * standard GSF structure.
     */
     switch (thisID.recordID)
     {
@@ -1606,7 +1606,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
  *
  * Function Name : gsfSeekRecord
  *
- * Description : This function moves the current gsf file position to the
+ * Description : This function moves the current GSF file position to the
  *    begining of the nth record of a specific type.  The record number and
  *    type of interest are specified by id.record_number and id.recordID.
  *    The byte offset into the file for the record of interest is retreaved
@@ -1996,7 +1996,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
     if (pad)
     {
         /* jsb 04/18/97 A bug was fixed here in version 1.03, if this file was
-         * created with a version of gsf prior to 1.03 we need to support it the
+         * created with a version of GSF prior to 1.03 we need to support it the
          * old way.
          */
         if ((gsfFileTable[handle - 1].major_version_number == 1) &&
@@ -2077,7 +2077,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
 
     /* Check to see if this record will fit into the current buffer, if not
      * force a flush of the stream before writting. This is done to ensure
-     * that an output file will always contain whole gsf records.
+     * that an output file will always contain whole GSF records.
      */
     gsfFileTable[handle-1].bufferedBytes += dataSize;
     if (gsfFileTable[handle-1].bufferedBytes >= gsfFileTable[handle-1].buf_size)
@@ -2124,7 +2124,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
  * Description : gsfLoadScaleFactors should be used to load the swath
  *  bathymetry ping record scale factor structure.  This function assures
  *  that the multiplier and offset fields of the scale factor structure
- *  have a precision equal to that which will be stored in the gsf data file.
+ *  have a precision equal to that which will be stored in the GSF data file.
  *  This function should be called once for each beam array data type
  *  contained in your data.
  *
@@ -2563,7 +2563,7 @@ gsfFree (gsfRecords *rec)
  *
  * Description : This function is used to print a short message describing
  *  the most recent error encountered.  This function need only be called if
- *  a -1 is returned from one of the gsf functions.
+ *  a -1 is returned from one of the GSF functions.
  *
  * Inputs :
  *  fp = a pointer to a FILE to which to write the message.
@@ -2590,7 +2590,7 @@ gsfPrintError(FILE * fp)
  * Description : This function is used to return the
  *  most recent error encountered.
  *  This function need only be called if
- *  a -1 is returned from one of the gsf functions.
+ *  a -1 is returned from one of the GSF functions.
  *
  * Inputs : none
  *
@@ -2612,7 +2612,7 @@ int gsfIntError(void)
  * Description : This function is used to return a string with
  *  a short message describing the most recent error encountered.
  *  This function need only be called if
- *  a -1 is returned from one of the gsf functions.
+ *  a -1 is returned from one of the GSF functions.
  *
  * Inputs :
  *  error_string = a pointer to a character string.
@@ -2889,7 +2889,7 @@ gsfStringError(void)
  *  that was read.
  *
  * Inputs :
- *  handle = gsf file handle assigned by gsfOpen or gsfOpenBuffered
+ *  handle = GSF file handle assigned by gsfOpen or gsfOpenBuffered
  *  record_type = record type to be retrieved
  *  record_number = record number to be retrieved (-1 will get the time
  *                  and record number of the last record of this type)
@@ -3006,11 +3006,11 @@ gsfChecksum(unsigned char *buff, unsigned int num_bytes)
  * Description : This function returns an integer value representing
  *  the location of the file pointer as a percentage of the total file
  *  size.  It may be used to obtain an indication of how far along a
- *  program is in reading a gsf data file.  The file size is obtained
+ *  program is in reading a GSF data file.  The file size is obtained
  *  when the file is opened.
  *
  * Inputs :
- *  handle = gsf file handle assigned by gsfOpen or gsfOpenBuffered
+ *  handle = GSF file handle assigned by gsfOpen or gsfOpenBuffered
  *
  * Returns :
  *  This function returns the current file position as a percentage of
@@ -3149,7 +3149,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
 
     gsfError = 0;
 
-    /* Copy the gsf header over to the  target */
+    /* Copy the GSF header over to the  target */
     memcpy(&target->header, &source->header, sizeof(target->header));
 
     /* Copy the ping summary record over to the target */
