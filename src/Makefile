@@ -1,5 +1,3 @@
-# -*- makefile -*-
-
 # Copyright 2015 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,12 +24,12 @@ OPT += -funroll-loops -fexpensive-optimizations -ffast-math
 OPT += -DNDEBUG
 
 ifdef OPTIMIZE
-  CCFLAGS += ${OPT}
+  CFLAGS += ${OPT}
 else
-  CCFLAGS += ${DEBUG}
+  CFLAGS += ${DEBUG}
 endif
 
-CCFLAGS += ${WARN}
+CFLAGS += ${WARN}
 
 SRCS := $(wildcard *.c)
 OBJS := ${SRCS:.c=.o}
