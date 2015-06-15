@@ -4,7 +4,7 @@
  *
  * Author/Date : J. S. Byrne / 3 May 1994
  *
- * Description : This source file contains the gsf library entry point
+ * Description : This source file contains the GSF library entry point
  *  functions for accessesing multibeam sonar data in a generic byte stream
  *  format.  Each record in these binary files contains an ID and a size,
  *  and these two values are used to read and decode the rest of the data
@@ -27,7 +27,7 @@
  *                allocated memory are now maintained by the library.
  *                Call this version "GSF-v01.01".
  * jsb  11/01/95  Completed modifications to indexing to support increase in
- *                gsf file size after initial index file creation.  The size
+ *                GSF file size after initial index file creation.  The size
  *                of the file is now stored in the index file header. Index
  *                files without the expected header are recreated on the first
  *                open. This is still version GSF-v01.01. Also added a unique
@@ -39,16 +39,16 @@
  *                library version GSF-v01.02.
  * fd   04/15/96  Corrected the internals of gsfIsStarboardPing
  * hem  08/20/96  Added support for single beam pings; added gsfStringError;
- *                fixed 4 byte boundary padding.  This is gsf library
+ *                fixed 4 byte boundary padding.  This is GSF library
  *                version GSF-v1.03.
  * jsb  10/04/96  Changed fopen argument from "wb" to "a+b" for the GSF_APPEND
  *                access mode.  Also added logic to set file pointer to top prior
- *                to trying to read the gsf header record in gsfOpen/gsfOpenBuffered
+ *                to trying to read the GSF header record in gsfOpen/gsfOpenBuffered
  *                when the file access mode is GSF_APPEND.  Replaced use of
  *                numOpenFiles with *handle as argument to gsfRead and gsfWrite
  *                within gsfOpen and gsfOpenBuffered.  This repairs problems which
  *                can occur when a single application is accessing multiple files.
- * jsb  04/18/97  Added gsf version dependancy on approach to padding records out
+ * jsb  04/18/97  Added GSF version dependancy on approach to padding records out
  *                to four byte boundary. This is required in order to support the
  *                update access modes for versions prior to 1.03.  Replaced use of
  *                fgetpos, fsetpos with ftell, fseek.  This was done so that we can
@@ -74,7 +74,7 @@
  *                error code if a failure occures reading the file header.
  * bac 07-18-01   Made modifications for use with C++ code.  The typedef for each sensor
  *                specific structure has been modified to have a different name than the
- *                element of the SensorSpecific union.  Also removed the useage of C++
+ *                element of the SensorSpecific union.  Also removed the usage of C++
  *                reserved words "class" and "operator".  These modifications will potentially
  *                require some changes to application code. Added support for the Reson 8100 series of sonars.
  * bac 10-12-01   Added a new attitude record definition.  The attitude record provides a method for
@@ -93,14 +93,14 @@
  *                and update strncpy in gsfSetParam and gsfCopyRecords to ensure that the terminating
  *                NULL is copied to the target pointer.
  * bac 06-19-03   Added support for bathymetric receive beam time series intensity data (i.e., Simrad
- *                "Seabed image" and Reson "snippets").  Inlcluded RWL updates of 12-19-02 for adding
+ *                "Seabed image" and Reson "snippets").  Included RWL updates of 12-19-02 for adding
  *                sensor-specific singlebeam information to the MB sensor specific subrecords.
  * bac 12-28-04   Added support for EM3000D, EM3002, and EM3002D in gsfGetSwathBathyBeamWidths.  Updated
  *                gsfLoadDepthScaleFactorAutoOffset to vary the offset interval based on precision.
  *                Updated gsfFree to free and set to NULL the quality_flags, vertical_error, horizontal_error,
  *                and brb_inten arrays.  Added vertical_error and horizontal_error processing to gsfCopyRecords.
  * bac 06-28-06   Updated gsfIsStarboardPing to work with EM3000D and EM3002D.  Updated gsfCopyRecords
- *                to copy the hv_nav_error record.  Added  for EM121A data received via Kongsberg SIS.
+ *                to copy the hv_nav_error record.  Added for EM121A data received via Kongsberg SIS.
  *                Replaced references to long types with int types, for compilation on 64-bit architectures.
  * jsb 11-06-07   Updates to utilize the subrecord size in termining the field size for the array subrecords
  *                that support more than one field size.  Also replaced use of strstr with strcmp in gsfGetMBParams
@@ -121,13 +121,13 @@
  * References : DoDBL Generic Sensor Format Sept. 30, 1993
  *
  *
- * copyright 2014 Leidos, Inc.
+ * Copyright 2014 Leidos, Inc.
  * There is no charge to use the library, and it may be accessed at:
  * https://www.leidos.com/maritime/gsf.
  * This library may be redistributed and/or modified under the terms of
  * the GNU Lesser General Public License version 2.1, as published by the
  * Free Software Foundation.  A copy of the LGPL 2.1 license is included with
- * the GSF distribution and is avaialbe at: http://opensource.org/licenses/LGPL-2.1.
+ * the GSF distribution and is available at: http://opensource.org/licenses/LGPL-2.1.
  *
  * Leidos, Inc. configuration manages GSF, and provides GSF releases. Users are
  * strongly encouraged to communicate change requests and change proposals to Leidos, Inc.
@@ -226,12 +226,12 @@ static int      gsfNumberParams(char *param);
  *               Supports 64 bit file size.
  *
  * Inputs :
- *  filename = a fully qualified path to the gsf file
+ *  filename = a fully qualified path to the GSF file
  *  sz       = pointer to an 8 byte long long for return
  *             of the GSF file size from the stat64 system call.
  *
  * Returns :
- *  This funciton returns zero if successful, or -1 if an error occured.
+ *  This function returns zero if successful, or -1 if an error occurred.
  *
  * Error Conditions :
  *     GSF_FOPEN_ERROR
@@ -276,31 +276,31 @@ gsfStat (const char *filename, long long *sz)
  *
  * Function Name : gsfOpen
  *
- * Description : This function attempts to open a gsf data file.  If the
- *  file exits and is opened readonly or update the gsf header is read
- *  to confirm that this is a gsf data file.  If the file is opened create,
+ * Description : This function attempts to open a GSF data file.  If the
+ *  file exits and is opened readonly or update the GSF header is read
+ *  to confirm that this is a GSF data file.  If the file is opened create,
  *  the GSF header containing the version number of the software library is
  *  written into the header.  This function passes an integer handle back to
  *  the calling application.  The handle is used for all further access to the
- *  file. gsfOpen explicitly sets stream bufferring to the value specified
+ *  file. gsfOpen explicitly sets stream buffering to the value specified
  *  by GSF_STREAM_BUF_SIZE.  The internal file table is searched for an
  *  available entry whose name matches that specified in the argument list, if
  *  no match is found, then the first available entry is used.  Up to
  *  GSF_MAX_OPEN_FILES files may be open by an application at a time.
  *
  * Inputs :
- *  filename = a fully qualified path to the gsf file to open
+ *  filename = a fully qualified path to the GSF file to open
  *  mode may have the following values:
  *     GSF_READONLY = open an existing file for read only access
  *     GSF_UPDATE   = open an existing file for reading an writing
- *     GSF_CREATE   = create a new gsf file
+ *     GSF_CREATE   = create a new GSF file
  *     GSF_READONLY_INDEX = open an existing file for read only access with index
  *     GSF_UPDATE_INDEX   = open an existing file for reading an writing with index
  *  handle = a pointer to an integer to be assigned a handle which will be
  *     reference for all future file access.
  *
  * Returns :
- *  This funciton returns zero if successful, or -1 if an error occured.
+ *  This function returns zero if successful, or -1 if an error occurred.
  *
  * Error Conditions :
  *     GSF_BAD_ACCESS_MODE
@@ -359,7 +359,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
       return(-1);
   }
 
-  /* check the number of files currently openned */
+  /* check the number of files currently opened */
   if (numOpenFiles >= GSF_MAX_OPEN_FILES)
   {
     gsfError = GSF_TOO_MANY_OPEN_FILES;
@@ -374,11 +374,11 @@ gsfOpen(const char *filename, const int mode, int *handle)
   }
 
     /* The file was successfully opened, load the gsf file table structure by
-  * searching the gsf file table for the caller's filename.  This is done
+  * searching the GSF file table for the caller's filename.  This is done
   * so that the same file table slot may be re-used.  Applications which
   * want their file closed frequently, such as real-time data collection
   * programs may do this to assure data integrity, and it makes sense
-  * to resuse the file table slot they occupied from a previous call to
+  * to reuse the file table slot they occupied from a previous call to
   * gsfOpen, so that the ping scale factors don't have to be reset except
   * when a new file is created.
     */
@@ -439,7 +439,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
   gsfFileTable[fileTableIndex].file_size = stsize;
 
     /* If this file was just created, (ie it has a size of 0 bytes) then
-  * write the gsf file header record. Also, set a flag to indicate
+  * write the GSF file header record. Also, set a flag to indicate
   * that the ping scale factors need to be written with the next swath
   * bathymetry ping record.
     */
@@ -608,13 +608,13 @@ gsfOpen(const char *filename, const int mode, int *handle)
  *
  * Function Name : gsfOpenBuffered
  *
- * Description : This function attempts to open a gsf data file.  If the
- *  file exits and is opened readonly or update the gsf header is read
- *  to confirm that this is a gsf data file.  If the file is opened create,
+ * Description : This function attempts to open a GSF data file.  If the
+ *  file exits and is opened readonly or update the GSF header is read
+ *  to confirm that this is a GSF data file.  If the file is opened create,
  *  the GSF header containing the version number of the software library is
  *  written into the header.  This function passes an integer handle back to
  *  the calling application.  The handle is used for all further access to the
- *  file. gsfOpenBufferd explicitly sets stream bufferring to the value
+ *  file. gsfOpenBufferd explicitly sets stream buffering to the value
  *  specified by the buf_size argument. The internal file table is searched
  *  for an available entry whose name matches that specified in the argument
  *  list, if no match is found, then the first available entry is used.  Up
@@ -624,11 +624,11 @@ gsfOpen(const char *filename, const int mode, int *handle)
  *  I/O buffer size.
  *
  * Inputs :
- *  filename = a fully qualified path to the gsf file to open
+ *  filename = a fully qualified path to the GSF file to open
  *  mode may have the following values:
  *     GSF_READONLY = open an existing file for read only access
  *     GSF_UPDATE   = open an existing file for reading an writing
- *     GSF_CREATE   = create a new gsf file
+ *     GSF_CREATE   = create a new GSF file
  *     GSF_READONLY_INDEX = open an existing file for read only access with index
  *     GSF_UPDATE_INDEX   = open an existing file for reading an writing with index
  *  handle = a pointer to an integer to be assigned a handle which will be
@@ -636,7 +636,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
  *  buf_size = an integer buffer size in bytes.
  *
  * Returns :
- *  This funciton returns zero if successful, or -1 if an error occured.
+ *  This function returns zero if successful, or -1 if an error occurred.
  *
  * Error Conditions :
  *     GSF_BAD_ACCESS_MODE
@@ -695,7 +695,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
             return (-1);
     }
 
-    /* check the number of files currently openned */
+    /* check the number of files currently opened */
     if (numOpenFiles >= GSF_MAX_OPEN_FILES)
     {
         gsfError = GSF_TOO_MANY_OPEN_FILES;
@@ -709,12 +709,12 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
         return (-1);
     }
 
-    /* The file was successfully opened, load the gsf file table structure by
-     * searching the gsf file table for the caller's filename.  This is done
+    /* The file was successfully opened, load the GSF file table structure by
+     * searching the GSF file table for the caller's filename.  This is done
      * so that the same file table slot may be re-used.  Applications which
      * want their file closed frequently, such as real-time data collection
      * programs may do this to assure data integrity, and it makes sense
-     * to resuse the file table slot they occupied from a previous call to
+     * to reuse the file table slot they occupied from a previous call to
      * gsfOpen, so that the ping scale factors don't have to be reset except
      * when a new file is created.
      */
@@ -775,7 +775,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
     gsfFileTable[fileTableIndex].file_size = stsize;
 
     /* If this file was just created, (ie it has a size of 0 bytes) then
-     * write the gsf file header record. Also, set a flag to indicate
+     * write the GSF file header record. Also, set a flag to indicate
      * that the ping scale factors need to be written with the next swath
      * bathymetry ping record.
      */
@@ -944,14 +944,14 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
  *
  * Function Name : gsfClose
  *
- * Description : This function closes a gsf file previously openned
+ * Description : This function closes a GSF file previously opened
  *  using gsfOpen.
  *
  * Inputs :
- *  handle = the handle of the gsf file to be closed.
+ *  handle = the handle of the GSF file to be closed.
  *
  * Returns :
- *  This function returns zero if successful, or -1 if an error occured.
+ *  This function returns zero if successful, or -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_BAD_FILE_HANDLE
@@ -984,7 +984,7 @@ gsfClose(const int handle)
 
     /* jsb 05/14/97 Clear the contents of the gsfFileTable fields. We don't
      * want to clear the filename, this allows a performance improvement for
-     * programs which use append to log gsf files. (ie: data acquisition)
+     * programs which use append to log GSF files. (ie: data acquisition)
      */
     gsfFileTable[handle-1].major_version_number = 0;
     gsfFileTable[handle-1].minor_version_number = 0;
@@ -1017,10 +1017,10 @@ gsfClose(const int handle)
  * Function Name : gsfSeek
  *
  * Description : This function may be used to move the file pointer
- *  for a previously openned gsf file.
+ *  for a previously opened GSF file.
  *
  * Inputs :
- *  handle = the integer handle returned from gsf Open
+ *  handle = the integer handle returned from gsfOpen
  *  option = the desired action for moving the file pointer, where:
  *    GSF_REWIND, move pointer to first record in the file.
  *    GSF_END_OF_FILE, move pointer to the end of the file.
@@ -1028,7 +1028,7 @@ gsfClose(const int handle)
  *     written or just read.
  *
  * Returns :
- *  This function returns zero if successful, or -1 if an error occured.
+ *  This function returns zero if successful, or -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_BAD_FILE_HANDLE
@@ -1109,7 +1109,7 @@ gsfSeek(int handle, int option)
  *
  * Description : gsfRead supports both direct and sequential access. If the
  *  file is opened for sequential access, this function reads the desired
- *  record from the gsf data file specified by handle.  The "desiredRecord"
+ *  record from the GSF data file specified by handle.  The "desiredRecord"
  *  argument may be set to GSF_NEXT_RECORD to read the next record in the
  *  data file, or "desiredRecord" record may be set to specify the record
  *  of interest, in which case the file will be read, skipping past
@@ -1141,12 +1141,12 @@ gsfSeek(int handle, int option)
  *    rptr = a pointer to a gsfRecords structure to be populated with the
  *           data from the input record in internal form.
  *    buf = an optional pointer to caller memory to be populated with a copy
- *          of the gsf byte stream for this record.
+ *          of the GSF byte stream for this record.
  *    max_size = an optional maximum size to copy into buf
  *
  * Returns :
  *  This function returns the number of bytes read if successful,
- *  or -1 if an error occured.
+ *  or -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_BAD_FILE_HANDLE
@@ -1215,8 +1215,8 @@ gsfRead(int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *rptr, unsi
  *
  * Description : gsfUnpackStream is a static function (not available to
  *   application programs) which is used by gsfRead to read and decode
- *   gsf records. It performs the bulk of the processing required to read
- *   a gsf record.  This processing exists as a function seperate from
+ *   GSF records. It performs the bulk of the processing required to read
+ *   a GSF record.  This processing exists as a function separate from
  *   gsfRead since it is required both by gsfRead and by gsfSeekRecord.
  *   gsfUnpackStream is used by gsfSeekRecord to read a ping record with
  *   scale factors, which is required to support direct access.
@@ -1229,12 +1229,12 @@ gsfRead(int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *rptr, unsi
  *    rptr = a pointer to a gsfRecords structure to be populated with the
  *           data from the input record in internal form.
  *    buf = an optional pointer to caller memory to be populated with a copy
- *          of the gsf byte stream for this record.
+ *          of the GSF byte stream for this record.
  *    max_size = an optional maximum size to copy into buf
  *
  * Returns :
  *  This function returns the number of bytes read if successful,
- *  or -1 if an error occured.
+ *  or -1 if an error occurred.
  *
  * Returns :
  *
@@ -1481,7 +1481,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
 
 
     /* Invoke the appropriate function for unpacking this record into a
-    * standard gsf structure.
+    * standard GSF structure.
     */
     switch (thisID.recordID)
     {
@@ -1606,7 +1606,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
  *
  * Function Name : gsfSeekRecord
  *
- * Description : This function moves the current gsf file position to the
+ * Description : This function moves the current GSF file position to the
  *    begining of the nth record of a specific type.  The record number and
  *    type of interest are specified by id.record_number and id.recordID.
  *    The byte offset into the file for the record of interest is retreaved
@@ -1621,7 +1621,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
  *       the record of interest.
  *
  * Returns :
- *  This function returns zero if successful, or -1 if an error occured.
+ *  This function returns zero if successful, or -1 if an error occurred.
  *
  * Error Conditions :
  *  GSF_BAD_FILE_HANDLE
@@ -1791,7 +1791,7 @@ gsfSeekRecord(int handle, gsfDataID *id)
  *
  * Description : gsfWrite encodes the data from internal to external form,
  *  and then writes the requested record into the file specified by handle,
- *  where handle is the value retured by gsfOpen.  The record is written to
+ *  where handle is the value returned by gsfOpen.  The record is written to
  *  the current file pointer for handle.  An optional checksum may be computed
  *  and encoded with the data.
  *
@@ -1816,7 +1816,7 @@ gsfSeekRecord(int handle, gsfDataID *id)
  *
  * Returns :
  *  This function returns the number of bytes written if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_BAD_FILE_HANDLE
@@ -1996,7 +1996,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
     if (pad)
     {
         /* jsb 04/18/97 A bug was fixed here in version 1.03, if this file was
-         * created with a version of gsf prior to 1.03 we need to support it the
+         * created with a version of GSF prior to 1.03 we need to support it the
          * old way.
          */
         if ((gsfFileTable[handle - 1].major_version_number == 1) &&
@@ -2077,7 +2077,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
 
     /* Check to see if this record will fit into the current buffer, if not
      * force a flush of the stream before writting. This is done to ensure
-     * that an output file will always contain whole gsf records.
+     * that an output file will always contain whole GSF records.
      */
     gsfFileTable[handle-1].bufferedBytes += dataSize;
     if (gsfFileTable[handle-1].bufferedBytes >= gsfFileTable[handle-1].buf_size)
@@ -2124,7 +2124,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
  * Description : gsfLoadScaleFactors should be used to load the swath
  *  bathymetry ping record scale factor structure.  This function assures
  *  that the multiplier and offset fields of the scale factor structure
- *  have a precision equal to that which will be stored in the gsf data file.
+ *  have a precision equal to that which will be stored in the GSF data file.
  *  This function should be called once for each beam array data type
  *  contained in your data.
  *
@@ -2132,12 +2132,12 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
  *  sf = a pointer to the gsfScaleFactors structure to be loaded
  *  subrecordID = the subrecord id for the beam array data
  *  c_flag = the compression flag for the beam array
- *  precision = the presision to which the beam array data are to be stored
+ *  precision = the precision to which the beam array data are to be stored
  *              (a value of 0.1 would indicate decimeter precision for depth)
  *  offset = the "DC" offset to scale the data by.
  *
  * Returns :
- *  This function returns zero if successful, or -1 if an error occured.
+ *  This function returns zero if successful, or -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_TOO_MANY_ARRAY_SUBRECORDS
@@ -2217,7 +2217,7 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
  * Description : gsfGetScaleFactors may be used to obtain the multiplier
  *  and DC offset values by which each swath bathymetry ping array subrecord
  *  is be scaled. gsfGetScalesFactors must be called once for each array
- *  subrecord of interest.  At leat one swath bathymetry ping record
+ *  subrecord of interest.  At least one swath bathymetry ping record
  *  must have been read from, or written to the file specified by handle.
  *
  * Inputs :
@@ -2563,7 +2563,7 @@ gsfFree (gsfRecords *rec)
  *
  * Description : This function is used to print a short message describing
  *  the most recent error encountered.  This function need only be called if
- *  a -1 is returned from one of the gsf functions.
+ *  a -1 is returned from one of the GSF functions.
  *
  * Inputs :
  *  fp = a pointer to a FILE to which to write the message.
@@ -2590,7 +2590,7 @@ gsfPrintError(FILE * fp)
  * Description : This function is used to return the
  *  most recent error encountered.
  *  This function need only be called if
- *  a -1 is returned from one of the gsf functions.
+ *  a -1 is returned from one of the GSF functions.
  *
  * Inputs : none
  *
@@ -2612,7 +2612,7 @@ int gsfIntError(void)
  * Description : This function is used to return a string with
  *  a short message describing the most recent error encountered.
  *  This function need only be called if
- *  a -1 is returned from one of the gsf functions.
+ *  a -1 is returned from one of the GSF functions.
  *
  * Inputs :
  *  error_string = a pointer to a character string.
@@ -2889,7 +2889,7 @@ gsfStringError(void)
  *  that was read.
  *
  * Inputs :
- *  handle = gsf file handle assigned by gsfOpen or gsfOpenBuffered
+ *  handle = GSF file handle assigned by gsfOpen or gsfOpenBuffered
  *  record_type = record type to be retrieved
  *  record_number = record number to be retrieved (-1 will get the time
  *                  and record number of the last record of this type)
@@ -2898,7 +2898,7 @@ gsfStringError(void)
  *
  * Returns :
  *  This function returns the record number if successful, or -1 if an
- *  error occured.
+ *  error occurred.
  *
  * Error Conditions :
  *    GSF_RECORD_TYPE_NOT_AVAILABLE
@@ -3006,11 +3006,11 @@ gsfChecksum(unsigned char *buff, unsigned int num_bytes)
  * Description : This function returns an integer value representing
  *  the location of the file pointer as a percentage of the total file
  *  size.  It may be used to obtain an indication of how far along a
- *  program is in reading a gsf data file.  The file size is obtained
+ *  program is in reading a GSF data file.  The file size is obtained
  *  when the file is opened.
  *
  * Inputs :
- *  handle = gsf file handle assigned by gsfOpen or gsfOpenBuffered
+ *  handle = GSF file handle assigned by gsfOpen or gsfOpenBuffered
  *
  * Returns :
  *  This function returns the current file position as a percentage of
@@ -3046,7 +3046,7 @@ gsfPercent (int handle)
         return (-1);
     }
 
-    /* Retreive the current file position */
+    /* Retrieve the current file position */
     rc = ftell (gsfFileTable[handle - 1].fp);
     if (rc == -1)
     {
@@ -3068,7 +3068,7 @@ gsfPercent (int handle)
  * Function Name : gsfGetNumberRecods
  *
  * Description : This function will return the number of records of a
- *  given type to the caller. The number of records is retreived from
+ *  given type to the caller. The number of records is retrieved from
  *  the index file, so the file must have been opened for direct
  *  access (GSF_READONLY_INDEX, or GSF_UPDATE_INDEX).
  *
@@ -3079,7 +3079,7 @@ gsfPercent (int handle)
  * Returns :
  *  This function returns the number of records of type desiredRecord
  *  contained in the GSF file designated by handle, or -1 if an error
- *  occured.
+ *  occurred.
  *
  * Error Conditions :
  *  GSF_BAD_FILE_HANDLE
@@ -3122,7 +3122,7 @@ gsfGetNumberRecords (int handle, int desiredRecord)
  * Description : This function will copy all of the data contained in the
  *  source gsfRecords data structure to the target gsfRecords data
  *  structure. The target MUST be memset to zero before the first call to
- *  gsfCopyRecords.  This function allocates dynmanic memory which is NOT
+ *  gsfCopyRecords.  This function allocates dynamic memory which is NOT
  *  maintained by the library.  It is up to the calling application to
  *  release the memory allocated.  This may be done by maintaining the
  *  target data structure as static data, or by using gsfFree to release
@@ -3149,7 +3149,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
 
     gsfError = 0;
 
-    /* Copy the gsf header over to the  target */
+    /* Copy the GSF header over to the target */
     memcpy(&target->header, &source->header, sizeof(target->header));
 
     /* Copy the ping summary record over to the target */
@@ -4124,7 +4124,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
  *
  * Inputs :
  *     handle = an integer value containing the file handle, set by gsfOpen
- *     index  = an integer value specifing the index into the processing
+ *     index  = an integer value specifying the index into the processing
  *         parameters array into which the value is to be written.
  *     val = a pointer to the character string containing the parameter.
  *     rec = a pointer to the gsfRecords data structure into which the
@@ -4199,7 +4199,7 @@ gsfSetParam(int handle, int index, char *val, gsfRecords *rec)
  *    form parameters are read from an MB_PARAMETERS data structure maintained
  *    by the caller.  The "KEYWORD=VALUE" form parameters are written into the
  *    processing_parameters structure of the gsfRecords data structure
- *    maitained by the caller. Parameters for up to two pairs of
+ *    maintained by the caller. Parameters for up to two pairs of
  *    transmit/receive arrays are supported, for systems such as Reson SeaBat
  *    9002.
  *
@@ -4207,7 +4207,7 @@ gsfSetParam(int handle, int index, char *val, gsfRecords *rec)
  *     p = a pointer to the gsfMBParams data structure which contains
  *         the parameters in internal form.
  *     rec = a pointer to the gsfRecords data structure into which the
- *         parameters are to be written in the "KEYWORK=VALUE" form.
+ *         parameters are to be written in the "KEYWORD=VALUE" form.
  *     handle = the integer handle to the file set by gsfOpen.
  *     numArrays = the integer value specifying the number of pairs of
  *         arrays which need to have separate parameters tracked.
@@ -4393,7 +4393,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* If the depth field of the swath bathy ping data structure is true depth,
-     * meaning depth is computed by indegrating travel time through the sound
+     * meaning depth is computed by integrating travel time through the sound
      * speed profile, then this parameter is set as DEPTH_CALCULATION=CORRECTED.
      * If the depth field of the swath bathymetry ping data structure is
      * relative to 1500 meters per second, then this parameter is set as
@@ -7162,7 +7162,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
         return(-1);
     }
 
-    /* The TIDAL_DATUM paremeter defines the reference datum for tide
+    /* The TIDAL_DATUM parameter defines the reference datum for tide
      * corrections. See gsf.h for definitions.
      */
     switch (p->vertical_datum)
@@ -7250,10 +7250,10 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
  *
  * Inputs :
  *     rec = a pointer to the gsfRecords data structure from which the
- *         parameters in "KEYWORK=VALUE" form are to be read.
+ *         parameters in "KEYWORD=VALUE" form are to be read.
  *     p = a pointer to the gsfMBParams data structure which will be populated.
  *     numArrays = the integer value specifying the number of pairs of
- *         arrays which need to have seperate parameters tracked.
+ *         arrays which need to have separate parameters tracked.
  *
  * Returns : This function returns zero if successful, or -1 if an error
  *  occurs.
@@ -8096,7 +8096,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
             }
         }
 
-        /* The TIDAL_DATUM paremeter defines the reference datum for tide
+        /* The TIDAL_DATUM parameter defines the reference datum for tide
          * corrections
          */
         else if (strncmp(rec->process_parameters.param[i], "TIDAL_DATUM", strlen("TIDAL_DATUM")) == 0)
@@ -8232,7 +8232,7 @@ gsfNumberParams(char *param)
  *         be loaded with the sonar's athwartship beam width in degrees.
  *
  * Returns : This function returns zero if successful, or -1 if an error
- *     occured.
+ *     occurred.
  *
  * Error Conditions : unrecognized sonar id or mode.
  *
@@ -8583,7 +8583,7 @@ gsfIsStarboardPing(const gsfRecords *data)
  *  water.
  *
  * Inputs :
- *  ping = A pointer to the gsfSwathBathyPing which contains the depht
+ *  ping = A pointer to the gsfSwathBathyPing which contains the depth
  *      and tide correction values, and the scale factors data structure.
  *  subrecordID = the subrecord id for the beam array data.  This must be
  *      either GSF_SWATH_BATHY_SUBRECORD_DEPTH_ARRAY, or
@@ -8606,11 +8606,11 @@ gsfIsStarboardPing(const gsfRecords *data)
  *      address, but the caller is responsible for ensuring that the same
  *      permanent memory address is used for each call to this function.
  *  c_flag = The compression flag for the beam array
- *  precision = The presision to which the beam array data are to be stored
+ *  precision = The precision to which the beam array data are to be stored
  *      (a value of 0.1 would indicate decimeter precision for depth)
  *
  * Returns :
- *  This function returns zero if successful, or -1 if an error occured.
+ *  This function returns zero if successful, or -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_TOO_MANY_ARRAY_SUBRECORDS
@@ -8780,7 +8780,7 @@ gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecor
  *  type.
  *
  * Inputs :
- *  ping = A pointer to the gsfSwathBathyPing which contains the depht
+ *  ping = A pointer to the gsfSwathBathyPing which contains the depth
  *      and tide correction values, and the scale factors data structure.
  *  subrecordID = The subrecord id for the beam array data.  This must be
  *      either GSF_SWATH_BATHY_SUBRECORD_DEPTH_ARRAY, or
@@ -8793,7 +8793,7 @@ gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecor
  *      this array type.
  *
  * Returns :
- *  This function returns zero if successful, or -1 if an error occured.
+ *  This function returns zero if successful, or -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_UNRECOGNIZED_ARRAY_SUBRECORD_ID

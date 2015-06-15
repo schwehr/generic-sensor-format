@@ -5,7 +5,7 @@
  * Author/Date : J. S. Byrne / 3 May 1994
  *
  * Description :
- *  This source file contains the gsf functions for dencoding a gsf byte
+ *  This source file contains the GSF functions for decoding a GSF byte
  *   stream given host data structures containing the data in engineering
  *   units.  Refer to gsf.h for a definition of the structures describing
  *   the internal form of the data.
@@ -46,14 +46,14 @@
  * dwc          1/9/98    Added DecodeElacMkIISpecific to support the Elac
  *                        Bottomchart MkII sonar.
  * jsb          09/28/98  Added gsfDecodeHVNavigationError. This addresses CRs:
- *                        98-001 and 98-002. In responce to NAVO CR: 98-003, added
+ *                        98-001 and 98-002. In response to NAVO CR: 98-003, added
  *                        support for horizontal_error ping array subrecord.
  * jsb          12/29/98  Added support for Simrad em3000 series sonar systems.
  * wkm          3-30-99   Added DecodeCmpSassSpecific to deal with Compressed SASS data.
  * wkm          8-02-99   Updated DecodeCmpSassSpecific to include lntens (heave) with Compressed SASS data.
  * bac          10-24-00  Updated DecodeEM3Specific to include data fields from updated
  *                        EM series runtime parameter datagram.
- * bac          07-18-01  Added support for the Reson 8100 series of sonars.  Also removed the useage
+ * bac          07-18-01  Added support for the Reson 8100 series of sonars.  Also removed the usage
  *                        of C++ reserved words "class" and "operator".
  * bac          10-12-01  Added a new attitude record definition.  The attitude record provides
  *                        a method for logging full time-series attitude measurements in the GSF
@@ -63,9 +63,9 @@
  *                        because of the way in which measurement times are stored, a single
  *                        attitude record should never contain more than sixty seconds worth of
  *                        data.
- * jsb          01-16-02  Added support for Simrad EM120, and removed defitions for unused variables.
+ * jsb          01-16-02  Added support for Simrad EM120, and removed definitions for unused variables.
  * bac          06-19-03  Added support for bathymetric receive beam time series intensity data (i.e., Simrad
- *                        "Seabed image" and Reson "snippets").  Inlcluded RWL updates of 12-19-02 for adding
+ *                        "Seabed image" and Reson "snippets").  Included RWL updates of 12-19-02 for adding
  *                        sensor-specific singlebeam information to the MB sensor specific subrecords.
  * bac          12-28-04  Added support for Navisound singlebeam, EM3000D, EM3002, and EM3002D.  Fixed
  *                        decoding of 1-byte BRB intensity values.  Corrected the decode of Reson
@@ -92,13 +92,13 @@
  * References : DoDBL Generic Sensor Format Sept. 30, 1993
  *
  *
- * copyright 2014 Leidos, Inc.
+ * Copyright 2014 Leidos, Inc.
  * There is no charge to use the library, and it may be accessed at:
  * https://www.leidos.com/maritime/gsf.
  * This library may be redistributed and/or modified under the terms of
  * the GNU Lesser General Public License version 2.1, as published by the
  * Free Software Foundation.  A copy of the LGPL 2.1 license is included with
- * the GSF distribution and is avaialbe at: http://opensource.org/licenses/LGPL-2.1.
+ * the GSF distribution and is available at: http://opensource.org/licenses/LGPL-2.1.
  *
  * Leidos, Inc. configuration manages GSF, and provides GSF releases. Users are
  * strongly encouraged to communicate change requests and change proposals to Leidos, Inc.
@@ -122,7 +122,7 @@
 #include <winsock.h>
 #endif
 
-/* gsf library interface description */
+/* GSF library interface description */
 #include "gsf.h"
 #include "gsf_enc.h"
 #include "gsf_dec.h"
@@ -206,16 +206,16 @@ static int      DecodeR2SonicImagerySpecific(gsfSensorImagery *sdata, unsigned c
  * Function Name : gsfDecodeHeader
  *
  * Description :
- *  This function decodes a gsf header data record from external to internal
+ *  This function decodes a GSF header data record from external to internal
  *  form.
  *
  * Inputs :
  *  header = a pointer to a gsfHeader structure to be populated
- *  sptr = a pointer to the gsf byte stream containing the header record.
+ *  sptr = a pointer to the GSF byte stream containing the header record.
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    none
@@ -235,16 +235,16 @@ gsfDecodeHeader(gsfHeader * header, unsigned char *sptr)
  * Function Name : gsfDecodeSwathBathySummary
  *
  * Description :
- *  This function decodes a gsf swath bathymetry summary data record from
+ *  This function decodes a GSF swath bathymetry summary data record from
  *   external to internal form.
  *
  * Inputs :
  *  header = a pointer to a gsfSwathBathySummary structure to be populated
- *  sptr = a pointer to the gsf byte stream containing the header record.
+ *  sptr = a pointer to the GSF byte stream containing the header record.
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    none
@@ -513,19 +513,19 @@ DecodeNOSHDBSpecific(gsfSBSensorSpecific * sdata, unsigned char *sptr)
  *
  * Function Name : gsfDecodeSinglebeam
  *
- * Description : This function decodes a gsf single beam ping record
+ * Description : This function decodes a GSF single beam ping record
  *  from external byte stream form to internal form.
  *
  * Inputs :
  *   ping = a pointer to the single beam ping structure to be populated
- *   sptr = a pointer to the gsf byte stream contain the ping record
+ *   sptr = a pointer to the GSF byte stream contain the ping record
  *   ft = a pointer to the GSF_FILE_TABLE entry for the data file being decoded
- *   handle = the handle to the gsf data file (used to track number beams)
+ *   handle = the handle to the GSF data file (used to track number beams)
  *   record_size = the number of bytes which ping byte stream occupies.
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_UNRECOGNIZED_SENSOR_ID
@@ -698,19 +698,19 @@ gsfDecodeSinglebeam(gsfSingleBeamPing * ping, unsigned char *sptr, GSF_FILE_TABL
  * Function Name : gsfDecodeSwathBathymetryPing
  *
  * Description :
- *  This function decodes a gsf swath bathymetry ping record from external
+ *  This function decodes a GSF swath bathymetry ping record from external
  *  to internal form.
  *
  * Inputs :
  *   ping = a pointer to the swath bathymetry ping structure to be populated
- *   sptr = a pointer to the gsf byte stream contain the ping record
+ *   sptr = a pointer to the GSF byte stream contain the ping record
  *   ft = a pointer to the GSF_FILE_TABLE entry for the data file being decoded
- *   handle = the handle to the gsf data file (used to track number beams)
+ *   handle = the handle to the GSF data file (used to track number beams)
  *   record_size = the number of bytes which ping byte stream occupies.
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *   GSF_UNRECOGNIZED_SUBRECORD_ID
@@ -853,7 +853,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
         ping->gps_tide_corrector = GSF_NULL_TIDE_CORRECTOR;
     }
 
-    /* Set the caller's array pointers to NULL to guarrantee that non
+    /* Set the caller's array pointers to NULL to guarantee that non
      * NULL pointers define the array data for this file.
      */
     ping->depth = (double *) NULL;
@@ -1687,13 +1687,13 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
  *  stream form to internal form.
  *
  * Inputs :
- *    ping = a pointer to the gsf swath bathymetry ping structure into which
+ *    ping = a pointer to the GSF swath bathymetry ping structure into which
  *           the scale factors will be loaded.
  *    sptr = a pointer to an unsigned char containing the byte stream to read
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_TOO_MANY_ARRAY_SUBRECORDS
@@ -1797,7 +1797,7 @@ DecodeScaleFactors(gsfScaleFactors *sf, unsigned char *sptr)
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -1904,7 +1904,7 @@ DecodeTwoByteArray(double **array, unsigned char *sptr, int num_beams,
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2010,7 +2010,7 @@ DecodeSignedTwoByteArray(double **array, char *sptr, int num_beams,
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2117,7 +2117,7 @@ DecodeFourByteArray(double **array, unsigned char *sptr, int num_beams,
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2223,7 +2223,7 @@ DecodeSignedFourByteArray(double **array, char *sptr, int num_beams,
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2330,7 +2330,7 @@ DecodeByteArray(double **array, unsigned char *sptr, int num_beams,
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2433,7 +2433,7 @@ DecodeFromByteToUnsignedShortArray(unsigned short **array, unsigned char *sptr, 
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2515,8 +2515,8 @@ DecodeSignedByteArray(double **array, char *sptr, int num_beams,
  * Function Name : DecodeBeamFlagsArray
  *
  * Description :
- *  This function is used to decode the ping flags array from gsf byte stream
- *  form into internal forma.
+ *  This function is used to decode the ping flags array from GSF byte stream
+ *  form into internal format.
  *
  * Inputs :
  *    array = the address of a pointer to an unsigned char to be loaded with
@@ -2528,7 +2528,7 @@ DecodeSignedByteArray(double **array, char *sptr, int num_beams,
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_INVALID_NUM_BEAMS
@@ -2612,7 +2612,7 @@ DecodeBeamFlagsArray(unsigned char **array, unsigned char *sptr, int num_beams, 
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_INVALID_NUM_BEAMS
@@ -2720,7 +2720,7 @@ DecodeQualityFlagsArray(unsigned char **array, unsigned char *sptr, int num_beam
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -2748,7 +2748,7 @@ DecodeSeabeamSpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -2800,7 +2800,7 @@ DecodeEM12Specific (gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -2866,7 +2866,7 @@ DecodeEM100Specific(gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -2923,7 +2923,7 @@ DecodeEM950Specific(gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -3111,7 +3111,7 @@ DecodeEM121Specific(gsfSensorSpecific *sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -3149,7 +3149,7 @@ DecodeCmpSassSpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -3205,7 +3205,7 @@ DecodeSASSSpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -3262,7 +3262,7 @@ DecodeTypeIIISeaBeamSpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -3340,7 +3340,7 @@ DecodeSeaMapSpecific(gsfSensorSpecific * sdata, unsigned char *sptr, GSF_FILE_TA
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -3393,7 +3393,7 @@ DecodeSeaBatSpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -3447,7 +3447,7 @@ DecodeSBAmpSpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -3522,7 +3522,7 @@ DecodeSeaBatIISpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -3642,7 +3642,7 @@ DecodeSeaBat8101Specific(gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -3710,7 +3710,7 @@ DecodeSeaBeam2112Specific(gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -3769,7 +3769,7 @@ DecodeElacMkIISpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -4186,7 +4186,7 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE 
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -4549,7 +4549,7 @@ DecodeEM3RawSpecific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TAB
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -4868,7 +4868,7 @@ DecodeEM4Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE 
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -4955,7 +4955,7 @@ DecodeGeoSwathPlusSpecific(gsfSensorSpecific *sdata, unsigned char *sptr)
     sdata->gsfGeoSwathPlusSpecific.surface_velocity = dtemp / 20.0;
     p += 2;
 
-    /* Next 2 bytes is the  valid_beams */
+    /* Next 2 bytes is the valid_beams */
     memcpy(&stemp, p, 2);
     sdata->gsfGeoSwathPlusSpecific.valid_beams  = (int) ntohs(stemp);
     p += 2;
@@ -5027,7 +5027,7 @@ DecodeGeoSwathPlusSpecific(gsfSensorSpecific *sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -5140,7 +5140,7 @@ DecodeKlein5410BssSpecific(gsfSensorSpecific *sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -5300,7 +5300,7 @@ DecodeReson8100Specific(gsfSensorSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -6180,7 +6180,7 @@ DecodeSBNavisoundSpecific(t_gsfSBNavisoundSpecific * sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -6413,7 +6413,7 @@ DecodeKlein5410BssImagerySpecific(gsfSensorImagery *sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -6451,7 +6451,7 @@ DecodeReson7100ImagerySpecific(gsfSensorImagery *sdata, unsigned char *sptr)
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -6659,7 +6659,7 @@ DecodeR2SonicImagerySpecific(gsfSensorImagery * sdata, unsigned char *sptr)
  *    handle = the integer handle for the data file being read, which is used
  *             to store the current number of beams
  *
- * Returns : This function returns the number of bytes enocoded.
+ * Returns : This function returns the number of bytes encoded.
  *
  * Error Conditions : none
  *
@@ -6926,7 +6926,7 @@ DecodeBRBIntensity(gsfBRBIntensity ** idata, unsigned char *sptr, int num_beams,
  *
  * Function Name : gsfDecodeSoundVelocityProfile
  *
- * Description : This function decodes a gsf sound velocity profile record
+ * Description : This function decodes a GSF sound velocity profile record
  *  from external byte stream form into internal form.  Memory for the
  *  depth/sound speed arrays is allocated (or reallocted) each time this
  *  record is encountered since the number of points in the profile can
@@ -6939,7 +6939,7 @@ DecodeBRBIntensity(gsfBRBIntensity ** idata, unsigned char *sptr, int num_beams,
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_MEMORY_ALLOCATION_FAILED
@@ -7076,14 +7076,14 @@ gsfDecodeSoundVelocityProfile(gsfSVP *svp, GSF_FILE_TABLE *ft, unsigned char *sp
  * Function Name : gsfDecodeProcessingParameters
  *
  * Description : This function decodes a processing parameters record
- *  from external gsf byte stream form into internal form.
+ *  from external GSF byte stream form into internal form.
  *
  * Inputs :
  *   param = a pointer to the gsfProcessingParamters structure to populate
  *   ft = a pointer to the GSF_FILE_TABLE entry for the data file being decoded
  *   sptr = a pointer to the unsigned char buffer to read from
  *
- * Returns : This function returns the number of bytes decoded if succesful,
+ * Returns : This function returns the number of bytes decoded if successful,
  *  or -1 on error.
  *
  * Error Conditions :
@@ -7166,7 +7166,7 @@ gsfDecodeProcessingParameters(gsfProcessingParameters *param, GSF_FILE_TABLE *ft
  *
  * Function Name : gsfDecodeSensorParameters
  *
- * Description : This function decodes a gsf sensor parameters record
+ * Description : This function decodes a GSF sensor parameters record
  *  from external byte stream form into internal form.
  *
  * Inputs :
@@ -7256,7 +7256,7 @@ gsfDecodeSensorParameters(gsfSensorParameters *param, GSF_FILE_TABLE *ft, unsign
  *
  * Function Name : gsfDecodeComment
  *
- * Description :  This function is used to decode a gsf comment record
+ * Description :  This function is used to decode a GSF comment record
  *  from external byte stream from to internal form.
  *
  * Inputs :
@@ -7266,7 +7266,7 @@ gsfDecodeSensorParameters(gsfSensorParameters *param, GSF_FILE_TABLE *ft, unsign
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_MEMORY_ALLOCATION_FAILED
@@ -7333,17 +7333,17 @@ gsfDecodeComment(gsfComment *comment, GSF_FILE_TABLE *ft, unsigned char *sptr)
  *
  * Function Name : gsfDecodeHistory
  *
- * Description : This function is used to decode a gsf history record
+ * Description : This function is used to decode a GSF history record
  *  from external byte stream form to internal form.
  *
  * Inputs :
- *    history = a pointer to the gsf history structure to load
+ *    history = a pointer to the GSF history structure to load
  *    ft = a pointer to the GSF_FILE_TABLE entry for the data file being decoded
  *    sptr = a pointer to an unsigned char buffer to read from
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_MEMORY_ALLOCATION_FAILED
@@ -7472,7 +7472,7 @@ gsfDecodeHistory(gsfHistory * history, GSF_FILE_TABLE *ft, unsigned char *sptr)
  *
  * Function Name : gsfDecodeNavigationError
  *
- * Description : This function decodes a gsf byte stream containing a
+ * Description : This function decodes a GSF byte stream containing a
  *  navigation error record into internal form.
  *
  * Inputs :
@@ -7533,7 +7533,7 @@ gsfDecodeNavigationError(gsfNavigationError * nav_error, unsigned char *sptr)
  *
  * Function Name : gsfDecodeHVNavigationError
  *
- * Description : This function decodes a gsf byte stream containing
+ * Description : This function decodes a GSF byte stream containing
  *  the new horizontal and vertical navigation error record.
  *
  * Inputs :
@@ -7658,7 +7658,7 @@ static void LocalAddTimes (struct timespec *base_time, double delta_time, struct
  *
  * Function Name : gsfDecodeAttitude
 
- * Description : This function decodes a gsf attitude record
+ * Description : This function decodes a GSF attitude record
  *  from external byte stream form into internal form.  Memory for the
  *  pitch/roll/heave arrays is allocated (or reallocted) each time this
  *  record is encountered since the number of points in the profile can
@@ -7671,7 +7671,7 @@ static void LocalAddTimes (struct timespec *base_time, double delta_time, struct
  *
  * Returns :
  *  This function returns the number of bytes decoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_MEMORY_ALLOCATION_FAILED
