@@ -138,6 +138,12 @@
  *
  ********************************************************************/
 
+#ifdef __linux__
+#define __USE_LARGEFILE64
+#define _LARGEFILE_SOURCE
+#define _LARGEFILE64_SOURCE
+#endif
+
 /* standard c library includes */
 #include <stdio.h>
 #include <string.h>
@@ -166,7 +172,7 @@
 
 /* Macros required for this module */
 /* TODO(schwehr): Do this properly. */
-#if 0
+#ifndef __APPLE__
 #undef fseek
 #undef ftell
 #if (defined _WIN32) && (defined _MSC_VER)
@@ -9441,4 +9447,3 @@ gsfInitializeMBParams (gsfMBParams *p)
         p->applied.rx_transducer_heading_offset[i] = GSF_UNKNOWN_PARAM_VALUE;
     }
 }
-
