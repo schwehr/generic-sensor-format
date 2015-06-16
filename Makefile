@@ -30,8 +30,11 @@ default:
 	@echo
 	@echo "  test     - C++ unittests"
 
+test: all
+	(cd tests && make test)
+
 all:
-	(cd src && make -f Makefile all)
+	(cd src && make all)
 
 DIST:=gsf-${shell cat VERSION}
 TAR:=${DIST}.tar
@@ -45,7 +48,8 @@ tar:
 	rm -rf ${DIST}
 
 clean:
-	(cd src && make -f Makefile clean)
+	(cd src && make clean)
+	(cd tests && make clean)
 
 real-clean:
 	rm -rf ${DIST}

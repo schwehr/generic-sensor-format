@@ -1,4 +1,8 @@
-Generic Sensor Format (GSF)
+* Introduction
+
+[[https://travis-ci.org/schwehr/generic-sensor-format][https://travis-ci.org/schwehr/generic-sensor-format.svg?branch=master]]
+
+Library for reading and writing Generic Sensor Format (GSF) sonar files.
 
 This sonar format and library was originally created by SAIC for the
 US Navy.  Leidos was spun out of SAIC and they released version 03.06
@@ -6,7 +10,7 @@ under the LGPL 2.1 license.
 
 https://www.leidos.com/maritime/gsf
 
-Kurt Schwehr forked from this version to add unittesting and do a
+Kurt Schwehr forked from this version to add unit testing and do a
 general code audit and cleanup with the work done being Copyright
 Google and under the same LGPL license in the GSF c code and Apache
 2.0 for all new code.
