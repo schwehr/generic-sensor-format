@@ -1,9 +1,5 @@
 /********************************************************************
  *
- * Module Name : GSF
- *
- * Author/Date : J. S. Byrne / 3 May 1994
- *
  * Description : This source file contains the GSF library entry point
  *  functions for accessesing multibeam sonar data in a generic byte stream
  *  format.  Each record in these binary files contains an ID and a size,
