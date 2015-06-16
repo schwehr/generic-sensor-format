@@ -1,9 +1,5 @@
 /********************************************************************
  *
- * Module Name : GSF_DEC.C
- *
- * Author/Date : J. S. Byrne / 3 May 1994
- *
  * Description :
  *  This source file contains the GSF functions for decoding a GSF byte
  *   stream given host data structures containing the data in engineering
@@ -17,80 +13,6 @@
  *    a u_int is a 32 bit unsigned integer.
  * 3) This library assumes that the type short is 16 bits, and that
  *    the type int is 32 bits.
- *
- *
- * Change Descriptions :
- * who          when      what
- * ---          ----      ----
- * jsb          10-17-94  Added support for Reson SeaBat data
- * jsb          03-10-95  Modified the ping record structure to contain
- *                        dynamic depth corrector and tide corrector.
- * jsb          09-21-95  Modified so that the scale factor offset is
- *                        subtracted on decode.
- * jsb          11-13-95  Added unique subrecord id for EM1000
- * jsb          03-04-96  Fixed memset bug in DecodeSVP
- * hem          08-20-96  Added gsfDecodeSinglebeam, DecodeSASSSpecific,
- *                        DecodeTypeIIISeaBeamSpecific, DecodeEchotracSpecific,
- *                        DecodeMGD77Specific, DecodeBDBSpecific,
- *                        DecodeNOSHDBSpecific; fixed decoding of SVP latitudes
- *                        and longitudes to use signed values; added skipping
- *                        of unknown subrecords; added code to extract
- *                        sensor id's even if the subrecord has 0 length.
- * jsb          09-27-96  Added support for SeaBeam with amplitude data
- * jsb          03/24/97  Added gsfSeaBatIISpecific data structure to replace
- *                        the gsfSeaBatSpecific data structure, for the Reson 900x
- *                        series sonar systems.  Also added gsfSeaBat8101Specific
- *                        data structure for the Reson 8101 series sonar system.
- * bac          10/27/97  Added DecodeSeaBeam2112Specific to support the Sea Beam
- *                        2112/36 sonar.
- * dwc          1/9/98    Added DecodeElacMkIISpecific to support the Elac
- *                        Bottomchart MkII sonar.
- * jsb          09/28/98  Added gsfDecodeHVNavigationError. This addresses CRs:
- *                        98-001 and 98-002. In response to NAVO CR: 98-003, added
- *                        support for horizontal_error ping array subrecord.
- * jsb          12/29/98  Added support for Simrad em3000 series sonar systems.
- * wkm          3-30-99   Added DecodeCmpSassSpecific to deal with Compressed SASS data.
- * wkm          8-02-99   Updated DecodeCmpSassSpecific to include lntens (heave) with Compressed SASS data.
- * bac          10-24-00  Updated DecodeEM3Specific to include data fields from updated
- *                        EM series runtime parameter datagram.
- * bac          07-18-01  Added support for the Reson 8100 series of sonars.  Also removed the usage
- *                        of C++ reserved words "class" and "operator".
- * bac          10-12-01  Added a new attitude record definition.  The attitude record provides
- *                        a method for logging full time-series attitude measurements in the GSF
- *                        file, instead of attitude samples only at ping time.  Each attitude
- *                        record contains arrays of attitude measurements for time, roll, pitch,
- *                        heave and heading.  The number of measurements is user-definable, but
- *                        because of the way in which measurement times are stored, a single
- *                        attitude record should never contain more than sixty seconds worth of
- *                        data.
- * jsb          01-16-02  Added support for Simrad EM120, and removed definitions for unused variables.
- * bac          06-19-03  Added support for bathymetric receive beam time series intensity data (i.e., Simrad
- *                        "Seabed image" and Reson "snippets").  Included RWL updates of 12-19-02 for adding
- *                        sensor-specific singlebeam information to the MB sensor specific subrecords.
- * bac          12-28-04  Added support for Navisound singlebeam, EM3000D, EM3002, and EM3002D.  Fixed
- *                        decoding of 1-byte BRB intensity values.  Corrected the decode of Reson
- *                        projector angle.  Added beam_spacing to the gsfReson8100Specific subrecord.
- *                        Updated gsfDecodeSensorParameters and gsfDecodeProcessingParameters to save
- *                        number_parameters correctly in the GSF_FILE_TABLE structure.
- * bac          06-28-06  Added support for EM121A data received via Kongsberg SIS, mapped to existing
- *                        EM3 series sensor specific data structure. Changed all casts to type long to
- *                        casts to type int, for compilation on 64-bit architectures.
- * dhg          10-24-06  Added support for GeoSwathPlus interferometric sonar
- * dhg          11-01-06  Corrected "model_number" and "frequency" for "GeoSwathPlusSpecific" record
- * mab          02-01-09  Updates to support Reson 7125. Added new subrecord IDs and subrecord definitions for Kongsberg
- *                        sonar systems where TWTT and angle are populated from raw range and beam angle datagram. Added
- *                        new subrecord definition for EM2000.  Bug fixes in gsfOpen and gsfPercent.
- * clb          02-25-11  Changed the DecodeBRBIntensity function when bits_per_sample is 12
- * clb          04-06-11  Changes made for DeltaT
- * clb          05-13-11  when decoding a ping, reject it if number of beams <= 0
- * clb          06-21-11  implemented DecodeEM12Specific() function
- * clb          09-20-11  added support for R2Sonic
- * jcd          02-17-12  fixed DecodeQualityFlagsArray to work with num_beams not evenly divisible by 4
- *
- * Classification : Unclassified
- *
- * References : DoDBL Generic Sensor Format Sept. 30, 1993
- *
  *
  * Copyright 2014 Leidos, Inc.
  * There is no charge to use the library, and it may be accessed at:
@@ -122,7 +44,6 @@
 #include <winsock.h>
 #endif
 
-/* GSF library interface description */
 #include "gsf.h"
 #include "gsf_enc.h"
 #include "gsf_dec.h"
@@ -141,7 +62,7 @@ static short    arraySize[GSF_MAX_OPEN_FILES][GSF_MAX_PING_ARRAY_SUBRECORDS];
 static short   *samplesArraySize[GSF_MAX_OPEN_FILES];
 
 /* Global external data defined in this module */
-extern int      gsfError;                               /* defined in gsf.c */
+extern int      gsfError;  /* defined in gsf.c */
 
 /* Function prototypes for this file */
 static int      DecodeScaleFactors(gsfScaleFactors *sf, unsigned char *ptr);
@@ -164,7 +85,7 @@ static int      DecodeEM121ASpecific(gsfSensorSpecific * sdata, unsigned char *s
 static int      DecodeEM121Specific(gsfSensorSpecific * sdata, unsigned char *sptr);
 
 #if 1
-/* 3-30-99 wkm: obsolete */
+/* obsolete */
 static int      DecodeTypeIIISeaBeamSpecific(gsfSensorSpecific * sdata, unsigned char *sptr);
 static int      DecodeSASSSpecific(gsfSensorSpecific * sdata, unsigned char *sptr);
 #endif
@@ -1005,7 +926,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 memcpy (&ping->scaleFactors, &ft->rec.mb_ping.scaleFactors, sizeof(gsfScaleFactors));
                 p += ret;
 
-                /* jsb 05/14/97  Set the gsfFileTable reference of the last scale factors read to point
+                /* Set the gsfFileTable reference of the last scale factors read to point
                  * to this ping.  This is required for consistent tracking of scale factors.  This is
                  * necessary for programs, such as exammb, which do mixed access (direct and sequential).
                  * The outermost if block is necessary to protect from accessing the dynamically allocated
@@ -1327,7 +1248,6 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            /* 09/28/98 jsb - added horizontal error subrecord */
             case (GSF_SWATH_BATHY_SUBRECORD_HORIZONTAL_ERROR_ARRAY):
                 ret = DecodeTwoByteArray(&ft->rec.mb_ping.horizontal_error, p, ping->number_beams,
                     &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_HORIZONTAL_ERROR_ARRAY, handle);
@@ -1395,7 +1315,6 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                p += ret;
                break;
 
-            /* 02/25/14 jhp - added sonar_vert_uncertainty subrecord */
            case (GSF_SWATH_BATHY_SUBRECORD_SONAR_VERT_UNCERT_ARRAY):
              ret = DecodeTwoByteArray(&ft->rec.mb_ping.sonar_vert_uncert, (unsigned char *) p, ping->number_beams,
                    &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_SONAR_VERT_UNCERT_ARRAY, handle);
@@ -1458,7 +1377,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 break;
 
 #if 1
-            /* 3-30-99 wkm: obsolete */
+            /* obsolete */
             case (GSF_SWATH_BATHY_SUBRECORD_TYPEIII_SEABEAM_SPECIFIC):
                 p += DecodeTypeIIISeaBeamSpecific(&ping->sensor_data, p);
                 ping->sensor_id =
@@ -1600,7 +1519,6 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 ping->sensor_id = subrecord_id;
                 break;
 
-            /* 12/20/2002 RWL added SB types, made Echotrac version dependent */
             case (GSF_SWATH_BATHY_SB_SUBRECORD_ECHOTRAC_SPECIFIC):
                 p += DecodeSBEchotracSpecific(&ping->sensor_data.gsfSBEchotracSpecific, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SB_SUBRECORD_ECHOTRAC_SPECIFIC;
@@ -3136,7 +3054,7 @@ DecodeCmpSassSpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
 
 
 #if 1
-/* 3-30-99: obsolete */
+/* obsolete */
 /********************************************************************
  *
  * Function Name : DecodeSassSpecific
@@ -3308,7 +3226,7 @@ DecodeSeaMapSpecific(gsfSensorSpecific * sdata, unsigned char *sptr, GSF_FILE_TA
 
     memcpy(&stemp, p, 2);
     sdata->gsfSeamapSpecific.pressureDepth = ((double) ntohs(stemp)) / 10.0;
-    /* JSB 11/08/2007; looks like the pointer increment for this field in the encode processing has been missing
+    /* The pointer increment for this field in the encode processing has been missing
      * since this code block was first written in GSFv1.03
      */
     if ((ft->major_version_number > 2) || ((ft->major_version_number == 2) && (ft->minor_version_number > 7)))
@@ -3977,7 +3895,7 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE 
         }
 
         /* check to see if the starboard coverage sector is populated, and set the total, port, and starboard
-         * coverage sectors accordingly. bac, 10-18-00
+         * coverage sectors accordingly.
          */
         if (sdata->gsfEM3Specific.run_time[0].stbd_coverage_sector)
         {
@@ -4139,7 +4057,7 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE 
             }
 
             /* check to see if the starboard coverage sector is populated, and set the total, port, and starboard
-             * coverage sectors accordingly. bac, 10-18-00
+             * coverage sectors accordingly.
              */
             if (sdata->gsfEM3Specific.run_time[1].stbd_coverage_sector)
             {
@@ -4152,24 +4070,9 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE 
                 sdata->gsfEM3Specific.run_time[1].port_coverage_sector = sdata->gsfEM3Specific.run_time[1].coverage_sector / 2;
                 sdata->gsfEM3Specific.run_time[1].stbd_coverage_sector = sdata->gsfEM3Specific.run_time[1].coverage_sector / 2;
             }
-
-            /* Since the run-time parameters only exist on the byte stream when they change, we need
-             * to save these to the file table so the'll be available to the caller for each ping.
-             *
-             * memcpy (&ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[1], &sdata->gsfEM3Specific.run_time[1], sizeof(gsfEM3RunTime));
-             */
         }
     }
 
-    /* jsb 3/31/99 Commented this code block out.  No need to do this until we encode this subrecord only when
-     * the values have changed. Refer to comments in gsfEncodeEM3Specific.
-     *
-     * else
-     * {
-     *     memcpy (&sdata->gsfEM3Specific.run_time[0], &ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[0], sizeof(gsfEM3RunTime));
-     *     memcpy (&sdata->gsfEM3Specific.run_time[1], &ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[1], sizeof(gsfEM3RunTime));
-     * }
-     */
     return (p - sptr);
 }
 
@@ -4463,7 +4366,7 @@ DecodeEM3RawSpecific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TAB
         case 3000:
         case 3020:
             /* The next two byte value contains the transmit along track tilt in degrees.
-             * JSB: As of 3/1/09, still don't have final datagram documentation from KM
+             * Still don't have final datagram documentation from KM
              * to know whether the tx_along_tilt field is EM4 specific or if it will be supported
              * on EM3 systems.
              */
@@ -4484,7 +4387,7 @@ DecodeEM3RawSpecific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TAB
     {
         default:
             /* The next one byte value contains the HiLo frequency absorption coefficient ratio
-             * JSB: As of 3/1/09, still don't have final datagram documentation from KM
+             * Still don't have final datagram documentation from KM
              * to know whether the filter ID 2 field is EM4 specific or if it will be supported
              * on EM3 systems.
              */
@@ -6871,8 +6774,9 @@ DecodeBRBIntensity(gsfBRBIntensity ** idata, unsigned char *sptr, int num_beams,
                 /* bytes_to_unpack[3] */
                 bytes_to_unpack[3] = (ptr[0] & 0x0f) << 4;
 
-                /* Grab the upper bits of ptr[1] and save them in the lower bits of */
-                /* bytes_to_unpack[3] */
+                /* Grab the upper bits of ptr[1] and save them in the lower bits of
+                 * bytes_to_unpack[3]
+                 */
                 bytes_to_unpack[3] |= (ptr[1] & 0xf0) >> 4;
                 memcpy (&ltemp, bytes_to_unpack, 4);
                 (*idata)->time_series[i].samples[j] = (unsigned int) ntohl(ltemp);
@@ -6881,8 +6785,9 @@ DecodeBRBIntensity(gsfBRBIntensity ** idata, unsigned char *sptr, int num_beams,
                 {
                     /* unpack the second sample */
                     memset (bytes_to_unpack, 0, 4);
-                    /* Save the lower bits of ptr[1] in bytes_to_unpack[2] and */
-                    /* save ptr[2] in bytes_to_unpack[3] */
+                    /* Save the lower bits of ptr[1] in bytes_to_unpack[2] and
+                     * save ptr[2] in bytes_to_unpack[3]
+                     */
                     bytes_to_unpack[2] = ptr[1] & 0x0f;
                     bytes_to_unpack[3] = ptr[2];
                     memcpy (&ltemp, bytes_to_unpack, 4);

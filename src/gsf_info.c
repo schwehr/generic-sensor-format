@@ -1,9 +1,5 @@
 /********************************************************************
  *
- * Module Name : gsf_info.c
- *
- * Author/Date : J. S. Byrne / December 2009
- *
  * Description :
  *  This source file contains GSF informational functions that provide
  *  general information or status of contents of the current file.
@@ -15,16 +11,6 @@
  *    a u_int is a 32 bit unsigned integer.
  * 3) This library assumes that the type short is 16 bits, and that
  *    the type int is 32 bits.
- *
- *
- * Change Descriptions :
- * who          when      what
- * ---          ----      ----
- * jsb          12-29-09  New
- *
- * Classification : Unclassified
- *
- * References : DoDBL Generic Sensor Format Sept. 30, 1993
  *
  * Copyright 2014 Leidos, Inc.
  * There is no charge to use the library, and it may be accessed at:

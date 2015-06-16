@@ -1,19 +1,6 @@
 /********************************************************************
  *
- * File Name : gsf_geo.c
- *
- * Author/Date : R.K.Wells / 26 Feb 2014
- *
- * Description : Some hopefully useful functions to compute auxiliary
- *  information about points on a ship.
- *
- * Restrictions/Limitations :
- *
- * Change Descriptions :
- *
- * Classification : Unclassified
- *
- * References :
+ * Description : Functions to compute auxiliary information about points on a ship.
  *
  * Copyright 2014 Leidos, Inc.
  * There is no charge to use the library, and it may be accessed at:
@@ -205,7 +192,6 @@ GSF_POSITION_OFFSETS *gsfGetPositionOffsets(GSF_POSITION gp_from, GSF_POSITION g
     double                  lat_diff, lon_diff;
 
     /* need to determine number of iterations from the dist_step. */
-
     gp_from.lat = DTOR(gp_from.lat);
     gp_from.lon = DTOR(gp_from.lon);
     gp_to.lat   = DTOR(gp_to.lat);

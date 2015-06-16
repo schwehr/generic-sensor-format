@@ -1,9 +1,5 @@
 /********************************************************************
  *
- * Module Name : GSF_INDX.C
- *
- * Author/Date : J. C. Depner / 19 Jan 1995
- *
  * Description : This source file contains the file indexing functions
  *  for the GSF library.
  *
@@ -18,57 +14,6 @@
  *    unlink() are supported and that either the environment variable
  *    GSFTMPDIR is defined (as a valid directory) or the /tmp directory is
  *    available.
- *
- * Change Descriptions :
- * who  when      what
- * ---  ----      ----
- * jsb  08/25/95  Consolidated the gsfReadIndex and gsfWriteIndex functions
- *                into gsfRead and gsfWrite.
- * jsb  11/01/95  Completed modifications to indexing to support increase in
- *                GSF file size after initial index file creation.  The size
- *                of the file is now stored in the index file header. Index
- *                files without the expected header are recreated on the first
- *                open.
- * hem  08/20/96  Added #ifdef for percent complete "spinner"; added code to
- *                index single beam pings & summary records.  Changed building
- *                of temporary index files to first try and use the environment
- *                variable GSFTMPDIR & if it is not defined, then use /tmp for
- *                temporary index files used in building an index file.
- *                Removed output of error message from gsfCreateIndex when and
- *                unknown record ID was encountered.
- * hem  10/08/96  Fixed problem with building index files.  The incrementing of
- *                the number of record types was incrementing the wrong pointer
- *                for summary & single beam ping records.  Also added #ifdef to
- *                the end of gsfCreateIndex to stop the blank lines from being
- *                displayed if DISPLAY_SPINNER is not set.
- * jsb  03/29/97  Fixed bug in indexing the swath bathymetry summary record.
- *                Fix made to both Create and Append functions. Indexing the
- *                summary record was added release 1.03.
- * jsb  10/07/98  Added direct access support for new navigation errors record.
- *                 This change made in support of CRs: 98-001, and 98-002.
- * jsb  04/05/00  Updated for consistent use of swap field to ensure that index
- *                 files are portable between big and little endian machines.
- * bac  10-12-01  Added a new attitude record definition.  The attitude record
- *                 provides a method for logging full time-series attitude
- *                 measurements in the GSF file, instead of attitude samples
- *                 only at ping time.  Each attitude record contains arrays of
- *                 attitude measurements for time, roll, pitch, heave and heading.
- *                 The number of measurements is user-definable, but because of
- *                 the way in which measurement times are stored, a single attitude
- *                 record should never contain more than sixty seconds worth of
- *                 data.
- * jsb  01/15/02  Update for Windows.
- * bac  06/28/06  Added J.Depner updates to support a progress callback when
- *                 writing to the index file, as an alternative to the
- *                 DISPLAY_SPINNER printouts.  Replaced references to long types
- *                 with int types, for compilation on 64-bit architectures.
- * clb  05/27/11   added reference to __MINGW64__
- *
- *
- * Classification : Unclassified
- *
- * References : DoDBL Generic Sensor Format Sept. 30, 1993
- *
  *
  * Copyright 2014 Leidos, Inc.
  * There is no charge to use the library, and it may be accessed at:
@@ -134,10 +79,8 @@ static int gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *
 static int gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft);
 static void temp_file_name(int type, char *d_name, char *f_name);
 
-
-/* JCD: Variables and functions for the index progress callback */
-
 static  GSF_PROGRESS_CALLBACK  gsf_progress_callback = NULL;
+
 /********************************************************************
  *
  * Function Name : gsf_register_progress_callback
@@ -172,7 +115,6 @@ void gsf_register_progress_callback (GSF_PROGRESS_CALLBACK progressCB)
 {
     gsf_progress_callback = progressCB;
 }
-
 
 
 /********************************************************************
@@ -843,7 +785,6 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                     ft->index_data.number_of_records[id]++;
                     break;
 
-                /* jsb 10/07/98 Added direct access support for new navigation errors record */
                 case GSF_RECORD_HV_NAVIGATION_ERROR:
                     /* If this is the first record of this type open the
                      * temp file and increment the number of types.
@@ -1530,7 +1471,6 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
 
                     /*  Load the index record structure and write to the
                         temp file.  */
-
                     index_rec.sec = records.sensor_parameters.param_time.tv_sec;
                     index_rec.nsec =
                         records.sensor_parameters.param_time.tv_nsec;
@@ -1610,7 +1550,6 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                     ft->index_data.number_of_records[id]++;
                     break;
 
-                /* jsb 10/07/98 Added direct access support for new navigation errors record */
                 case GSF_RECORD_HV_NAVIGATION_ERROR:
                     /* If this is the first record of this type open the
                      * temp file and increment the number of types.
@@ -1685,7 +1624,6 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
             percent = ((double) current  / (double) eof) * 100.0;
             if (old_percent != percent)
               {
-                /* JCD: now calls a callback if it is registered. */
                 if (gsf_progress_callback)
                   {
                     (*gsf_progress_callback) (3, percent);
@@ -1865,7 +1803,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
     /* Set the byte swap indicator off.  No need to swap on a
      * machine of the same sex.
      *
-     * jsb - 04/05/2000 - Don't modify the swap field, when we append an
+     * Don't modify the swap field, when we append an
      * index file, we'll preserve the original sex.
      *
      * ft->index_data.swap = 0;

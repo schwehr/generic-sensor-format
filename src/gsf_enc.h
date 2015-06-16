@@ -1,24 +1,5 @@
 /********************************************************************
  *
- * Module Name : GSF_ENC
- *
- * Author/Date : J. S. Byrne / 26 May 1994
- *
- * Description :
- *
- * Restrictions/Limitations :
- *
- * Change Descriptions :
- * who  when      what
- * ---  ----      ----
- * hem  08/20/96  Added gsfEncodeSinglebeam.
- * jsb  09/28/98  Added gsfEncodeHVNavigationError.
- *
- * Classification : Unclassified
- *
- * References :
- *
- *
  * Copyright 2014 Leidos, Inc.
  * There is no charge to use the library, and it may be accessed at:
  * https://www.leidos.com/maritime/gsf.

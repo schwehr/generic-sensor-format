@@ -1,9 +1,5 @@
 /********************************************************************
  *
- * Module Name : GSF_ENC.C
- *
- * Author/Date : J. S. Byrne / 3 May 1994
- *
  * Description :
  *  This source file contains the GSF functions for encoding a GSF byte
  *   stream from host data structures.
@@ -15,87 +11,6 @@
  *    a u_int is a 32 bit unsigned integer.
  * 3) This library assumes that the type short is 16 bits, and that
  *    the type int is 32 bits.
- *
- *
- * Change Descriptions :
- * who          when      what
- * ---          ----      ----
- * jsb          10-17-94  Added support for Reson SeaBat data
- * jsb          03-10-95  Modified ping record to store dynamic depth
- *                        corrector and tide corrector.
- * jsb          11-13-95  Added Unique id for EM1000
- * jsb          12-22-95  Added nearest scaled integer rounding on latitude
- *                        longitude, roll, pitch, and heave.
- * hem          08-20-96  Added gsfEncodeSinglebeam; added EncodeSASSSpecific,
- *                        EncodeTypeIIISeaBeamSpecific, EncodeSeaMapSpecific,
- *                        EncodeEchotracSpecific, EncodeMGD77Specific,
- *                        EncodeBDBSpecific, & EncodeNOSHDBSpecific; changed
- *                        gsfEncodeComment so that it uses the length of the
- *                        comment specified in the record rather than using
- *                        strlen to find the length of the comment (to allow
- *                        nulls in the comment);
- * jsb          09-27-96  Added support for SeaBeam with amplitude data
- * jsb          03-24-97  Added support for gsfSeaBatIISpecific as a replacement
- *                        of gsfSeaBatSpecific for the Reson 900x series sonars.
- *                        Added gsfSeaBat8101Specific for the Reson 8101 series
- *                        sonar.
- * hem          07-23-97  Added code to gsfEncodeSwathBathySummary,
- *                        gsfEncodeSinglebeam, and
- *                        gsfEncodeSoundVelocityProfile to handle rounding
- *                        latitudes, longitudes, depths, etc. properly before
- *                        storage in the GSF file.
- * bac          10-27-97  Added EncodeSeaBeam2112Specific to support the Sea
- *                        Beam 2112/36 sonar.
- * dwc          1-9-98    Added EncodeElacMkIISpecific to support the Elac
- *                        Bottomchart MkII sonar.
- * jsb          09/28/98  Added gsfEncodeHVNavigationError. This change made
- *                        in response to CRs: GSF-98-001, and GSF-98-002. Also
- *                        added support for horizontal error ping array subrecord
- *                        in response to CR: GSF-98-003. Removed the computation of
- *                        error_sum from gsfEncodeSwathBathymetryPing, now the library
- *                        will write horizontal and vertical depth estimates for each
- *                        ping if the array pointers are non-null.
- * jsb          12/29/98  Added support for Simrad em3000 series sonar systems.
- * wkm          3-30-99   Added EncodeCmpSassSpecific to deal with CMP SASS data.
- * wkm          8-02-99   Updated EncodeCmpSassSpecific to include lntens (heave) with CMP SASS data.
- * bac          10-24-00  Updated EncodeEM3Specific to include data fields from updated
- *                        EM series runtime parameter datagram.
- * bac          07-18-01  Added support for the Reson 8100 series of sonars.  Also removed the usage
- *                        of C++ reserved words "class" and "operator".
- * bac          10-12-01  Added a new attitude record definition.  The attitude record provides
- *                        a method for logging full time-series attitude measurements in the GSF
- *                        file, instead of attitude samples only at ping time.  Each attitude
- *                        record contains arrays of attitude measurements for time, roll, pitch,
- *                        heave and heading.  The number of measurements is user-definable, but
- *                        because of the way in which measurement times are stored, a single
- *                        attitude record should never contain more than sixty seconds worth of
- *                        data.
- * jsb          01-19-02  Added support for Simrad EM120, and removed references to unused variables.
- * bac          06-19-03  Added support for bathymetric receive beam time series intensity data (i.e., Simrad
- *                        "Seabed image" and Reson "snippets").  Included RWL updates of 12-19-02 for adding
- *                        sensor-specific singlebeam information to the MB sensor specific subrecords.
- * bac          12-28-04  Added support for Navisound singlebeam, EM3000D, EM3002, and EM3002D.  Fixed
- *                        encoding of 1-byte BRB intensity values.  Corrected the encode/decode of Reson
- *                        projector angle.  Added beam_spacing to the gsfReson8100Specific subrecord.
- * bac          06-28-06  Added support for EM121A data received via Kongsberg SIS, mapped to existing
- *                        EM3 series sensor specific data structure. Replaced references to long types
- *                        with int types, for compilation on 64-bit architectures.
- * dhg          10-24-06  Added support for GeoSwathPlus interferometric sonar
- * dhg          10-31-06  Added support for GeoSwathPlus "range_error" and "angle_error"
- * dhg          11-01-06  Corrected "model_number" and "frequency" for "GeoSwathPlusSpecific" record
- * mab          02-01-09  Updates to support Reson 7125. Added new subrecord IDs and subrecord definitions for Kongsberg
- *                        sonar systems where TWTT and angle are populated from raw range and beam angle datagram. Added
- *                        new subrecord definition for EM2000.  Bug fixes in gsfOpen and gsfPercent.
- * clb          02-25-11  Changed the EncodeBRBIntensity() function when bits_per_sample is 12
- * clb          04-06-11  Changes made for DeltaT
- * clb          04-13-11  When encoding a ping, reject it if the number of beams <= 0
- * clb          06-21-11  Added em12 to list of available sensors
- * clb          09-20-11  Added support for R2Sonic
- * jcd          02-17-12  fixed EncodeQualityFlagsArray to work with num_beams not evenly divisible by 4
- *
- * Classification : Unclassified
- *
- * References : DoDBL Generic Sensor Format Sept. 30, 1993
  *
  * Copyright 2014 Leidos, Inc.
  * There is no charge to use the library, and it may be accessed at:
@@ -132,7 +47,7 @@
 #include "gsf_enc.h"
 
 /* Global external data defined in this module */
-extern int      gsfError;                               /* defined in gsf.c */
+extern int      gsfError; /* defined in gsf.c */
 
 /* Function prototypes for this file */
 static int      EncodeScaleFactors(unsigned char *sptr, gsfScaleFactors *sf);
@@ -159,7 +74,7 @@ static int      EncodeReson7100ImagerySpecific(unsigned char *sptr, gsfSensorIma
 static int      EncodeR2SonicImagerySpecific(unsigned char *sptr, gsfSensorImagery *sdata);
 
 #if 1
-/* 3-30-99 wkm: obsolete */
+/* obsolete */
 static int      EncodeTypeIIISeaBeamSpecific(unsigned char *sptr, gsfSensorSpecific * sdata);
 static int      EncodeSASSSpecific(unsigned char *sptr, gsfSensorSpecific * sdata);
 #endif
@@ -802,8 +717,8 @@ gsfEncodeSinglebeam(unsigned char *sptr, gsfSingleBeamPing * ping)
             return (-1);
     }
 
-    /*  Identifier has sensor specific id in first byte, and size in the
-     *  remaining three bytes
+    /* Identifier has sensor specific id in first byte, and size in the
+     * remaining three bytes
      */
     ltemp = ping->sensor_id << 24;
     ltemp |= (gsfuLong) sensor_size;
@@ -1362,7 +1277,7 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
 
     /* Next possible subrecord is the array of estimated along track errors.
      * For this array to be encoded there must be data, and a scale factor.
-     * jsb 10/19/98 This subrecord is obsolete, it is replaced with horizontal_error.
+     * Obsolete, it is replaced with horizontal_error.
      */
     if (ping->along_track_error != (double *) NULL)
     {
@@ -1584,7 +1499,7 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
             break;
 
 #if 1
-        /* 3-30-99 wkm: obsolete */
+        /* obsolete */
         case (GSF_SWATH_BATHY_SUBRECORD_TYPEIII_SEABEAM_SPECIFIC):
             sensor_size = EncodeTypeIIISeaBeamSpecific(p, &ping->sensor_data);
             break;
@@ -3288,7 +3203,7 @@ EncodeSeaMapSpecific(unsigned char *sptr, gsfSensorSpecific * sdata, GSF_FILE_TA
     }
     stemp = htons((gsfuShort) dtemp);
     memcpy(p, &stemp, 2);
-    /* JSB 11/08/2007; looks like the pointer increment for this field in the encode processing has been missing
+    /* The pointer increment for this field in the encode processing has been missing
      * since this code block was first written in GSFv1.03
      */
     if ((ft->major_version_number > 2) || ((ft->major_version_number == 2) && (ft->minor_version_number > 7)))
@@ -3882,7 +3797,7 @@ EncodeEM3Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE 
     /* Encode and write the run-time parameters if any of them have changed. */
     run_time_id = 1;
 
-    /* JSB 3/31/99 Commented out the following code block.  For now we will encode all of the
+    /* For now we will encode all of the
      * run-time parameter fields in the sensor specific sub-record for each ping, whether the
      * values have been updated or not.  In a future release, we plan to support encoding this
      * portion of the subrecord only when the values have been updated.  This can be done by
@@ -3890,33 +3805,6 @@ EncodeEM3Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE 
      * "scales_read" flag for write after read access, and direct access back to the ping record
      * with the updated run-time params prior to a direct access read.
      *
-     * run_time_id = 0;
-     * if (memcmp(&sdata->gsfEM3Specific.run_time[0], &ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[0], sizeof(gsfEM3RunTime)))
-     * {
-     *     memcpy (&ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[0], &sdata->gsfEM3Specific.run_time[0], sizeof(gsfEM3RunTime));
-     *     run_time_id |= 0x00000001;
-     * }
-     *
-     * If this is an em 3000 series dual head installation, then we'll need to save both sets of run time parameters when either set
-     *  has been updated.
-     *
-     * if ((sdata->gsfEM3Specific.model_number == 3002) ||
-     *    (sdata->gsfEM3Specific.model_number == 3003) ||
-     *    (sdata->gsfEM3Specific.model_number == 3004) ||
-     *    (sdata->gsfEM3Specific.model_number == 3005) ||
-     *    (sdata->gsfEM3Specific.model_number == 3006) ||
-     *    (sdata->gsfEM3Specific.model_number == 3007) ||
-     *    (sdata->gsfEM3Specific.model_number == 3008))
-     * {
-     *     if ((memcmp(&sdata->gsfEM3Specific.run_time[0], &ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[0], sizeof(gsfEM3RunTime))) ||
-     *         (memcmp(&sdata->gsfEM3Specific.run_time[1], &ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[1], sizeof(gsfEM3RunTime))))
-     *     {
-     *         memcpy (&ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[0], &sdata->gsfEM3Specific.run_time[0], sizeof(gsfEM3RunTime));
-     *         memcpy (&ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[1], &sdata->gsfEM3Specific.run_time[1], sizeof(gsfEM3RunTime));
-     *         run_time_id |= 0x00000001;
-     *         run_time_id |= 0x00000002;
-     *     }
-     * }
      */
 
     /* The next four byte value specifies the existance of the run-time data strucutre */
@@ -4642,7 +4530,7 @@ EncodeEM3RawSpecific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TAB
         case 3000:
         case 3020:
             /* The next two byte value contains the transmit along track tilt in degrees.
-             * JSB: As of 3/1/09, still don't have final datagram documentation from KM
+             * Still don't have final datagram documentation from KM
              * to know whether the tx_along_tilt field is EM4 specific or if it will be supported
              * on EM3 systems.
              */
@@ -4671,7 +4559,7 @@ EncodeEM3RawSpecific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TAB
     {
         default:
             /* The next one byte value contains the HiLo frequency absorption coefficient ratio
-             * JSB: As of 3/1/09, still don't have final datagram documentation from KM
+             * Still don't have final datagram documentation from KM
              * to know whether the filter ID 2 field is EM4 specific or if it will be supported
              * on EM3 systems.
              */

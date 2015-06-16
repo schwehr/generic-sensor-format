@@ -1,30 +1,9 @@
 /********************************************************************
  *
- * Module Name : GSF_INDX
- *
- * Author/Date : J. S. Byrne / 23 Aug 1995
- *
  * Description : This header file contains function prototypes and
  *  definitions required for direct access to GSF files.  This header
  *  file is internal to the library, and none of these functions are
  *  intended to be exported from the library.
- *
- * Restrictions/Limitations :
- *
- * Change Descriptions :
- * who  when      what
- * ---  ----      ----
- * jsb  11/01/95  Start with index file version INDEX-GSF-v01.00
- * bac  06/28/06  Added J.Depner updates to support a progress callback
- *                 when writing to the index file, as an alternative to
- *                 the DISPLAY_SPINNER printouts.  Changed function
- *                 arguments and structure elements of type long to
- *                 int, for compilation on 64-bit architectures.
- *
- * Classification : Unclassified
- *
- * References : DoDBL Generic Sensor Format Sept. 30, 1993
- *
  *
  * Copyright 2014 Leidos, Inc.
  * There is no charge to use the library, and it may be accessed at:
