@@ -32,11 +32,11 @@
  *
  ********************************************************************/
 
-/* Standard c library includes. */
-#include <stdio.h>
 #include <errno.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #if defined(OS2) || defined(WIN32) || defined(WIN64)
     #include <process.h>
     #if defined (__MINGW32__) || defined (__MINGW64__)
@@ -49,10 +49,9 @@
     #include <unistd.h>
 #endif
 
-/* GSF library interface description. */
 #include "gsf.h"
-#include "gsf_indx.h"
 #include "gsf_ft.h"
+#include "gsf_indx.h"
 
 /* TODO(schwehr): Do this properly. */
 #if 0

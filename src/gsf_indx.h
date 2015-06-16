@@ -29,7 +29,6 @@
 extern "C" {
 #endif
 
-/* This header has the GSF File Table structure definition */
 #include "gsf_ft.h"
 
 /* Define a macro to hold a version tag for gsf index file. Note that

@@ -23,12 +23,10 @@
 #ifndef  __GSF_H__
 #define __GSF_H__
 
-/* Get the required standard C library includes */
+#include <float.h>
 #include <stdio.h>
 #include <time.h>
 
-/* Get the required system include files */
-#include <float.h>
 #ifdef __OS2__
 #include <types.h>
 #include <utils.h>

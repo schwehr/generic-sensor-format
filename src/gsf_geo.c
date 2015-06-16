@@ -19,22 +19,18 @@
  ********************************************************************/
 
 #include <math.h>
-
-/* rely on the network type definitions of (u_short, and u_int) */
 #include <sys/types.h>
+
 #if !defined WIN32 && !defined WIN64
 #include <netinet/in.h>
 #else
 #include <winsock.h>
 #endif
 
-#include <math.h>
-
-/* gsf library interface description */
 #include "gsf.h"
 
 /* Global external data defined in this module */
-extern int      gsfError;                               /* defined in gsf.c */
+extern int      gsfError; /* defined in gsf.c */
 
 #define SQR(x) ((x)*(x))
 #define Everest_1830        0

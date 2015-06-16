@@ -36,30 +36,26 @@
 #define _LARGEFILE64_SOURCE
 #endif
 
-/* standard c library includes */
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <limits.h>
 #include <errno.h>
+#include <limits.h>
 #include <math.h>
-#include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
-/* rely on the network type definitions of (u_short, and u_int) */
+/* Rely on the network type definitions of (u_short, and u_int) */
 #if !defined WIN32 && !defined WIN64
 #include <netinet/in.h>
 #else
 #include <winsock.h>
 #endif
 
-/* gsf library interface description */
 #include "gsf.h"
-
-/* get the prototypes for the gsf encode and gsf decode functions */
-#include "gsf_ft.h"
-#include "gsf_enc.h"
 #include "gsf_dec.h"
+#include "gsf_enc.h"
+#include "gsf_ft.h"
 #include "gsf_indx.h"
 
 /* Macros required for this module */

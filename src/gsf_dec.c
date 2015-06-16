@@ -31,13 +31,11 @@
  *
  ********************************************************************/
 
-/* standard c library includes */
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-
-/* rely on the network type definitions of (u_short, and u_int) */
+#include <string.h>
 #include <sys/types.h>
+
 #if !defined WIN32 && !defined WIN64
 #include <netinet/in.h>
 #else
@@ -45,8 +43,8 @@
 #endif
 
 #include "gsf.h"
-#include "gsf_enc.h"
 #include "gsf_dec.h"
+#include "gsf_enc.h"
 
 /* Macro definitions for this file */
 #define RESON_MASK1 192

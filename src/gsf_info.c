@@ -29,26 +29,22 @@
  *
  ********************************************************************/
 
-/* standard c library includes */
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-
-/* rely on the network type definitions of (u_short, and u_int) */
+#include <string.h>
 #include <sys/types.h>
+
 #if !defined WIN32 && !defined WIN64
 #include <netinet/in.h>
 #else
 #include <winsock.h>
 #endif
 
-/* gsf library interface description */
+
 #include "gsf.h"
 
 /* Global external data defined in this module */
-extern int      gsfError;                               /* defined in gsf.c */
-
-/* Function prototypes for this file */
+extern int      gsfError;  /* defined in gsf.c */
 
 /********************************************************************
  *
