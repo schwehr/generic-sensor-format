@@ -236,7 +236,7 @@ gsfDecodeHeader(gsfHeader * header, unsigned char *sptr)
  *
  * Description :
  *  This function decodes a GSF swath bathymetry summary data record from
- *   external to internal form.
+ *  external to internal form.
  *
  * Inputs :
  *  header = a pointer to a gsfSwathBathySummary structure to be populated
@@ -622,8 +622,8 @@ gsfDecodeSinglebeam(gsfSingleBeamPing * ping, unsigned char *sptr, GSF_FILE_TABL
     while ((record_size - bytes) > 4)
     {
         /* First four byte integer in subrecord contains the subrecord
-        *  size and subrecord identifier.
-        */
+         *  size and subrecord identifier.
+         */
         memcpy(&ltemp, p, 4);
         p += 4;
         ltemp = ntohl(ltemp);
@@ -674,12 +674,12 @@ gsfDecodeSinglebeam(gsfSingleBeamPing * ping, unsigned char *sptr, GSF_FILE_TABL
        bytes = p - sptr;
     }
 
-    /*  Extract subrecord id if the subrecord size is 0 */
+    /* Extract subrecord id if the subrecord size is 0 */
     if (((record_size - bytes) == 4) && (ping->sensor_id != subrecord_id))
     {
         /* First four byte integer in subrecord contains the subrecord
-        *  size and subrecord identifier.
-        */
+         * size and subrecord identifier.
+         */
         memcpy(&ltemp, p, 4);
         p += 4;
         ltemp = ntohl(ltemp);
@@ -762,8 +762,8 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
     }
 
     /* Next two byte integer contains the center beam number, portmost
-    *  outer beam is beam number 0.
-    */
+     * outer beam is beam number 0.
+     */
     memcpy(&stemp, p, 2);
     ping->center_beam = ntohs(stemp);
     p += 2;
@@ -894,9 +894,9 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
     memcpy (&ping->scaleFactors, &ft->rec.mb_ping.scaleFactors, sizeof(gsfScaleFactors));
 
     /* Determine which subrecord(s) we have, and then decode them, until we've
-    *  read through the entire ping record. (Size may have been padded out to
-    *  a four byte boundary.)
-    */
+     * read through the entire ping record. (Size may have been padded out to
+     * a four byte boundary.)
+     */
     bytes = p - sptr;
     while ((record_size - bytes) > 4)
     {
@@ -908,8 +908,8 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
         int count;
 
         /* First four byte integer in subrecord contains the subrecord
-        *  size and subrecord identifier.
-        */
+         * size and subrecord identifier.
+         */
         memcpy(&ltemp, p, 4);
         p += 4;
         ltemp = ntohl(ltemp);
@@ -948,7 +948,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
             next_size = ltemp & 0x00FFFFFF;
 
             /* The test on valid IDs is limited to array sub records as these are effected by the field_size, whereas
-             *  the sensor specific subrecords are not dependent on the field size parameter.
+             * the sensor specific subrecords are not dependent on the field size parameter.
              */
             if ( (next_id > 0) && (next_id <= GSF_MAX_PING_ARRAY_SUBRECORDS) &&
                 ((next_size == ping->number_beams) || (next_size == 2 * ping->number_beams) || (next_size == 4 * ping->number_beams)))
@@ -978,7 +978,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
         }
 
         /* Clear the high order 4 bits of the compression flag field, then set these bits to specify the field size we have just decoded.
-         *  The field size is determined above just for the beam-array subcords. (I.E. not for the scale factor or sensor specific subrecords.)
+         * The field size is determined above just for the beam-array subcords. (I.E. not for the scale factor or sensor specific subrecords.)
          */
         if ((subrecord_id > 0) && (subrecord_id <= GSF_MAX_PING_ARRAY_SUBRECORDS))
         {
@@ -1273,8 +1273,9 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 break;
 
             case (GSF_SWATH_BATHY_SUBRECORD_QUALITY_FLAGS_ARRAY):
-                // if the update flag is TRUE and the quality flags array
-                // is not fully encoded, return an error.
+                /* if the update flag is TRUE and the quality flags array
+                 * is not fully encoded, return an error.
+                 */
                 if (ft->update_flag)
                 {
                     if (ping->number_beams > subrecord_size*4)
@@ -1456,8 +1457,8 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM1000_SPECIFIC;
                 break;
 
-                #if 1
-                /* 3-30-99 wkm: obsolete */
+#if 1
+            /* 3-30-99 wkm: obsolete */
             case (GSF_SWATH_BATHY_SUBRECORD_TYPEIII_SEABEAM_SPECIFIC):
                 p += DecodeTypeIIISeaBeamSpecific(&ping->sensor_data, p);
                 ping->sensor_id =
@@ -1600,7 +1601,6 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 break;
 
             /* 12/20/2002 RWL added SB types, made Echotrac version dependent */
-
             case (GSF_SWATH_BATHY_SB_SUBRECORD_ECHOTRAC_SPECIFIC):
                 p += DecodeSBEchotracSpecific(&ping->sensor_data.gsfSBEchotracSpecific, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SB_SUBRECORD_ECHOTRAC_SPECIFIC;
@@ -1663,8 +1663,8 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
     if (((record_size - bytes) == 4) && (ping->sensor_id != subrecord_id))
     {
         /* First four byte integer in subrecord contains the subrecord
-        *  size and subrecord identifier.
-        */
+         * size and subrecord identifier.
+         */
         memcpy(&ltemp, p, 4);
         p += 4;
         ltemp = ntohl(ltemp);
@@ -1730,8 +1730,8 @@ DecodeScaleFactors(gsfScaleFactors *sf, unsigned char *sptr)
     for (i = 0; i < sf->numArraySubrecords; i++)
     {
         /* First four byte integer has the scaled array subrecord id in the
-         *  first byte, the compression flags in the second byte, and the
-         *  two lower order bytes are reserved.
+         * first byte, the compression flags in the second byte, and the
+         * two lower order bytes are reserved.
          */
         memcpy(&ltemp, p, 4);
         p += 4;
@@ -1777,9 +1777,9 @@ DecodeScaleFactors(gsfScaleFactors *sf, unsigned char *sptr)
  *
  * Description :
  *  This function decodes a two byte array of beam data from external byte
- *   stream form to internal engineering units form.  This function allocates
- *   the memory for the array if it does not exist.  This function also
- *   reallocates the memory for the array when the number of beams changes.
+ *  stream form to internal engineering units form.  This function allocates
+ *  the memory for the array if it does not exist.  This function also
+ *  reallocates the memory for the array when the number of beams changes.
  *
  * Inputs :
  *    array = the address of a pointer to a double where the array of data
@@ -1843,8 +1843,8 @@ DecodeTwoByteArray(double **array, unsigned char *sptr, int num_beams,
     }
 
     /* Make sure the memory allocated for the array is sufficient, some
-    *  systems have a dynamic number of beams depending on depth
-    */
+     * systems have a dynamic number of beams depending on depth
+     */
     if (num_beams > arraySize[handle - 1][id - 1])
     {
         *array = (double *) realloc((void *) *array, num_beams * sizeof(double));
@@ -1862,8 +1862,8 @@ DecodeTwoByteArray(double **array, unsigned char *sptr, int num_beams,
     dptr = *array;
 
     /* loop for the number of beams, loading each value from the byte stream
-    *  into internal form
-    */
+     * into internal form
+     */
     for (i = 0; i < num_beams; i++)
     {
         memcpy(&stemp, ptr, 2);
@@ -1884,9 +1884,9 @@ DecodeTwoByteArray(double **array, unsigned char *sptr, int num_beams,
  *
  * Description :
  *  This function decodes a two byte array of beam data from external byte
- *   stream form to internal engineering units form.  This function allocates
- *   the memory for the array if it does not exist.  This function also
- *   reallocates the memory for the array when the number of beams changes.
+ *  stream form to internal engineering units form.  This function allocates
+ *  the memory for the array if it does not exist.  This function also
+ *  reallocates the memory for the array when the number of beams changes.
  *
  * Inputs :
  *    array = the address of a pointer to a double where the array of data
@@ -1950,8 +1950,8 @@ DecodeSignedTwoByteArray(double **array, char *sptr, int num_beams,
     }
 
     /* Make sure the memory allocated for the array is sufficient, some
-    *  systems have a dynamic number of beams depending on depth
-    */
+     * systems have a dynamic number of beams depending on depth
+     */
     if (num_beams > arraySize[handle - 1][id - 1])
     {
         *array = (double *) realloc((void *) *array, num_beams * sizeof(double));
@@ -1969,8 +1969,8 @@ DecodeSignedTwoByteArray(double **array, char *sptr, int num_beams,
     dptr = *array;
 
     /* loop for the number of beams, loading each value from the byte stream
-    *  into internal form
-    */
+     * into internal form
+     */
     for (i = 0; i < num_beams; i++)
     {
         memcpy(&stemp, ptr, 2);
@@ -1990,9 +1990,9 @@ DecodeSignedTwoByteArray(double **array, char *sptr, int num_beams,
  *
  * Description :
  *  This function decodes a four byte array of beam data from external byte
- *   stream form to internal engineering units form.  This function allocates
- *   the memory for the array if it does not exist.  This function also
- *   reallocates the memory for the array when the number of beams changes.
+ *  stream form to internal engineering units form.  This function allocates
+ *  the memory for the array if it does not exist.  This function also
+ *  reallocates the memory for the array when the number of beams changes.
  *
  * Inputs :
  *    array = the address of a pointer to a double where the array of data
@@ -2056,8 +2056,8 @@ DecodeFourByteArray(double **array, unsigned char *sptr, int num_beams,
     }
 
     /* Make sure the memory allocated for the array is sufficient, some
-    *  systems have a dynamic number of beams depending on depth
-    */
+     * systems have a dynamic number of beams depending on depth
+     */
     if (num_beams > arraySize[handle - 1][id - 1])
     {
         *array = (double *) realloc((void *) *array, num_beams * sizeof(double));
@@ -2075,8 +2075,8 @@ DecodeFourByteArray(double **array, unsigned char *sptr, int num_beams,
     dptr = *array;
 
     /* loop for the number of beams, loading each value from the byte stream
-    *  into internal form
-    */
+     * into internal form
+     */
     for (i = 0; i < num_beams; i++)
     {
         memcpy(&ltemp, ptr, 4);
@@ -2097,9 +2097,9 @@ DecodeFourByteArray(double **array, unsigned char *sptr, int num_beams,
  *
  * Description :
  *  This function decodes a two byte array of beam data from external byte
- *   stream form to internal engineering units form.  This function allocates
- *   the memory for the array if it does not exist.  This function also
- *   reallocates the memory for the array when the number of beams changes.
+ *  stream form to internal engineering units form.  This function allocates
+ *  the memory for the array if it does not exist.  This function also
+ *  reallocates the memory for the array when the number of beams changes.
  *
  * Inputs :
  *    array = the address of a pointer to a double where the array of data
@@ -2163,8 +2163,8 @@ DecodeSignedFourByteArray(double **array, char *sptr, int num_beams,
     }
 
     /* Make sure the memory allocated for the array is sufficient, some
-    *  systems have a dynamic number of beams depending on depth
-    */
+     * systems have a dynamic number of beams depending on depth
+     */
     if (num_beams > arraySize[handle - 1][id - 1])
     {
         *array = (double *) realloc((void *) *array, num_beams * sizeof(double));
@@ -2182,8 +2182,8 @@ DecodeSignedFourByteArray(double **array, char *sptr, int num_beams,
     dptr = *array;
 
     /* loop for the number of beams, loading each value from the byte stream
-    *  into internal form
-    */
+     * into internal form
+     */
     for (i = 0; i < num_beams; i++)
     {
         memcpy(&ltemp, ptr, 4);
@@ -2203,9 +2203,9 @@ DecodeSignedFourByteArray(double **array, char *sptr, int num_beams,
  *
  * Description :
  *  This function decodes a byte array of beam data from external byte
- *   stream form to internal engineering units form.  This function allocates
- *   the memory for the array if it does not exist.  This function also
- *   reallocates the memory for the array when the number of beams changes.
+ *  stream form to internal engineering units form.  This function allocates
+ *  the memory for the array if it does not exist.  This function also
+ *  reallocates the memory for the array when the number of beams changes.
  *
  * Inputs :
  *    array = the address of a pointer to a double where the array of data
@@ -2268,8 +2268,8 @@ DecodeByteArray(double **array, unsigned char *sptr, int num_beams,
     }
 
     /* Make sure there memory allocated for the array is sufficient, some
-    *  system have a different number of beams depending on depth
-    */
+     * system have a different number of beams depending on depth
+     */
     if (num_beams > arraySize[handle - 1][id - 1])
     {
         *array = (double *) realloc((void *) *array, num_beams * sizeof(double));
@@ -2287,7 +2287,7 @@ DecodeByteArray(double **array, unsigned char *sptr, int num_beams,
     dptr = *array;
 
     /* loop for the number of beams, loading each value from the byte stream
-     *  into internal form
+     * into internal form
      */
     for (i = 0; i < num_beams; i++)
     {
@@ -2307,12 +2307,12 @@ DecodeByteArray(double **array, unsigned char *sptr, int num_beams,
  *
  * Description :
  *  This function decodes an unsigned short integer array of beam data
- *   from external byte stream form to internal engineering units form.
- *   This function allocates the memory for the array if it does not exist.
- *   This function also reallocates the memory for the array when the number
- *   of beams changes. Note that this function decodes a one byte value from
- *   the stream for each element of the (unsigned short) array.  The encoded
- *   (after scaling) dynamic range supported for this array is 0 - 255.
+ *  from external byte stream form to internal engineering units form.
+ *  This function allocates the memory for the array if it does not exist.
+ *  This function also reallocates the memory for the array when the number
+ *  of beams changes. Note that this function decodes a one byte value from
+ *  the stream for each element of the (unsigned short) array.  The encoded
+ *  (after scaling) dynamic range supported for this array is 0 - 255.
  *
  * Inputs :
  *    array = the address of a pointer to an unsigned short where the array of data
@@ -2374,8 +2374,8 @@ DecodeFromByteToUnsignedShortArray(unsigned short **array, unsigned char *sptr, 
     }
 
     /* Make sure there memory allocated for the array is sufficient, some
-    *  system have a different number of beams depending on depth
-    */
+     * system have a different number of beams depending on depth
+     */
     if (num_beams > arraySize[handle - 1][id - 1])
     {
         *array = (unsigned short *) realloc((void *) *array, num_beams * sizeof(unsigned short));
@@ -2393,8 +2393,8 @@ DecodeFromByteToUnsignedShortArray(unsigned short **array, unsigned char *sptr, 
     dptr = *array;
 
     /* loop for the number of beams, loading each value from the byte stream
-    *  into internal form
-    */
+     * into internal form
+     */
     for (i = 0; i < num_beams; i++)
     {
         ctemp = *ptr;
@@ -2413,9 +2413,9 @@ DecodeFromByteToUnsignedShortArray(unsigned short **array, unsigned char *sptr, 
  *
  * Description :
  *  This function decodes a byte array of beam data from external byte
- *   stream form to internal engineering units form.  This function allocates
- *   the memory for the array if it does not exist.  This function also
- *   reallocates the memory for the array when the number of beams changes.
+ *  stream form to internal engineering units form.  This function allocates
+ *  the memory for the array if it does not exist.  This function also
+ *  reallocates the memory for the array when the number of beams changes.
  *
  * Inputs :
  *    array = the address of a pointer to a double where the array of data
@@ -2477,8 +2477,8 @@ DecodeSignedByteArray(double **array, char *sptr, int num_beams,
     }
 
     /* Make sure there memory allocated for the array is sufficient, some
-    *  system have a different number of beams depending on depth
-    */
+     * system have a different number of beams depending on depth
+     */
     if (num_beams > arraySize[handle - 1][id - 1])
     {
         *array = (double *) realloc((void *) *array, num_beams * sizeof(double));
@@ -2496,8 +2496,8 @@ DecodeSignedByteArray(double **array, char *sptr, int num_beams,
     dptr = *array;
 
     /* loop for the number of beams, loading each value from the byte stream
-    *  into internal form
-    */
+     * into internal form
+     */
     for (i = 0; i < num_beams; i++)
     {
         ctemp = *ptr;
@@ -2651,8 +2651,8 @@ DecodeQualityFlagsArray(unsigned char **array, unsigned char *sptr, int num_beam
     }
 
     /* Make sure there memory allocated for the array is sufficient, some
-    *  system have a different number of beams depending on depth
-    */
+     *  system have a different number of beams depending on depth
+     */
     if (num_beams > arraySize[handle - 1][id - 1])
     {
         *array = (unsigned char *) realloc((void *) *array, num_beams * sizeof(unsigned char));
@@ -2677,9 +2677,9 @@ DecodeQualityFlagsArray(unsigned char **array, unsigned char *sptr, int num_beam
     mask[3] =   3;   /* bits 1 and 0 */
 
     if ((sr_size * 4) < num_beams)
-        count = sr_size * 4; // not all the beams were encoded, only read the encoded beams
+        count = sr_size * 4; /* not all the beams were encoded, only read the encoded beams */
     else
-        count = num_beams; // all beams encoded
+        count = num_beams; /* all beams encoded */
 
     for (i = 0; i < count; i++)
     {
@@ -2699,10 +2699,10 @@ DecodeQualityFlagsArray(unsigned char **array, unsigned char *sptr, int num_beam
         }
     }
 
-    /*  If j doesn't get reset to 0 then we have a number of beams that is not evenly divisible by 4.  This causes all
-        sorts of problems because the sensor_id will get set to the wrong number when it returns to gsfDecodeSwathBathymetryPing.
-        The problem is that we actually decoded part of another byte but we didn't increment the ptr.  */
-
+    /* If j doesn't get reset to 0 then we have a number of beams that is not evenly divisible by 4.  This causes all
+     * sorts of problems because the sensor_id will get set to the wrong number when it returns to gsfDecodeSwathBathymetryPing.
+     * The problem is that we actually decoded part of another byte but we didn't increment the ptr.
+     */
     if (j) ptr++;
 
     return (ptr - sptr);
@@ -2846,8 +2846,8 @@ DecodeEM100Specific(gsfSensorSpecific * sdata, unsigned char *sptr)
     p += 1;
 
     /* Next two byte integer contains the counter from the em100
-    * amplitude datagram
-    */
+     * amplitude datagram
+     */
     memcpy(&stemp, p, 2);
     p += 2;
     sdata->gsfEM100Specific.counter = (int) ntohs(stemp);
@@ -2974,7 +2974,7 @@ DecodeEM1000Specific(gsfSensorSpecific * sdata, unsigned char *sptr)
  * Function Name : DecodeEm121ASpecific
  *
  * Description : This function decodes the simrad em121a specific ping
- *    subrecord from external byte stream form into internal form.
+ *  subrecord from external byte stream form into internal form.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -3039,7 +3039,7 @@ DecodeEM121ASpecific(gsfSensorSpecific *sdata, unsigned char *sptr)
  * Function Name : DecodeEm121Specific
  *
  * Description : This function decodes the simrad em121 specific ping
- *    subrecord from external byte stream form into internal form.
+ *  subrecord from external byte stream form into internal form.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -3104,7 +3104,7 @@ DecodeEM121Specific(gsfSensorSpecific *sdata, unsigned char *sptr)
  * Function Name : DecodeCmpSassSpecific
  *
  * Description : This function decodes the Compressed SASS specific ping
- *    subrecord from external byte stream form into internal form.
+ *  subrecord from external byte stream form into internal form.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -3142,7 +3142,7 @@ DecodeCmpSassSpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  * Function Name : DecodeSassSpecific
  *
  * Description : This function decodes the Typeiii SASS specific ping
- *    subrecord from external byte stream form into internal form.
+ *  subrecord from external byte stream form into internal form.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -3309,7 +3309,7 @@ DecodeSeaMapSpecific(gsfSensorSpecific * sdata, unsigned char *sptr, GSF_FILE_TA
     memcpy(&stemp, p, 2);
     sdata->gsfSeamapSpecific.pressureDepth = ((double) ntohs(stemp)) / 10.0;
     /* JSB 11/08/2007; looks like the pointer increment for this field in the encode processing has been missing
-     *  since this code block was first written in GSFv1.03
+     * since this code block was first written in GSFv1.03
      */
     if ((ft->major_version_number > 2) || ((ft->major_version_number == 2) && (ft->minor_version_number > 7)))
     {
@@ -3333,7 +3333,7 @@ DecodeSeaMapSpecific(gsfSensorSpecific * sdata, unsigned char *sptr, GSF_FILE_TA
  * Function Name : DecodeSeaBatSpecific
  *
  * Description : This function decodes the sensor specific subrecord for
- *    Reson SeaBat data.
+ *  Reson SeaBat data.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -3386,7 +3386,7 @@ DecodeSeaBatSpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  * Function Name : DecodeSBAmpSpecific
  *
  * Description : This function decodes the sensor specific subrecord for
- *    Sea Beam with amplitude data.
+ *  Sea Beam with amplitude data.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -3440,7 +3440,7 @@ DecodeSBAmpSpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  * Function Name : DecodeSeaBatIISpecific
  *
  * Description : This function decodes the Reson SeaBat II sensor specific
- *    information from the GSF byte stream.
+ *  information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -3515,7 +3515,7 @@ DecodeSeaBatIISpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  * Function Name : DecodeSeaBat8101Specific
  *
  * Description : This function decodes the Reson SeaBat 8101 sensor specific
- *    information from the GSF byte stream.
+ *  information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -3703,7 +3703,7 @@ DecodeSeaBeam2112Specific(gsfSensorSpecific * sdata, unsigned char *sptr)
  * Function Name : DecodeElacMkIISpecific
  *
  * Description : This function decodes the Elac Bottomchart MkII sensor specific
- *    information from the GSF byte stream.
+ *  information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -3762,7 +3762,7 @@ DecodeElacMkIISpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  * Function Name : DecodeEM3Specific
  *
  * Description : This function decodes the Simrad EM3000 series sensor
- *    specific information from the GSF byte stream.
+ *  specific information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -3835,7 +3835,7 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE 
     p += 4;
 
     /* If the first bit is set then this subrecord contains a new set of run-time parameters,
-     *  otherwise the run-time parameters have not changed.
+     * otherwise the run-time parameters have not changed.
      */
     if (run_time_id & 0x00000001)
     {
@@ -3910,7 +3910,7 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE 
         p += 1;
 
         /* The next one byte value contains the receive band width. This value is provided
-         *  by the sonar with a precision of 50 Hz.
+         * by the sonar with a precision of 50 Hz.
          */
         sdata->gsfEM3Specific.run_time[0].receive_bandwidth = ((int) (*p)) * 50;
         p += 1;
@@ -3992,13 +3992,13 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE 
         }
 
         /* Since the run-time parameters only exist on the byte stream when they change, we need
-         *  to save these to the file table so the'll be available to the caller for each ping.
+         * to save these to the file table so the'll be available to the caller for each ping.
          *
          * memcpy (&ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[0], &sdata->gsfEM3Specific.run_time[0], sizeof(gsfEM3RunTime));
          */
 
         /* If the second bit is set then this subrecord contains a second set of new run-time
-         *  for an em3000d series sonar system.
+         * for an em3000d series sonar system.
          */
         if (run_time_id & 0x00000002)
         {
@@ -4073,7 +4073,7 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE 
             p += 1;
 
             /* The next one byte value contains the receive band width. This value is provided
-             *  by the sonar with a precision of 50 Hz.
+             * by the sonar with a precision of 50 Hz.
              */
             sdata->gsfEM3Specific.run_time[1].receive_bandwidth = ((int) (*p)) * 50;
             p += 1;
@@ -4154,7 +4154,7 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE 
             }
 
             /* Since the run-time parameters only exist on the byte stream when they change, we need
-             *  to save these to the file table so the'll be available to the caller for each ping.
+             * to save these to the file table so the'll be available to the caller for each ping.
              *
              * memcpy (&ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[1], &sdata->gsfEM3Specific.run_time[1], sizeof(gsfEM3RunTime));
              */
@@ -4162,7 +4162,7 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE 
     }
 
     /* jsb 3/31/99 Commented this code block out.  No need to do this until we encode this subrecord only when
-     *   the values have changed. Refer to comments in gsfEncodeEM3Specific.
+     * the values have changed. Refer to comments in gsfEncodeEM3Specific.
      *
      * else
      * {
@@ -4178,8 +4178,8 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE 
  * Function Name : DecodeEM3RawSpecific
  *
  * Description : This function decodes the Simrad EM3000 series sensor
- *    using raw range and beam anlge specific information from
- *    the GSF byte stream.
+ *  using raw range and beam anlge specific information from
+ *  the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -4260,7 +4260,7 @@ DecodeEM3RawSpecific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TAB
     sdata->gsfEM3RawSpecific.offset_multiplier = (int) ctemp;
     p += 1;
 
-      /* The next 16 bytes are spare space for future use */
+    /* The next 16 bytes are spare space for future use */
     memset (&sdata->gsfEM3RawSpecific.spare_1, 0, (size_t) 16);
     p += 16;
 
@@ -4402,7 +4402,7 @@ DecodeEM3RawSpecific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TAB
     p += 1;
 
     /* The next one byte value contains the receive band width. This value is provided
-     *  by the sonar with a precision of 50 Hz.
+     * by the sonar with a precision of 50 Hz.
      */
     sdata->gsfEM3RawSpecific.run_time.rx_bandwidth = ((double) (*p)) * 50.0;
     p += 1;
@@ -4494,9 +4494,9 @@ DecodeEM3RawSpecific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TAB
     }
 
     /* The next 16 bytes of space on the byte stream are spare space for future use.
-     *  spare field is data structure is smaller than 16 bytes during time frame while durotong speed and hi_lo_absorption_ratio remain in the structure.
-     *  This is done simply to allow the structure size to stay fixed.  When durotong speed and hi_lo_absorption_ratio are removed, size of spare array
-     *  will be increased from 9 bytes to 16 bytes.
+     * spare field is data structure is smaller than 16 bytes during time frame while durotong speed and hi_lo_absorption_ratio remain in the structure.
+     * This is done simply to allow the structure size to stay fixed.  When durotong speed and hi_lo_absorption_ratio are removed, size of spare array
+     * will be increased from 9 bytes to 16 bytes.
      */
     memset (&sdata->gsfEM3RawSpecific.run_time.spare, 0, (size_t) sizeof(sdata->gsfEM3RawSpecific.run_time.spare));
     p += 16;
@@ -4541,8 +4541,8 @@ DecodeEM3RawSpecific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TAB
  * Function Name : DecodeEM4Specific
  *
  * Description : This function decodes the Simrad EM4 series sonar system
- *    (EM710, EM302, EM122, and EM2040) sensor specific information from
- *    the GSF byte stream.
+ *  (EM710, EM302, EM122, and EM2040) sensor specific information from
+ *  the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -5020,7 +5020,7 @@ DecodeGeoSwathPlusSpecific(gsfSensorSpecific *sdata, unsigned char *sptr)
  * Function Name : DecodeKlein5410BssSpecific
  *
  * Description : This function decodes the Klein 5410 Bathy sidescan series
- *    sonar system sensor specific information from the GSF byte stream.
+ *  sonar system sensor specific information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -5133,7 +5133,7 @@ DecodeKlein5410BssSpecific(gsfSensorSpecific *sdata, unsigned char *sptr)
  * Function Name : DecodeReson8100Specific
  *
  * Description : This function decodes the Reson SeaBat 8101 sensor specific
- *    information from the GSF byte stream.
+ *  information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -5293,7 +5293,7 @@ DecodeReson8100Specific(gsfSensorSpecific * sdata, unsigned char *sptr)
  * Function Name : DecodeReson7100Specific
  *
  * Description : This function decodes the Reson SeaBat 7100 sensor specific
- *    information from the GSF byte stream.
+ *  information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -5549,7 +5549,7 @@ DecodeReson7100Specific(gsfSensorSpecific * sdata, unsigned char *sptr)
  * Function Name : DecodeDeltaTSpecific
  *
  * Description : This function decodes the Imagenex Delta T sensor specific
- *    information from the GSF byte stream.
+ *  information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -5715,7 +5715,7 @@ DecodeDeltaTSpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  * Function Name : DecodeR2SonicSpecific
  *
  * Description : This function decodes the R2Sonic sensor specific
- *    information from the GSF byte stream.
+ *  information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific data to be loaded
@@ -6001,7 +6001,8 @@ DecodeSBMGD77Specific(t_gsfSBMGD77Specific * sdata, unsigned char *sptr)
     p += 2;
 
     /* The next two byte integer contains how the sound velocity
-       correction was made */
+     *  correction was made
+     */
     memcpy(&stemp, p, 2);
     sdata->correction_code = (int) ntohs(stemp);
     p += 2;
@@ -6222,15 +6223,15 @@ DecodeEM3ImagerySpecific(gsfSensorImagery *sdata, unsigned char *sptr)
     p += 2;
 
     /* Next two bytes contain the imagery offset value used to positive bias the imagery values. This value has been added to all imagery samples
-     *  as the Kongsberg imagery datagram is decoded into GSF.
+     * as the Kongsberg imagery datagram is decoded into GSF.
      */
     memcpy(&sstemp, p, 2);
     sdata->gsfEM3ImagerySpecific.offset = (gsfsShort) ntohs(sstemp);
     p += 2;
 
     /* Next two bytes contain the imagery scale value as specified by the manufacturer.  This value is 2 for the EM3000/EM3002/EM1002/EM300/EM120.
-     *  The following formula can be used to convert from the GSF positive biased value to dB:
-     *  dB_value = (GSF_I_value - offset) / scale
+     * The following formula can be used to convert from the GSF positive biased value to dB:
+     * dB_value = (GSF_I_value - offset) / scale
      */
     memcpy(&sstemp, p, 2);
     sdata->gsfEM3ImagerySpecific.scale = (gsfsShort) ntohs(sstemp);
@@ -6248,7 +6249,7 @@ DecodeEM3ImagerySpecific(gsfSensorImagery *sdata, unsigned char *sptr)
  * Function Name : DecodeEM4ImagerySpecific
  *
  * Description : This function decodes the Simrad EM3000 series sensor
- *    specific imagery information from the GSF byte stream.
+ *  specific imagery information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific imagery data
@@ -6328,15 +6329,15 @@ DecodeEM4ImagerySpecific(gsfSensorImagery *sdata, unsigned char *sptr)
     p += 2;
 
     /* Next two bytes contain the imagery offset value used to positive bias the imagery values. This value has been added to all imagery samples
-     *  as the Kongsberg imagery datagram is decoded into GSF.
+     * as the Kongsberg imagery datagram is decoded into GSF.
      */
     memcpy(&sstemp, p, 2);
     sdata->gsfEM4ImagerySpecific.offset = (gsfsShort) ntohs(sstemp);
     p += 2;
 
     /* Next two bytes contain the imagery scale value as specified by the manufacturer.  This value is 10 for the EM710/EM302/EM122/EM2040.
-     *  The following formula can be used to convert from the GSF positive biased value to dB:
-     *  dB_value = (GSF_I_value - offset) / scale
+     * The following formula can be used to convert from the GSF positive biased value to dB:
+     * dB_value = (GSF_I_value - offset) / scale
      */
     memcpy(&sstemp, p, 2);
     sdata->gsfEM4ImagerySpecific.scale = (gsfsShort) ntohs(sstemp);
@@ -6354,7 +6355,7 @@ DecodeEM4ImagerySpecific(gsfSensorImagery *sdata, unsigned char *sptr)
  * Function Name : DecodeKlein5410BssImagerySpecific
  *
  * Description : This function decodes the Klein 5410 Bathy Sidescan sensor
- *    specific imagery information from the GSF byte stream.
+ *  specific imagery information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific imagery data
@@ -6405,7 +6406,7 @@ DecodeKlein5410BssImagerySpecific(gsfSensorImagery *sdata, unsigned char *sptr)
  * Function Name : DecodeReson7100ImagerySpecific
  *
  * Description : This function decodes the Reson 7100 series sensor
- *    specific imagery information from the GSF byte stream.
+ *  specific imagery information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific imagery data
@@ -6443,11 +6444,11 @@ DecodeReson7100ImagerySpecific(gsfSensorImagery *sdata, unsigned char *sptr)
  * Function Name : DecodeReson8100Specific
  *
  * Description : This function decodes the Reson 8100 series sensor
- *    specific imagery information from the GSF byte stream.
+ *  specific imagery information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific imagery data
-              to be loaded
+ *            to be loaded
  *    sptr = a pointer to an unsigned char buffer containing the byte stream
  *           to read.
  *
@@ -6474,7 +6475,7 @@ DecodeReson8100ImagerySpecific(gsfSensorImagery *sdata, unsigned char *sptr)
  * Function Name : DecodeR2SonicImagerySpecific
  *
  * Description : This function decodes the R2Sonic sensor specific
- *    imagery information from the GSF byte stream.
+ *  imagery information from the GSF byte stream.
  *
  * Inputs :
  *    sdata = a pointer to the union of sensor specific imagery data to be loaded
@@ -6645,7 +6646,7 @@ DecodeR2SonicImagerySpecific(gsfSensorImagery * sdata, unsigned char *sptr)
  * Function Name : DecodeBRBIntensity
  *
  * Description : This function decodes the Bathymetric Receive Beam
- *    time series intensity information from the GSF byte stream.
+ *  time series intensity information from the GSF byte stream.
  *
  * Inputs :
  *    idata = a pointer to the gsfBRBIntensity structure to be loaded with
@@ -6712,8 +6713,8 @@ DecodeBRBIntensity(gsfBRBIntensity ** idata, unsigned char *sptr, int num_beams,
     }
 
     /* Make sure there memory allocated for the array is sufficient, some
-    *  system have a different number of beams depending on depth
-    */
+     * system have a different number of beams depending on depth
+     */
     if (num_beams > arraySize[handle - 1][id - 1])
     {
         (*idata)->time_series = (gsfTimeSeriesIntensity *) realloc((void *) (*idata)->time_series, num_beams * sizeof(gsfTimeSeriesIntensity));
@@ -6807,8 +6808,8 @@ DecodeBRBIntensity(gsfBRBIntensity ** idata, unsigned char *sptr, int num_beams,
 
     bytes_per_sample = (*idata)->bits_per_sample / 8;
     /* loop for the number of beams, allocating memory for the array of samples, and
-    * loading each sample value from the byte stream into internal form
-    */
+     * loading each sample value from the byte stream into internal form
+     */
     for (i = 0; i < num_beams; i++)
     {
 
@@ -6964,8 +6965,8 @@ gsfDecodeSoundVelocityProfile(gsfSVP *svp, GSF_FILE_TABLE *ft, unsigned char *sp
     svp->observation_time.tv_nsec = ntohl(ltemp);
 
     /* Next four byte integer contains the seconds portion of the time the
-    *  new profile was put into use by the sonar system
-    */
+     * new profile was put into use by the sonar system
+     */
     memcpy(&ltemp, p, 4);
     p += 4;
     svp->application_time.tv_sec = ntohl(ltemp);
@@ -7099,8 +7100,8 @@ gsfDecodeProcessingParameters(gsfProcessingParameters *param, GSF_FILE_TABLE *ft
     int             i;
 
     /* First four byte integer contains the seconds portion of the time
-    *  application of the new parameters.
-    */
+     * application of the new parameters.
+     */
     memcpy(&ltemp, p, 4);
     p += 4;
     param->param_time.tv_sec = ntohl(ltemp);
@@ -7190,8 +7191,8 @@ gsfDecodeSensorParameters(gsfSensorParameters *param, GSF_FILE_TABLE *ft, unsign
     int             i;
 
     /* First four byte integer contains the seconds portion of the time
-    *  application of the new parameters.
-    */
+     * application of the new parameters.
+     */
     memcpy(&ltemp, p, 4);
     p += 4;
     param->param_time.tv_sec = ntohl(ltemp);
@@ -7279,15 +7280,15 @@ gsfDecodeComment(gsfComment *comment, GSF_FILE_TABLE *ft, unsigned char *sptr)
     gsfuLong        ltemp;
 
     /* First four byte integer contains the seconds portion of the time
-    *  the operator comment was made.
-    */
+     * the operator comment was made.
+     */
     memcpy(&ltemp, p, 4);
     p += 4;
     comment->comment_time.tv_sec = ntohl(ltemp);
 
     /* Next four byte integer contains the nanoseconds portion of the
-    * comment time
-    */
+     * comment time
+     */
     memcpy(&ltemp, p, 4);
     p += 4;
     comment->comment_time.tv_nsec = ntohl(ltemp);
@@ -7359,15 +7360,15 @@ gsfDecodeHistory(gsfHistory * history, GSF_FILE_TABLE *ft, unsigned char *sptr)
     gsfuShort       stemp;
 
     /* First four byte integer contains the seconds portion of the time
-    *  the history record was added to the data.
-    */
+     * the history record was added to the data.
+     */
     memcpy(&ltemp, p, 4);
     p += 4;
     history->history_time.tv_sec = ntohl(ltemp);
 
     /* Next four byte integer contains the nanoseconds portion of the
-    * history time.
-    */
+     * history time.
+     */
     memcpy(&ltemp, p, 4);
     p += 4;
     history->history_time.tv_nsec = ntohl(ltemp);
@@ -7409,8 +7410,8 @@ gsfDecodeHistory(gsfHistory * history, GSF_FILE_TABLE *ft, unsigned char *sptr)
     }
 
     /* Next two byte integer contains the size of the command line used
-    *  to invoke the program which processed this data.
-    */
+     * to invoke the program which processed this data.
+     */
     memcpy(&stemp, p, 2);
     p += 2;
     len = ntohs(stemp);
@@ -7437,8 +7438,8 @@ gsfDecodeHistory(gsfHistory * history, GSF_FILE_TABLE *ft, unsigned char *sptr)
     p += len;
 
     /* Next two byte integer contains the size of the comment for this history
-    *  record
-    */
+     * record
+     */
     memcpy(&stemp, p, 2);
     p += 2;
     len = ntohs(stemp);
@@ -7494,22 +7495,22 @@ gsfDecodeNavigationError(gsfNavigationError * nav_error, unsigned char *sptr)
     gsfsLong        signed_int;
 
     /* First four byte integer contains the seconds portion of the time
-    *  of navigation error.
-    */
+     * of navigation error.
+     */
     memcpy(&ltemp, p, 4);
     p += 4;
     nav_error->nav_error_time.tv_sec = ntohl(ltemp);
 
     /* Next four byte integer contains the nanoseconds portion of the
-    * history time.
-    */
+     * history time.
+     */
     memcpy(&ltemp, p, 4);
     p += 4;
     nav_error->nav_error_time.tv_nsec = ntohl(ltemp);
 
     /* Next four byte integer contains the record id for the record
-    *  containing a position with this error. (registry and type number)
-    */
+     * containing a position with this error. (registry and type number)
+     */
     memcpy(&ltemp, p, 4);
     p += 4;
     nav_error->record_id = ntohl(ltemp);
@@ -7558,22 +7559,22 @@ gsfDecodeHVNavigationError(gsfHVNavigationError *hv_nav_error, GSF_FILE_TABLE *f
     gsfsLong        signed_int;
 
     /* First four byte integer contains the seconds portion of the time
-    *  of navigation error.
-    */
+     * of navigation error.
+     */
     memcpy(&ltemp, p, 4);
     p += 4;
     hv_nav_error->nav_error_time.tv_sec = ntohl(ltemp);
 
     /* Next four byte integer contains the nanoseconds portion of the
-    * history time.
-    */
+     * history time.
+     */
     memcpy(&ltemp, p, 4);
     p += 4;
     hv_nav_error->nav_error_time.tv_nsec = ntohl(ltemp);
 
     /* Next four byte integer contains the record id for the record
-    *  containing a position with this error. (registry and type number)
-    */
+     * containing a position with this error. (registry and type number)
+     */
     memcpy(&ltemp, p, 4);
     p += 4;
     hv_nav_error->record_id = ntohl(ltemp);

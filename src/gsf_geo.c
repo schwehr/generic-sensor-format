@@ -5,7 +5,7 @@
  * Author/Date : R.K.Wells / 26 Feb 2014
  *
  * Description : Some hopefully useful functions to compute auxiliary
- *               information about points on a ship.
+ *  information about points on a ship.
  *
  * Restrictions/Limitations :
  *
@@ -204,7 +204,7 @@ GSF_POSITION_OFFSETS *gsfGetPositionOffsets(GSF_POSITION gp_from, GSF_POSITION g
     int                     n, iter;
     double                  lat_diff, lon_diff;
 
-    //  need to determine number of iterations from the dist_step.
+    /* need to determine number of iterations from the dist_step. */
 
     gp_from.lat = DTOR(gp_from.lat);
     gp_from.lon = DTOR(gp_from.lon);
@@ -233,7 +233,7 @@ GSF_POSITION_OFFSETS *gsfGetPositionOffsets(GSF_POSITION gp_from, GSF_POSITION g
     else
         iter = (int)ceil(lat_diff / dist_step);
 
-    //  need to handle crossing the dateline.
+    /* need to handle crossing the dateline. */
     dlon = gp_to.lon - gp_from.lon;
     if (dlon > PI)
         dlon = ((2.0 * PI) - dlon) / (double)iter;

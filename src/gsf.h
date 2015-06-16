@@ -246,7 +246,7 @@ gsfDataID;
 #define GSF_RECORD_ATTITUDE                                 12u
 
 /* Number of currently defined record data types (including 0 which is used
- *  in the indexing for ping records which contain scale factor subrecords).
+ * in the indexing for ping records which contain scale factor subrecords).
  */
 #define             NUM_REC_TYPES  13
 
@@ -257,8 +257,8 @@ gsfDataID;
 #define GSF_MAX_PING_ARRAY_SUBRECORDS 27
 
 /* Specify the GSF swath bathymetry ping subrecord identifiers. The beam
- *  data definitions specify the index into the scale factor table, and
- *  define the subrecord id put down on the disk with the subrecord.
+ * data definitions specify the index into the scale factor table, and
+ * define the subrecord id put down on the disk with the subrecord.
  */
 #define GSF_SWATH_BATHY_SUBRECORD_DEPTH_ARRAY                  1u
 #define GSF_SWATH_BATHY_SUBRECORD_ACROSS_TRACK_ARRAY           2u
@@ -899,8 +899,8 @@ t_gsfSBBDBSpecific;
 /* Define the NOS HDB sensor specific data structure */
 typedef struct t_gsfSBNOSHDBSpecific
 {
-    unsigned short  type_code;    /*  Depth type code  */
-    unsigned short  carto_code;   /*  Cartographic code  */
+    unsigned short  type_code;    /* Depth type code  */
+    unsigned short  carto_code;   /* Cartographic code  */
     char            spare[4];     /* four bytes of reserved space */
 }
 t_gsfSBNOSHDBSpecific;
@@ -908,7 +908,7 @@ t_gsfSBNOSHDBSpecific;
 /* Define the Navisound sensor specific data structure */
 typedef struct t_gsfSBNavisoundSpecific
 {
-    double          pulse_length;    /*  pulse length in cm  */
+    double          pulse_length;    /* pulse length in cm  */
     char            spare[8];     /* eight bytes of reserved space */
 }
 t_gsfSBNavisoundSpecific;
@@ -1075,7 +1075,7 @@ typedef struct t_gsfEM3RawSpecific
 }
 t_gsfEM3RawSpecific;
 
-/*DHG 2006/09/27 Added support for GeoSwath interferometric 250 Khz sonar */
+/* DHG 2006/09/27 Added support for GeoSwath interferometric 250 Khz sonar */
 /* Define the GeoSwath sensor specific data structure */
 typedef struct t_gsfGeoSwathPlusSpecific
 {
@@ -1257,7 +1257,7 @@ typedef union t_gsfSensorSpecific
     t_gsfEM12Specific         gsfEM12Specific;
     t_gsfR2SonicSpecific      gsfR2SonicSpecific;
 
-        /* Single beam sensors added */
+    /* Single beam sensors added */
     t_gsfSBEchotracSpecific   gsfSBEchotracSpecific;
     t_gsfSBEchotracSpecific   gsfSBBathy2000Specific;
     t_gsfSBMGD77Specific      gsfSBMGD77Specific;
@@ -1324,7 +1324,7 @@ typedef union t_gsfSBSensorSpecific
 } gsfSBSensorSpecific;
 
 /* Define the bit flags for the "ping_flags" field of the swath bathymetry
- *  ping record.
+ * ping record.
  * GSF_IGNORE_PING may be set to indicate to an application to ignore this ping
  * GSF_PING_USER_FLAGS 01-15 may be set/read by application specific software
  */
@@ -1346,7 +1346,7 @@ typedef union t_gsfSBSensorSpecific
 #define GSF_PING_USER_FLAG_15 0x8000u
 
 /* Define a set of macros to set, clear, and test the state of the
- *  ping status flags.
+ * ping status flags.
  *  Where:
  *     ping_flags: The ping flags field of the gsfSwathBathyPing structure.
  *     usflag:     The definition of the flag to test, set, or clear.
@@ -1357,8 +1357,8 @@ typedef union t_gsfSBSensorSpecific
 
 /* Define the GSF bit flags flags for the beam status array.
  * The GSF_IGNORE_BEAM flag may be set to indicate that this beam should
- *  not be used by any processing/display software.  The flags
- *  GSF_BEAM_USER_FLAG_01-07 may be set/read by application specific software
+ * not be used by any processing/display software.  The flags
+ * GSF_BEAM_USER_FLAG_01-07 may be set/read by application specific software
  */
 #define GSF_IGNORE_BEAM       0x01u
 #define GSF_BEAM_USER_FLAG_01 0x02u
@@ -1660,8 +1660,8 @@ typedef struct t_gsfNavigationError
 gsfNavigationError;
 
 /* jsb As of GSF v1.07, This new navigation error record replaces gsfNavigationError.
- *  The definition of gsfNavigationError will remain in the specification for several
- *  release of GSF for backwards compatability. (The HV stands for Horizontal and Vertical)
+ * The definition of gsfNavigationError will remain in the specification for several
+ * release of GSF for backwards compatability. (The HV stands for Horizontal and Vertical)
  */
 typedef struct t_gsfHVNavigationError
 {
@@ -1751,8 +1751,8 @@ typedef struct t_gsfRecords
 #define GSF_NUMBER_PROCESSING_PARAMS  49
 
 /* Macro definitions for type of platform */
-#define GSF_PLATFORM_TYPE_SURFACE_SHIP  0              /*DHG 2008/12/22 Add for AUV vs Surface Ship discrimination */
-#define GSF_PLATFORM_TYPE_AUV           1              /*DHG 2008/12/22 Add for AUV vs Surface Ship discrimination */
+#define GSF_PLATFORM_TYPE_SURFACE_SHIP  0              /* DHG 2008/12/22 Add for AUV vs Surface Ship discrimination */
+#define GSF_PLATFORM_TYPE_AUV           1              /* DHG 2008/12/22 Add for AUV vs Surface Ship discrimination */
 #define GSF_PLATFORM_TYPE_ROTV          2
 
 typedef struct t_gsfMBOffsets
@@ -1989,9 +1989,9 @@ typedef struct t_gsf_gp{
 } GSF_POSITION;
 
 /*
-    note: the coordinate system is:
-    +x forward, +y starboard, + z down, +hdg cw from north
-*/
+ * note: the coordinate system is:
+ * +x forward, +y starboard, + z down, +hdg cw from north
+ */
 
 typedef struct t_gsf_pos_offsets{
     double x;              /* meters */
@@ -2003,10 +2003,10 @@ typedef struct t_gsf_pos_offsets{
 
 /* The following are the function protoytpes for all functions intended
  * to be exported by the library.
-
-    Fugro modification - Mitch Ames - 2012-02-15
-    The original exported functions did not use const pointers everywhere that they could or should.
-    I've added const where appropriate.
+ *
+ * Fugro modification - Mitch Ames - 2012-02-15
+ * The original exported functions did not use const pointers everywhere that they could or should.
+ * I've added const where appropriate.
  */
 
 int OPTLK       gsfOpen(const char *filename, const int mode, int *handle);
@@ -2414,16 +2414,16 @@ int OPTLK       gsfCopyRecords (gsfRecords *target, const gsfRecords *source);
 
 int OPTLK       gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays);
 /* Description : This function moves swath bathymetry sonar processing
- *    parameters from internal form to "KEYWORD=VALUE" form.  The internal
- *    form parameters are read from an MB_PARAMETERS data structure maintained
- *    by the caller.  The "KEYWORD=VALUE" form parameters are written into the
- *    processing_parameters structure of the gsfRecords data structure
- *    maintained by the caller. Parameters for up to two transmitters and two receivers
- *    are supported.  If the user sets the number_of_transmitters and number_of_receivers
- *    elements in the gsfMBParams data structure in addition to the numArrays command line
- *    argument, the numArrays value will be ignored.  If number_of_transmitters and
- *    number_of_receivers are equal to 0, then numArrays will be used to populate both
- *    these values in the GSF processing parameters record.
+ *  parameters from internal form to "KEYWORD=VALUE" form.  The internal
+ *  form parameters are read from an MB_PARAMETERS data structure maintained
+ *  by the caller.  The "KEYWORD=VALUE" form parameters are written into the
+ *  processing_parameters structure of the gsfRecords data structure
+ *  maintained by the caller. Parameters for up to two transmitters and two receivers
+ *  are supported.  If the user sets the number_of_transmitters and number_of_receivers
+ *  elements in the gsfMBParams data structure in addition to the numArrays command line
+ *  argument, the numArrays value will be ignored.  If number_of_transmitters and
+ *  number_of_receivers are equal to 0, then numArrays will be used to populate both
+ *  these values in the GSF processing parameters record.
  *
  * Inputs :
  *     p = a pointer to the gsfMBParams data structure which contains
@@ -2444,17 +2444,17 @@ int OPTLK       gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle
 
 int OPTLK       gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays);
 /* Description : This function moves swath bathymetry sonar processing
- *    parameters from external, form to internal form.  The external
- *    "KEYWORD=VALUE" format parameters are read from a processing_params
- *    structure of a gsfRecords data structure maintained by the caller.
- *    The internal form parameters are written into a gsfMBParams data
- *    structure maintained by the caller. Parameters for up to two transmitters
- *    and two receivers are supported.  The number_of_transmitters and
- *    number_of_receivers elements of the gsfMBParams data structure are set by
- *    determining the number of fields in the parameters for the transmitter(s)
- *    and receiver(s), respectively.  The numArrays argument is set from the
- *    number of fields for the transmitter(s). Any parameter not described in a
- *    "KEYWORD=VALUE" format will be set to "GSF_UNKNOWN_PARAM_VALUE".
+ *  parameters from external, form to internal form.  The external
+ *  "KEYWORD=VALUE" format parameters are read from a processing_params
+ *  structure of a gsfRecords data structure maintained by the caller.
+ *  The internal form parameters are written into a gsfMBParams data
+ *  structure maintained by the caller. Parameters for up to two transmitters
+ *  and two receivers are supported.  The number_of_transmitters and
+ *  number_of_receivers elements of the gsfMBParams data structure are set by
+ *  determining the number of fields in the parameters for the transmitter(s)
+ *  and receiver(s), respectively.  The numArrays argument is set from the
+ *  number of fields for the transmitter(s). Any parameter not described in a
+ *  "KEYWORD=VALUE" format will be set to "GSF_UNKNOWN_PARAM_VALUE".
  *
  * Inputs :
  *     rec = a pointer to the gsfRecords data structure from which the
@@ -2472,9 +2472,9 @@ int OPTLK       gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numAr
 
 int OPTLK       gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *athwartship);
 /* Description : This function returns to the caller the fore-aft and
- *    the port-starboard beam widths in degrees for a swath bathymetry
- *    multibeam sonar, given a gsfRecords data structure which contains
- *    a populated gsfSwathBathyPing structure.
+ *  the port-starboard beam widths in degrees for a swath bathymetry
+ *  multibeam sonar, given a gsfRecords data structure which contains
+ *  a populated gsfSwathBathyPing structure.
  *
  * Inputs :
  *     data = The address of a gsfRecords data structure maintained by the
@@ -2494,9 +2494,9 @@ int OPTLK       gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_
 
 int OPTLK gsfIsStarboardPing(const gsfRecords *data);
 /* Description : This function uses the sonar specific data union
- *     of a gsfSwathBathymetry ping structure to determine if the ping
- *     is from the starboard arrays of a multibeam installation with
- *     dual transmit receive sonar arrays.
+ *  of a gsfSwathBathymetry ping structure to determine if the ping
+ *  is from the starboard arrays of a multibeam installation with
+ *  dual transmit receive sonar arrays.
  *
  * Inputs :
  *     data = The address of a gsfRecords data structure maintained by the

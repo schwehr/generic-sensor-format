@@ -6,7 +6,7 @@
  *
  * Description :
  *  This source file contains GSF informational functions that provide
- *   general information or status of contents of the current file.
+ *  general information or status of contents of the current file.
  *
  * Restrictions/Limitations :
  * 1) This library assumes the host computer uses the ASCII character set.
@@ -236,8 +236,9 @@ gsfFileSupportsRecalculateXYZ(int handle, int *status)
         }
     }
 
-    /* reset the file pointer to where it was when function was called */
-    /* Rewind the file so that the pointer is at the first record. */
+    /* reset the file pointer to where it was when function was called
+     * Rewind the file so that the pointer is at the first record.
+     */
     ret = gsfSeek(handle, GSF_REWIND);
     if (ret)
     {
@@ -393,8 +394,9 @@ gsfFileSupportsRecalculateTPU(int handle, int *status)
         }
     }
 
-    /* reset the file pointer to where it was when function was called */
-    /* Rewind the file so that the pointer is at the first record. */
+    /* reset the file pointer to where it was when function was called
+     * Rewind the file so that the pointer is at the first record.
+     */
     ret = gsfSeek(handle, GSF_REWIND);
     if (ret)
     {
@@ -537,8 +539,9 @@ gsfFileSupportsRecalculateNominalDepth(int handle, int *status)
         }
     }
 
-    /* reset the file pointer to where it was when function was called */
-    /* Rewind the file so that the pointer is at the first record. */
+    /* reset the file pointer to where it was when function was called
+     * Rewind the file so that the pointer is at the first record.
+     */
     ret = gsfSeek(handle, GSF_REWIND);
     if (ret)
     {
@@ -653,8 +656,9 @@ gsfFileContainsMBAmplitude(int handle, int *status)
         }
     }
 
-    /* reset the file pointer to where it was when function was called */
-    /* Rewind the file so that the pointer is at the first record. */
+    /* reset the file pointer to where it was when function was called
+     * Rewind the file so that the pointer is at the first record.
+     */
     ret = gsfSeek(handle, GSF_REWIND);
     if (ret)
     {

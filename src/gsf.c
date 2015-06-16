@@ -178,7 +178,7 @@
 #if (defined _WIN32) && (defined _MSC_VER)
 #define fseek(x, y, z) _fseeki64((x), (y), (z))
 #define ftell(x)   _ftelli64((x))
-#else  // Linux, MingW, MacOS
+#else  /* Linux, MingW, MacOS */
 #undef fopen
 #define fopen(x, y)  fopen64((x), (y))
 #define fseek(x, y, z) fseeko64((x), (y), (z))
@@ -379,15 +379,15 @@ gsfOpen(const char *filename, const int mode, int *handle)
     return(-1);
   }
 
-    /* The file was successfully opened, load the gsf file table structure by
-  * searching the GSF file table for the caller's filename.  This is done
-  * so that the same file table slot may be re-used.  Applications which
-  * want their file closed frequently, such as real-time data collection
-  * programs may do this to assure data integrity, and it makes sense
-  * to reuse the file table slot they occupied from a previous call to
-  * gsfOpen, so that the ping scale factors don't have to be reset except
-  * when a new file is created.
-    */
+  /* The file was successfully opened, load the gsf file table structure by
+   * searching the GSF file table for the caller's filename.  This is done
+   * so that the same file table slot may be re-used.  Applications which
+   * want their file closed frequently, such as real-time data collection
+   * programs may do this to assure data integrity, and it makes sense
+   * to reuse the file table slot they occupied from a previous call to
+   * gsfOpen, so that the ping scale factors don't have to be reset except
+   * when a new file is created.
+   */
   numOpenFiles++;
   length = strlen (filename);
   if (length >= sizeof(gsfFileTable[0].file_name))
@@ -444,11 +444,11 @@ gsfOpen(const char *filename, const int mode, int *handle)
   }
   gsfFileTable[fileTableIndex].file_size = stsize;
 
-    /* If this file was just created, (ie it has a size of 0 bytes) then
-  * write the GSF file header record. Also, set a flag to indicate
-  * that the ping scale factors need to be written with the next swath
-  * bathymetry ping record.
-    */
+  /* If this file was just created, (ie it has a size of 0 bytes) then
+   * write the GSF file header record. Also, set a flag to indicate
+   * that the ping scale factors need to be written with the next swath
+   * bathymetry ping record.
+   */
   if (stsize == 0)
   {
     gsfFileTable[fileTableIndex].scales_read = 1;
@@ -461,9 +461,9 @@ gsfOpen(const char *filename, const int mode, int *handle)
     gsfFileTable[fileTableIndex].rec.header.version[GSF_VERSION_SIZE] = 0;
     gsfFileTable[fileTableIndex].bufferedBytes += gsfWrite(*handle, &id, &gsfFileTable[fileTableIndex].rec);
 
-        /* Flush this record to disk so that the file size will be non-zero
-    * on the next call to gsfOpen.
-        */
+    /* Flush this record to disk so that the file size will be non-zero
+     * on the next call to gsfOpen.
+     */
     if (fflush (gsfFileTable[fileTableIndex].fp))
     {
       gsfError = GSF_FLUSH_ERROR;
@@ -474,9 +474,9 @@ gsfOpen(const char *filename, const int mode, int *handle)
   }
   else
   {
-        /* Read the GSF header, if the access mode is append, we need to
-    * seek back to the top of the file.
-        */
+    /* Read the GSF header, if the access mode is append, we need to
+     * seek back to the top of the file.
+     */
     if (mode == GSF_APPEND)
     {
       if (fseek(gsfFileTable[fileTableIndex].fp, 0, SEEK_SET))
@@ -530,9 +530,9 @@ gsfOpen(const char *filename, const int mode, int *handle)
     return(-1);
   }
 
-    /*  Set the update flag if needed. This is used to force a call to fflush
-  *  between read an write operations, on files opened for update.
-    */
+  /*  Set the update flag if needed. This is used to force a call to fflush
+   *  between read an write operations, on files opened for update.
+   */
   if ((mode == GSF_UPDATE) ||
        (mode == GSF_UPDATE_INDEX) ||
        (mode == GSF_CREATE))
@@ -557,9 +557,9 @@ gsfOpen(const char *filename, const int mode, int *handle)
       return(-1);
     }
 
-        /* Move the file pointer back to the first record past the gsf file header. This
-    * is required since we will have read the entire to create the index.
-        */
+    /* Move the file pointer back to the first record past the gsf file header. This
+     * is required since we will have read the entire to create the index.
+     */
     if (fseek(gsfFileTable[fileTableIndex].fp, headerSize, SEEK_SET))
     {
       gsfError = GSF_FILE_SEEK_ERROR;
@@ -1375,10 +1375,10 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             dptr = streamBuff;
         }
 
-/*         fprintf(stderr, "readize = %d  desi = %d\n", readSize, thisID.recordID); */
+        /* fprintf(stderr, "readize = %d  desi = %d\n", readSize, thisID.recordID); */
 
 
-       /* Make sure that we have a big enough buffer to fit this record,
+        /* Make sure that we have a big enough buffer to fit this record,
          *  then read it out.
          */
         if ((readSize <= 8) || (readSize > GSF_MAX_RECORD_SIZE))
@@ -1460,9 +1460,9 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
     }
 
     /*
-    * If the caller's buffer isn't null, move this data into their buffer.
-    *  Don't move the 4 byte checksum into the buffer.
-    */
+     * If the caller's buffer isn't null, move this data into their buffer.
+     * Don't move the 4 byte checksum into the buffer.
+     */
     if ((buf) && (dataSize <= max_size))
     {
         memcpy(buf, dptr, dataSize);
@@ -1487,8 +1487,8 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
 
 
     /* Invoke the appropriate function for unpacking this record into a
-    * standard GSF structure.
-    */
+     * standard GSF structure.
+     */
     switch (thisID.recordID)
     {
         case (GSF_RECORD_HEADER):
@@ -1878,8 +1878,8 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
     }
 
     /* Invoke the appropriate function for packing this record into a
-    * byte stream.
-    */
+     * byte stream.
+     */
     switch (id->recordID)
     {
         case (GSF_RECORD_HEADER):
@@ -2170,9 +2170,9 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
         mult = 1.0 / precision;
 
         /* In order to assure the same multiplier is used throughout, truncate
-         *  to an integer.  This is the value which is stored with the data.
-         *  The multiplier value is encoded on the byte stream as an integer value
-         *  (i.e. it is not scaled) so the smallest supportable precision is 1.
+         * to an integer.  This is the value which is stored with the data.
+         * The multiplier value is encoded on the byte stream as an integer value
+         * (i.e. it is not scaled) so the smallest supportable precision is 1.
          */
         itemp = (int) (mult + 0.001);
 
@@ -2192,9 +2192,9 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
         mult = 1.0 / precision;
 
         /* In order to assure the same multiplier is used throughout, truncate
-         *  to an integer.  This is the value which is stored with the data.
-         *  The multiplier value is encoded on the byte stream as an integer value
-         *  (i.e. it is not scaled) so the smallest supportable precision is 1.
+         * to an integer.  This is the value which is stored with the data.
+         * The multiplier value is encoded on the byte stream as an integer value
+         * (i.e. it is not scaled) so the smallest supportable precision is 1.
          */
         itemp = (int) (mult + 0.001);
 
@@ -2207,7 +2207,7 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
     }
 
     /* The multiplier to be applied to the data is converted back to a
-     *  double here, for floating point performance.
+     * double here, for floating point performance.
      */
     sf->scaleTable[subrecordID - 1].compressionFlag = c_flag;
     sf->scaleTable[subrecordID - 1].multiplier = ((double) itemp);
@@ -2931,8 +2931,8 @@ gsfIndexTime(int handle, int record_type, int record_number, time_t * sec, long 
         return (-1);
     }
 
-    /*  If the record number requested is -1, use the last record of
-     *  this type.
+    /* If the record number requested is -1, use the last record of
+     * this type.
      */
     if (record_number == -1)
     {
@@ -2943,8 +2943,8 @@ gsfIndexTime(int handle, int record_type, int record_number, time_t * sec, long 
         offset = record_number - 1;
     }
 
-    /*  Compute the record address within the index file and read the
-     *  index record.
+    /* Compute the record address within the index file and read the
+     * index record.
      */
     addr = gsfFileTable[handle - 1].index_data.start_addr[record_type] +
         (offset * sizeof(INDEX_REC));
@@ -2964,7 +2964,7 @@ gsfIndexTime(int handle, int record_type, int record_number, time_t * sec, long 
         SwapLongLong((long long *) &(index_rec.addr), 1);
     }
 
-    /*  Store the time and return the record number.    */
+    /* Store the time and return the record number. */
     *sec = index_rec.sec;
     *nsec = index_rec.nsec;
 
@@ -2995,9 +2995,9 @@ gsfChecksum(unsigned char *buff, unsigned int num_bytes)
     gsfuLong        checkSum = 0;
 
     /*
-    * Compute the checksum as the modulo-32 sum of all bytes
-    * between the checksum value and the end of the record.
-    */
+     * Compute the checksum as the modulo-32 sum of all bytes
+     * between the checksum value and the end of the record.
+     */
     for (ptr = buff; ptr < buff + num_bytes; ptr++)
     {
         checkSum += *ptr;
@@ -4273,7 +4273,6 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
         num_rx = p->number_of_receivers;
 
     /* DHG 2008/12/18 Add "PLATFORM_TYPE" Processing Parameter */
-
     if (p->vessel_type == GSF_PLATFORM_TYPE_AUV)
     {
         sprintf (temp, "PLATFORM_TYPE=AUV");
@@ -4441,7 +4440,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* This parameter indicates whether the motion sensor bias - measured from the
-     *  patch test has been added to the attitude (roll, pitch, heading) data.
+     * patch test has been added to the attitude (roll, pitch, heading) data.
      */
     if (p->msb_applied_to_attitude == GSF_TRUE)
     {
@@ -4458,7 +4457,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* This parameter indicates whether the heave data has been subtracted from
-     *  the GPS tide corrector value.
+     * the GPS tide corrector value.
      */
     if (p->heave_removed_from_gps_tc == GSF_TRUE)
     {
@@ -4747,7 +4746,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* The POSITION_OFFSET_TO_APPLY parameter is place holder for a position
-     *  offset which is known, but not yet applied.
+     * offset which is known, but not yet applied.
      */
     memset(temp, 0, sizeof(temp));
     sprintf(temp, "POSITION_OFFSET_TO_APPLY=");
@@ -4805,7 +4804,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* The ANTENNA_OFFSET_TO_APPLY parameter is place holder for a antenna
-     *  offset which is known, but not yet applied.
+     * offset which is known, but not yet applied.
      */
     memset(temp, 0, sizeof(temp));
     sprintf(temp, "ANTENNA_OFFSET_TO_APPLY=");
@@ -5022,7 +5021,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* The TRANSDUCER_PITCH_OFFSET_TO_APPLY parameter is a place holder for a transducer pitch angle
-     *  installation offset which is known, but not yet applied.
+     * installation offset which is known, but not yet applied.
      */
     if (num_tx == 1)
     {
@@ -5080,7 +5079,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* The TRANSDUCER_ROLL_OFFSET_TO_APPLY parameter is a place holder for a transducer roll angle
-     *  installation offset which is known, but not yet applied.
+     * installation offset which is known, but not yet applied.
      */
     if (num_tx == 1)
     {
@@ -5138,7 +5137,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* The TRANSDUCER_HEADING_OFFSET_TO_APPLY parameter is a place holder for a transducer heading angle
-     *  installation offset which is known, but not yet applied.
+     * installation offset which is known, but not yet applied.
      */
     if (num_tx == 1)
     {
@@ -5272,7 +5271,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* The MRU_OFFSET_TO_APPLY parameter is place holder for a mru
-     *  offset which is known, but not yet applied.
+     * offset which is known, but not yet applied.
      */
     memset(temp, 0, sizeof(temp));
     sprintf(temp, "MRU_OFFSET_TO_APPLY=");
@@ -5329,7 +5328,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* The CENTER_OF_ROTATION_OFFSET_TO_APPLY parameter is place holder for a mru
-     *  offset which is known, but not yet applied.
+     * offset which is known, but not yet applied.
      */
     memset(temp, 0, sizeof(temp));
     sprintf(temp, "CENTER_OF_ROTATION_OFFSET_TO_APPLY=");
@@ -5436,7 +5435,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* The DEPTH_SENSOR_LATENCY_TO_APPLY parameter is a place holder for a depth
-     *  sensor latency value which is known but not yet applied.
+     * sensor latency value which is known but not yet applied.
      */
     memset(temp, 0, sizeof(temp));
     if (p->to_apply.depth_sensor_latency == GSF_UNKNOWN_PARAM_VALUE)
@@ -5461,7 +5460,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* The DEPTH_SENSOR_OFFSET_TO_APPLY parameter is place holder for a depth
-     *  sensor offset which is known, but not yet applied.
+     * sensor offset which is known, but not yet applied.
      */
     if (p->to_apply.depth_sensor_x_offset == GSF_UNKNOWN_PARAM_VALUE)
     {
@@ -6339,7 +6338,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* The APPLIED_TRANSDUCER_PITCH_OFFSET parameter defines the transducer pitch installation angle
-     *   previously applied to the data.
+     * previously applied to the data.
      */
     if (num_tx == 1)
     {
@@ -6398,7 +6397,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* The APPLIED_TRANSDUCER_ROLL_OFFSET parameter defines the transducer roll installation angle
-     *   previously applied to the data.
+     * previously applied to the data.
      */
     if (num_tx == 1)
     {
@@ -6457,7 +6456,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* The APPLIED_TRANSDUCER_HEADING_OFFSET parameter defines the transducer heading installation angle
-     *   previously applied to the data.
+     * previously applied to the data.
      */
     if (num_tx == 1)
     {
@@ -6757,7 +6756,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
 
     /* The APPLIED_DEPTH_SENSOR_LATENCY parameter defines the depth
-     *  sensor latency value which has already been applied.
+     * sensor latency value which has already been applied.
      */
     memset(temp, 0, sizeof(temp));
     if (p->applied.depth_sensor_latency == GSF_UNKNOWN_PARAM_VALUE)
@@ -7288,7 +7287,6 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
         }
 
         /* DHG 2008/12/18 Add "PLATFORM_TYPE" */
-
         else if (strncmp (rec->process_parameters.param[i], "PLATFORM_TYPE", strlen ("PLATFORM_TYPE")) == 0)
         {
             if (strstr(rec->process_parameters.param[i], "AUV"))
@@ -8167,7 +8165,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                 p->vertical_datum = GSF_V_DATUM_UNKNOWN;
             }
         }
-    }  // for
+    }  /* for */
     p->number_of_transmitters = num_tx;
     p->number_of_receivers = num_rx;
 
@@ -8697,9 +8695,9 @@ gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecor
     if (*last_corrector < corrector)
     {
         /* If the depth is greater than 400 meters then there is no need to
-         *  use a positive DC offset for signed depth.  This check is necessary
-         *  to avoid a potential integer overflow that may exist for sonar
-         *  systems which do not decrease the precision as the depth increases.
+         * use a positive DC offset for signed depth.  This check is necessary
+         * to avoid a potential integer overflow that may exist for sonar
+         * systems which do not decrease the precision as the depth increases.
          */
         if ((fabs(corrector) < layer_interval) && (max_depth > (max_depth_threshold - max_depth_hysteresis)))
         {
@@ -8720,9 +8718,9 @@ gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecor
     else
     {
         /* If the depth is greater than 400 meters then there is no need to
-         *  use a positive DC offset for signed depth.  This check is necessary
-         *  to avoid a potential integer overflow that may exist for sonar
-         *  systems which do not decrease the precision as the depth increases.
+         * use a positive DC offset for signed depth.  This check is necessary
+         * to avoid a potential integer overflow that may exist for sonar
+         * systems which do not decrease the precision as the depth increases.
          */
         if ((fabs(corrector) < layer_interval) && (max_depth > (max_depth_threshold - max_depth_hysteresis)))
         {
@@ -8733,7 +8731,7 @@ gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecor
         }
 
         /* If corrector is decreasing, change offset to next shallower
-         *  depth layer when we pass through the threshold.
+         * depth layer when we pass through the threshold.
          */
         else if (percent < decreasing_threshold)
         {
@@ -8742,8 +8740,8 @@ gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecor
     }
 
     /* the maximum possible tidal height is just under 11 meters, so a maximum
-     *  offset of 20 is sufficient for surveying above the tidal datum.
-     *  bac, 09-12-04
+     * offset of 20 is sufficient for surveying above the tidal datum.
+     * bac, 09-12-04
      */
     if (offset > 20)
     {
@@ -8761,7 +8759,7 @@ gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecor
     }
 
     /* Call the load scale factors function to set the computed DC offset and
-     *  the c_flag and precision arguments.
+     * the c_flag and precision arguments.
      */
     if (gsfLoadScaleFactor(&ping->scaleFactors, subrecordID, c_flag, precision, dc_offset) != 0)
     {
