@@ -145,6 +145,7 @@
 #endif
 
 /* standard c library includes */
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -1420,7 +1421,8 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
         /* If the caller passed GSF_NEXT_RECORD, as the desiredRecord, they
          * want the next record
          */
-        if ((desiredRecord == GSF_NEXT_RECORD) || (thisID.recordID == desiredRecord))
+        assert(desiredRecord >= 0);
+        if ((desiredRecord == GSF_NEXT_RECORD) || (thisID.recordID == (unsigned int)desiredRecord))
         {
             readNext = 0;
             /* Set the caller's ID structure with those items we've read */
@@ -1453,7 +1455,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
         }
 
         /* This record is not the requested record, advance the file pointer */
-        else if (thisID.recordID != desiredRecord)
+        else if (thisID.recordID != (unsigned int)desiredRecord)
         {
             readStat = fseek(gsfFileTable[handle - 1].fp, readSize, SEEK_CUR);
             if (readStat)
