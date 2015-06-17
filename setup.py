@@ -32,4 +32,9 @@ setup(name='gsf',
            ],
       # scripts=[""],
       # test_suite="test"
+      entry_points={
+        'console_scripts': [
+            'gsf_info = gsf.gsf_info:main',
+        ],
+      }
       )
