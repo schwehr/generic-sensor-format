@@ -8851,6 +8851,7 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     maximum = GSF_U_INT_MAX;
                     break;
             }
+            break;
         case (GSF_SWATH_BATHY_SUBRECORD_NOMINAL_DEPTH_ARRAY):
             switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
             {
@@ -8869,6 +8870,7 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     maximum = GSF_U_INT_MAX;
                     break;
             }
+            break;
         case (GSF_SWATH_BATHY_SUBRECORD_ACROSS_TRACK_ARRAY):
             switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
             {
@@ -8887,6 +8889,7 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     maximum = GSF_S_INT_MAX;
                     break;
             }
+            break;
         case (GSF_SWATH_BATHY_SUBRECORD_ALONG_TRACK_ARRAY):
             switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
             {
@@ -8905,6 +8908,7 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     maximum = GSF_S_INT_MAX;
                     break;
             }
+            break;
         case (GSF_SWATH_BATHY_SUBRECORD_TRAVEL_TIME_ARRAY):
             switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
             {
@@ -8923,6 +8927,7 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     maximum = GSF_U_INT_MAX;
                     break;
             }
+            break;
         case (GSF_SWATH_BATHY_SUBRECORD_BEAM_ANGLE_ARRAY):
             minimum = GSF_S_SHORT_MIN;
             maximum = GSF_S_SHORT_MAX;
@@ -8940,6 +8945,7 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     maximum = GSF_S_SHORT_MAX;
                     break;
             }
+            break;
         case (GSF_SWATH_BATHY_SUBRECORD_MEAN_REL_AMPLITUDE_ARRAY):
             switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
             {
@@ -8953,6 +8959,7 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     maximum = GSF_U_SHORT_MAX;
                     break;
             }
+            break;
         case (GSF_SWATH_BATHY_SUBRECORD_ECHO_WIDTH_ARRAY):
             switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
             {
@@ -8966,6 +8973,7 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     maximum = GSF_U_SHORT_MAX;
                     break;
             }
+            break;
         case (GSF_SWATH_BATHY_SUBRECORD_QUALITY_FACTOR_ARRAY):
             minimum = GSF_U_CHAR_MIN;
             maximum = GSF_U_CHAR_MAX;
