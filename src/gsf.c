@@ -261,8 +261,13 @@ gsfStat (const char *filename, long long *sz)
     struct _stati64    stbuf;
     rc = _stati64(filename, &stbuf);
 #else
+#ifdef __APPLE__
+    struct stat      stbuf;
+    rc = stat(filename, &stbuf);
+#else
     struct stat64      stbuf;
     rc = stat64(filename, &stbuf);
+#endif
 #endif
 
     if (!rc)
