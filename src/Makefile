@@ -45,9 +45,10 @@ clean:
 	-rm -f *.o
 	-rm -f ${LIB}
 
-gsf.o: gsf.c gsf.h gsf_ft.h gsf_dec.h gsf_enc.h gsf_indx.h
-gsf_dec.c: gsf.h gsf_dec.h gsf_enc.h
-gsf_enc.c: gsf.h gsf_enc.h
-gsf_geo.o: gsf.h
-gsf_indx.c: gsf.h gsf_ft.h gsf_indx.h
-gsf_info.c: gsf.h
+HDRS := gsf.h gsf_ft.h gsf_dec.h gsf_enc.h gsf_indx.h
+gsf.o: gsf.c ${HDRS}
+gsf_dec.o: gsf_dec.c ${HDRS}
+gsf_enc.o: gsf_enc.c ${HDRS}
+gsf_geo.o: gsf_geo.c ${HDRS}
+gsf_indx.o: gsf_indx.c ${HDRS}
+gsf_info.o: gsf_info.c ${HDRS}
