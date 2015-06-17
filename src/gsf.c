@@ -463,7 +463,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
     id.reserved = 0;
     id.recordID = GSF_RECORD_HEADER;
     strncpy(gsfFileTable[fileTableIndex].rec.header.version, GSF_VERSION, GSF_VERSION_SIZE-1);
-    gsfFileTable[fileTableIndex].rec.header.version[GSF_VERSION_SIZE] = 0;
+    gsfFileTable[fileTableIndex].rec.header.version[GSF_VERSION_SIZE - 1] = 0;
     gsfFileTable[fileTableIndex].bufferedBytes += gsfWrite(*handle, &id, &gsfFileTable[fileTableIndex].rec);
 
         /* Flush this record to disk so that the file size will be non-zero
@@ -799,7 +799,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
         id.reserved = 0;
         id.recordID = GSF_RECORD_HEADER;
         strncpy(gsfFileTable[fileTableIndex].rec.header.version, GSF_VERSION, GSF_VERSION_SIZE-1);
-        gsfFileTable[fileTableIndex].rec.header.version[GSF_VERSION_SIZE] = 0;
+        gsfFileTable[fileTableIndex].rec.header.version[GSF_VERSION_SIZE - 1] = 0;
         gsfFileTable[fileTableIndex].bufferedBytes += gsfWrite(*handle, &id, &gsfFileTable[fileTableIndex].rec);
 
         /* Flush this record to disk so that the file size will be non-zero

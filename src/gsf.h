@@ -425,8 +425,10 @@ gsfDataID;
  #endif
 #endif
 
-/* Define a structure for the gsf header record */
-#define GSF_VERSION_SIZE 12
+/* Define a structure for the gsf header record.
+ * 12 characters plus a null terminator.
+ */
+#define GSF_VERSION_SIZE 13
 typedef struct t_gsfHeader
 {
     char            version[GSF_VERSION_SIZE];
