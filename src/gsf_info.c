@@ -1,12 +1,8 @@
 /********************************************************************
  *
- * Module Name : gsf_info.c
- *
- * Author/Date : J. S. Byrne / December 2009
- *
  * Description :
  *  This source file contains GSF informational functions that provide
- *   general information or status of contents of the current file.
+ *  general information or status of contents of the current file.
  *
  * Restrictions/Limitations :
  * 1) This library assumes the host computer uses the ASCII character set.
@@ -16,23 +12,13 @@
  * 3) This library assumes that the type short is 16 bits, and that
  *    the type int is 32 bits.
  *
- *
- * Change Descriptions :
- * who          when      what
- * ---          ----      ----
- * jsb          12-29-09  New
- *
- * Classification : Unclassified
- *
- * References : DoDBL Generic Sensor Format Sept. 30, 1993
- *
- * copyright 2014 Leidos, Inc.
+ * Copyright 2014 Leidos, Inc.
  * There is no charge to use the library, and it may be accessed at:
  * https://www.leidos.com/maritime/gsf.
  * This library may be redistributed and/or modified under the terms of
  * the GNU Lesser General Public License version 2.1, as published by the
  * Free Software Foundation.  A copy of the LGPL 2.1 license is included with
- * the GSF distribution and is avaialbe at: http://opensource.org/licenses/LGPL-2.1.
+ * the GSF distribution and is available at: http://opensource.org/licenses/LGPL-2.1.
  *
  * Leidos, Inc. configuration manages GSF, and provides GSF releases. Users are
  * strongly encouraged to communicate change requests and change proposals to Leidos, Inc.
@@ -43,26 +29,22 @@
  *
  ********************************************************************/
 
-/* standard c library includes */
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-
-/* rely on the network type definitions of (u_short, and u_int) */
+#include <string.h>
 #include <sys/types.h>
+
 #if !defined WIN32 && !defined WIN64
 #include <netinet/in.h>
 #else
 #include <winsock.h>
 #endif
 
-/* gsf library interface description */
+
 #include "gsf.h"
 
 /* Global external data defined in this module */
-extern int      gsfError;                               /* defined in gsf.c */
-
-/* Function prototypes for this file */
+extern int      gsfError;  /* defined in gsf.c */
 
 /********************************************************************
  *
@@ -236,8 +218,9 @@ gsfFileSupportsRecalculateXYZ(int handle, int *status)
         }
     }
 
-    /* reset the file pointer to where it was when function was called */
-    /* Rewind the file so that the pointer is at the first record. */
+    /* reset the file pointer to where it was when function was called
+     * Rewind the file so that the pointer is at the first record.
+     */
     ret = gsfSeek(handle, GSF_REWIND);
     if (ret)
     {
@@ -393,8 +376,9 @@ gsfFileSupportsRecalculateTPU(int handle, int *status)
         }
     }
 
-    /* reset the file pointer to where it was when function was called */
-    /* Rewind the file so that the pointer is at the first record. */
+    /* reset the file pointer to where it was when function was called
+     * Rewind the file so that the pointer is at the first record.
+     */
     ret = gsfSeek(handle, GSF_REWIND);
     if (ret)
     {
@@ -537,8 +521,9 @@ gsfFileSupportsRecalculateNominalDepth(int handle, int *status)
         }
     }
 
-    /* reset the file pointer to where it was when function was called */
-    /* Rewind the file so that the pointer is at the first record. */
+    /* reset the file pointer to where it was when function was called
+     * Rewind the file so that the pointer is at the first record.
+     */
     ret = gsfSeek(handle, GSF_REWIND);
     if (ret)
     {
@@ -653,8 +638,9 @@ gsfFileContainsMBAmplitude(int handle, int *status)
         }
     }
 
-    /* reset the file pointer to where it was when function was called */
-    /* Rewind the file so that the pointer is at the first record. */
+    /* reset the file pointer to where it was when function was called
+     * Rewind the file so that the pointer is at the first record.
+     */
     ret = gsfSeek(handle, GSF_REWIND);
     if (ret)
     {
