@@ -1348,11 +1348,12 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
      * If the caller's buffer isn't null, move this data into their buffer.
      * Don't move the 4 byte checksum into the buffer.
      */
-    if ((buf) && (dataSize <= max_size))
+    assert(max_size > 0);
+    if ((buf) && (dataSize <= (gsfuLong)max_size))
     {
         memcpy(buf, dptr, dataSize);
     }
-    else if ((buf) && (dataSize > max_size))
+    else if ((buf) && (dataSize > (gsfuLong)max_size))
     {
         gsfError = GSF_INSUFFICIENT_SIZE;
         return (-1);
