@@ -7126,7 +7126,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
         if (strncmp(rec->process_parameters.param[i], "REFERENCE TIME", strlen("REFERENCE TIME")) == 0)
         {
             memset(p->start_of_epoch, 0, sizeof(p->start_of_epoch));
-            strncpy(p->start_of_epoch, rec->process_parameters.param[i], sizeof(p->start_of_epoch));
+            strncpy(p->start_of_epoch, rec->process_parameters.param[i], sizeof(p->start_of_epoch) - 1);
         }
 
         else if (strncmp (rec->process_parameters.param[i], "PLATFORM_TYPE", strlen ("PLATFORM_TYPE")) == 0)
