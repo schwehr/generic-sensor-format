@@ -1215,9 +1215,13 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
                 /* if error reading file and we're at the end of the file,
                  * reset file pointer
                  */
-                fseek (gsfFileTable[handle - 1].fp,
-                       gsfFileTable[handle - 1].previous_record,
-                       SEEK_SET);
+                if (0 != fseek (gsfFileTable[handle - 1].fp,
+                                gsfFileTable[handle - 1].previous_record,
+                                SEEK_SET)) {
+                    /* TODO(schwehr): When, if ever, can this happen? */
+                    gsfError = GSF_READ_ERROR;
+                    return (-1);
+                }
                 /* if anything was read, that's a different error code than nothing read */
                 if (readStat == 0)
                     gsfError = GSF_READ_TO_END_OF_FILE;
@@ -1324,9 +1328,13 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
                     /* if error reading file and we're at the end of the file,
                      * reset file pointer
                      */
-                    fseek (gsfFileTable[handle - 1].fp,
-                          gsfFileTable[handle - 1].previous_record,
-                          SEEK_SET);
+                    if (0 != fseek (gsfFileTable[handle - 1].fp,
+                                    gsfFileTable[handle - 1].previous_record,
+                                    SEEK_SET)) {
+                        /* TODO(schwehr): When, if ever, can this happen? */
+                        gsfError = GSF_READ_ERROR;
+                        return (-1);
+                    }
                     /* if anything was read, that's a different error code than nothing read */
                     if (readStat == 0)
                         gsfError = GSF_READ_TO_END_OF_FILE;
@@ -1355,7 +1363,6 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
      * If the caller's buffer isn't null, move this data into their buffer.
      * Don't move the 4 byte checksum into the buffer.
      */
-    assert(max_size > 0);
     if ((buf) && (dataSize <= (gsfuLong)max_size))
     {
         memcpy(buf, dptr, dataSize);
