@@ -131,7 +131,7 @@ gsfFileSupportsRecalculateXYZ(int handle, int *status)
                     gsfError = GSF_FILE_SEEK_ERROR;
                     return (-1);
                 }
-                return(0);
+                return (0);
             }
             else
             {
@@ -313,7 +313,7 @@ gsfFileSupportsRecalculateTPU(int handle, int *status)
                     gsfError = GSF_FILE_SEEK_ERROR;
                     return (-1);
                 }
-                return(0);
+                return (0);
             }
             else
             {
@@ -472,7 +472,7 @@ gsfFileSupportsRecalculateNominalDepth(int handle, int *status)
                     gsfError = GSF_FILE_SEEK_ERROR;
                     return (-1);
                 }
-                return(0);
+                return (0);
             }
             else
             {
@@ -613,7 +613,7 @@ gsfFileContainsMBAmplitude(int handle, int *status)
                     gsfError = GSF_FILE_SEEK_ERROR;
                     return (-1);
                 }
-                return(0);
+                return (0);
             }
             else
             {
@@ -730,7 +730,7 @@ gsfFileContainsMBImagery(int handle, int *status)
                     gsfError = GSF_FILE_SEEK_ERROR;
                     return (-1);
                 }
-                return(0);
+                return (0);
             }
             else
             {

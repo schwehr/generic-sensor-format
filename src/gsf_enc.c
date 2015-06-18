@@ -813,7 +813,7 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     if (ping->number_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
     stemp = htons(ping->number_beams);
     memcpy(p, &stemp, 2);
@@ -1003,7 +1003,7 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
         ret = EncodeScaleFactors(p, &ping->scaleFactors);
         if (ret <= 0)
         {
-            return(-1);
+            return (-1);
         }
         p += ret;
         /* scales_read is set in gsfOpen if the file is opened create to ensure that scale factors
@@ -1791,7 +1791,7 @@ EncodeTwoByteArray(unsigned char *sptr, double *array, int num_beams,
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* subrecord identifier has array id in first byte, and size in the
@@ -1874,7 +1874,7 @@ EncodeSignedTwoByteArray(unsigned char *sptr, double *array, int num_beams,
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* subrecord identifier has array id in first byte, and size in the
@@ -1957,7 +1957,7 @@ EncodeFourByteArray(unsigned char *sptr, double *array, int num_beams,
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* subrecord identifier has array id in first byte, and size in the
@@ -2039,7 +2039,7 @@ EncodeSignedFourByteArray(unsigned char *sptr, double *array, int num_beams,
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* subrecord identifier has array id in first byte, and size in the
@@ -2121,7 +2121,7 @@ EncodeByteArray(unsigned char *sptr, double *array, int num_beams,
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* subrecord identifier has array id in first byte, and size in the
@@ -2202,7 +2202,7 @@ EncodeSignedByteArray (unsigned char *sptr, double *array, int num_beams, gsfSca
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* subrecord identifier has array id in first byte, and size in the
@@ -2273,7 +2273,7 @@ EncodeFromUnsignedShortToByteArray(unsigned char *sptr, unsigned short *array, i
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* subrecord identifier has array id in first byte, and size in the
@@ -2325,7 +2325,7 @@ EncodeBeamFlagsArray(unsigned char *sptr, unsigned char *array, int num_beams)
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* subrecord identifier has array id in first byte, and size in the
@@ -2378,7 +2378,7 @@ EncodeQualityFlagsArray(unsigned char *sptr, unsigned char *array, int num_beams
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* Leave four bytes free for the subrecord id and size */
