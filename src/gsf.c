@@ -2966,7 +2966,7 @@ gsfGetNumberRecords (int handle, int desiredRecord)
         return (-1);
     }
 
-    if ((desiredRecord < 0) || (desiredRecord > NUM_REC_TYPES))
+    if ((desiredRecord < 0) || (desiredRecord >= NUM_REC_TYPES))
     {
         gsfError = GSF_UNRECOGNIZED_RECORD_ID;
         return (-1);
