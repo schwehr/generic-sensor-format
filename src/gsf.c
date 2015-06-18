@@ -59,6 +59,13 @@
 #include "gsf_ft.h"
 #include "gsf_indx.h"
 
+#if defined(__GNUC__) && __GNUC__ >= 4
+#  define UNUSED __attribute((__unused__))
+#else
+#  define UNUSED
+#endif
+
+
 /* Macros required for this module */
 /* TODO(schwehr): Do this properly. */
 #ifndef __APPLE__
@@ -639,7 +646,8 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
         {
             if (gsfFileTable[fileTableIndex].occupied == 0)
             {
-                strncpy (gsfFileTable[fileTableIndex].file_name, filename, sizeof(gsfFileTable[fileTableIndex].file_name));
+                strncpy (gsfFileTable[fileTableIndex].file_name, filename, sizeof(gsfFileTable[fileTableIndex].file_name) - 1);
+                gsfFileTable[fileTableIndex].file_name[sizeof(gsfFileTable[fileTableIndex].file_name) - 1] = '\0';
                 /* This is the first open for this file, so clear the
                  * pointers to dynamic memory.
                  */
@@ -1207,9 +1215,13 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
                 /* if error reading file and we're at the end of the file,
                  * reset file pointer
                  */
-                fseek (gsfFileTable[handle - 1].fp,
-                       gsfFileTable[handle - 1].previous_record,
-                       SEEK_SET);
+                if (0 != fseek (gsfFileTable[handle - 1].fp,
+                                gsfFileTable[handle - 1].previous_record,
+                                SEEK_SET)) {
+                    /* TODO(schwehr): When, if ever, can this happen? */
+                    gsfError = GSF_READ_ERROR;
+                    return (-1);
+                }
                 /* if anything was read, that's a different error code than nothing read */
                 if (readStat == 0)
                     gsfError = GSF_READ_TO_END_OF_FILE;
@@ -1316,9 +1328,13 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
                     /* if error reading file and we're at the end of the file,
                      * reset file pointer
                      */
-                    fseek (gsfFileTable[handle - 1].fp,
-                          gsfFileTable[handle - 1].previous_record,
-                          SEEK_SET);
+                    if (0 != fseek (gsfFileTable[handle - 1].fp,
+                                    gsfFileTable[handle - 1].previous_record,
+                                    SEEK_SET)) {
+                        /* TODO(schwehr): When, if ever, can this happen? */
+                        gsfError = GSF_READ_ERROR;
+                        return (-1);
+                    }
                     /* if anything was read, that's a different error code than nothing read */
                     if (readStat == 0)
                         gsfError = GSF_READ_TO_END_OF_FILE;
@@ -1347,11 +1363,11 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
      * If the caller's buffer isn't null, move this data into their buffer.
      * Don't move the 4 byte checksum into the buffer.
      */
-    if ((buf) && (dataSize <= max_size))
+    if ((buf) && (dataSize <= (gsfuLong)max_size))
     {
         memcpy(buf, dptr, dataSize);
     }
-    else if ((buf) && (dataSize > max_size))
+    else if ((buf) && (dataSize > (gsfuLong)max_size))
     {
         gsfError = GSF_INSUFFICIENT_SIZE;
         return (-1);
@@ -2059,7 +2075,7 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
         itemp = (int) (mult + 0.001);
 
         /* QC test on the integer value as this is the number that will get encoded on the GSF byte stream */
-        if ((itemp < MIN_GSF_SF_MULT_VALUE) || (itemp > MAX_GSF_SF_MULT_VALUE))
+        if (itemp < MIN_GSF_SF_MULT_VALUE)
         {
             gsfError = GSF_CANNOT_REPRESENT_PRECISION;
             return (-1);
@@ -2081,7 +2097,7 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
         itemp = (int) (mult + 0.001);
 
         /* QC test on the integer value as this is the number that will get encoded on the GSF byte stream */
-        if ((itemp < MIN_GSF_SF_MULT_VALUE) || (itemp > MAX_GSF_SF_MULT_VALUE))
+        if (itemp < MIN_GSF_SF_MULT_VALUE)
         {
             gsfError = GSF_CANNOT_REPRESENT_PRECISION;
             return (-1);
@@ -2950,7 +2966,7 @@ gsfGetNumberRecords (int handle, int desiredRecord)
         return (-1);
     }
 
-    if ((desiredRecord < 0) || (desiredRecord > NUM_REC_TYPES))
+    if ((desiredRecord < 0) || (desiredRecord >= NUM_REC_TYPES))
     {
         gsfError = GSF_UNRECOGNIZED_RECORD_ID;
         return (-1);
@@ -7126,7 +7142,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
         if (strncmp(rec->process_parameters.param[i], "REFERENCE TIME", strlen("REFERENCE TIME")) == 0)
         {
             memset(p->start_of_epoch, 0, sizeof(p->start_of_epoch));
-            strncpy(p->start_of_epoch, rec->process_parameters.param[i], sizeof(p->start_of_epoch));
+            strncpy(p->start_of_epoch, rec->process_parameters.param[i], sizeof(p->start_of_epoch) - 1);
         }
 
         else if (strncmp (rec->process_parameters.param[i], "PLATFORM_TYPE", strlen ("PLATFORM_TYPE")) == 0)
@@ -8040,7 +8056,8 @@ gsfNumberParams(char *param)
     char *p;
     char tmp[128];
 
-    strncpy (tmp, param, sizeof(tmp));
+    strncpy(tmp, param, sizeof(tmp) - 1);
+    tmp[sizeof(tmp) - 1] = '\0';
     p = strtok (tmp, ",");
 
     if (p == NULL)
@@ -8458,7 +8475,7 @@ gsfIsStarboardPing(const gsfRecords *data)
  *
  ********************************************************************/
 int
-gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecordID, int reset, double min_depth, double max_depth, double *last_corrector, char c_flag, double precision)
+gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecordID, int reset, UNUSED double min_depth, double max_depth, double *last_corrector, char c_flag, double precision)
 {
     double          offset;
     double          fraction;
@@ -9187,19 +9204,23 @@ gsfInitializeMBParams (gsfMBParams *p)
 {
     int i;
 
+    /* The integer unknown values were implicitly being converted from
+       DBL_MIN to 0 in GSF 3.06 and older.
+     */
     memset(p->start_of_epoch, 0, sizeof(p->start_of_epoch));
-    p->horizontal_datum = GSF_UNKNOWN_PARAM_VALUE;
-    p->vertical_datum = GSF_UNKNOWN_PARAM_VALUE;
-    p->roll_compensated = GSF_UNKNOWN_PARAM_VALUE;
-    p->pitch_compensated = GSF_UNKNOWN_PARAM_VALUE;
-    p->heave_compensated = GSF_UNKNOWN_PARAM_VALUE;
-    p->tide_compensated = GSF_UNKNOWN_PARAM_VALUE;
-    p->ray_tracing = GSF_UNKNOWN_PARAM_VALUE;
-    p->depth_calculation = GSF_UNKNOWN_PARAM_VALUE;
-    p->vessel_type = GSF_UNKNOWN_PARAM_VALUE;
-    p->full_raw_data = GSF_UNKNOWN_PARAM_VALUE;
-    p->msb_applied_to_attitude = GSF_UNKNOWN_PARAM_VALUE;
-    p->heave_removed_from_gps_tc = GSF_UNKNOWN_PARAM_VALUE;
+    p->horizontal_datum = GSF_H_DATUM_UNKNOWN;
+    p->vertical_datum = GSF_V_DATUM_UNKNOWN;
+    p->roll_compensated = GSF_UNCOMPENSATED;
+    p->pitch_compensated = GSF_UNCOMPENSATED;
+    p->heave_compensated = GSF_UNCOMPENSATED;
+    p->tide_compensated = GSF_UNCOMPENSATED;
+    p->ray_tracing = GSF_UNCOMPENSATED;
+    /* Default changed from 0 to 3 after gsf 3.06 */
+    p->depth_calculation = GSF_DEPTH_CALC_UNKNOWN;
+    p->vessel_type = GSF_PLATFORM_TYPE_SURFACE_SHIP;
+    p->full_raw_data = GSF_FALSE;
+    p->msb_applied_to_attitude = GSF_FALSE;
+    p->heave_removed_from_gps_tc = GSF_FALSE;
     p->utc_offset = GSF_UNKNOWN_PARAM_INT;
     p->roll_reference = GSF_UNKNOWN_PARAM_INT;
     p->number_of_transmitters = GSF_UNKNOWN_PARAM_INT;

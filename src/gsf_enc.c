@@ -43,6 +43,12 @@
 #include "gsf.h"
 #include "gsf_enc.h"
 
+#if defined(__GNUC__) && __GNUC__ >= 4
+#  define UNUSED __attribute((__unused__))
+#else
+#  define UNUSED
+#endif
+
 /* Global external data defined in this module */
 extern int      gsfError; /* defined in gsf.c */
 
@@ -128,7 +134,7 @@ gsfEncodeHeader(unsigned char *sptr, gsfHeader * header)
 
     memset(header->version, 0, sizeof(header->version));
     strncpy(header->version, GSF_VERSION, sizeof(header->version)-1);
-    header->version[sizeof(header->version)] = 0;
+    header->version[sizeof(header->version) - 1] = '\0';
     memcpy(p, header->version, sizeof(gsfHeader));
     p += sizeof(gsfHeader);
 
@@ -752,7 +758,7 @@ gsfEncodeSinglebeam(unsigned char *sptr, gsfSingleBeamPing * ping)
  *
  ********************************************************************/
 int
-gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_FILE_TABLE *ft, int handle)
+gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_FILE_TABLE *ft, UNUSED int handle)
 {
     gsfuLong        ltemp;
     gsfuShort       stemp;
@@ -1699,7 +1705,7 @@ EncodeScaleFactors(unsigned char *sptr, gsfScaleFactors *sf)
     for (subrecordID = 1; subrecordID <= GSF_MAX_PING_ARRAY_SUBRECORDS; subrecordID++)
     {
         itemp = (int) (sf->scaleTable[subrecordID - 1].multiplier + 0.001);
-        if ((itemp >= MIN_GSF_SF_MULT_VALUE) && (itemp <= MAX_GSF_SF_MULT_VALUE))
+        if (itemp >= MIN_GSF_SF_MULT_VALUE)
         {
             /* First four byte integer has the id in the first byte, the
              * compression flags in the second byte, and the two lower
@@ -3712,7 +3718,7 @@ EncodeElacMkIISpecific(unsigned char *sptr, gsfSensorSpecific *sdata)
  ********************************************************************/
 
 static int
-EncodeEM3Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE *ft)
+EncodeEM3Specific(unsigned char *sptr, gsfSensorSpecific *sdata, UNUSED GSF_FILE_TABLE *ft)
 {
     unsigned char  *p = sptr;
     gsfuShort       stemp;
@@ -4130,7 +4136,7 @@ EncodeEM3Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE 
  ********************************************************************/
 
 static int
-EncodeEM3RawSpecific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE *ft)
+EncodeEM3RawSpecific(unsigned char *sptr, gsfSensorSpecific *sdata, UNUSED GSF_FILE_TABLE *ft)
 {
     unsigned char  *p = sptr;
     gsfuShort       stemp;
@@ -4631,7 +4637,7 @@ EncodeEM3RawSpecific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TAB
  ********************************************************************/
 
 static int
-EncodeEM4Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE *ft)
+EncodeEM4Specific(unsigned char *sptr, gsfSensorSpecific *sdata, UNUSED GSF_FILE_TABLE *ft)
 {
     unsigned char  *p = sptr;
     gsfuShort       stemp;

@@ -1695,7 +1695,7 @@ typedef struct t_gsfMBParams
     int tide_compensated;           /* = GSF_COMPENSATED if the depth data has been corrected for tide */
     int ray_tracing;                /* = GSF_COMPENSATED if the travel time/angle pairs are compensated for ray tracing */
     int depth_calculation;          /* = GSF_TRUE_DEPTHS, or GSF_DEPTHS_RE_1500_MS, applicable to the depth field */
-    int vessel_type;
+    int vessel_type;                /* Defaults to GSF_PLATFORM_TYPE_SURFACE_SHIP */
     int full_raw_data;              /* = GSF_TRUE if this GSF file has sufficient information to support full recalculation of X,Y,Z from raw measurements, otherwise = GSF_FALSE */
     int msb_applied_to_attitude;    /* = GSF_TRUE if the motion sensor bias values (from patch test) have been added to the attitude values in the ping record and attitude record */
     int heave_removed_from_gps_tc;  /* = GSF_TRUE if the heave has been removed from the gps_tide_corrector */
@@ -1713,6 +1713,7 @@ typedef struct t_gsfMBParams
 /* Macro definitions for approved horizontal datums. Note that as of
  * 12/20/95 only WGS-84 is supported by GSF.
  */
+#define GSF_H_DATUM_UNKNOWN 0
 #define GSF_H_DATUM_ADI   1   /* Adinan */
 #define GSF_H_DATUM_ARF   2   /* Arc 1950 */
 #define GSF_H_DATUM_ARS   3   /* Arc 1960 */
