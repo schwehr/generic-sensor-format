@@ -8041,7 +8041,8 @@ gsfNumberParams(char *param)
     char *p;
     char tmp[128];
 
-    strncpy (tmp, param, sizeof(tmp));
+    strncpy(tmp, param, sizeof(tmp) - 1);
+    tmp[sizeof(tmp) - 1] = '\0';
     p = strtok (tmp, ",");
 
     if (p == NULL)
