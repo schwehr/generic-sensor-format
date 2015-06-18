@@ -1,6 +1,7 @@
 * Introduction
 
 [[https://travis-ci.org/schwehr/generic-sensor-format][https://travis-ci.org/schwehr/generic-sensor-format.svg?branch=master]]
+[[https://scan.coverity.com/projects/5473][https://scan.coverity.com/projects/5473/badge.svg]]
 
 Library for reading and writing Generic Sensor Format (GSF) sonar files.
 
