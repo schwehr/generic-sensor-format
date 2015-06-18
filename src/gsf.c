@@ -9197,19 +9197,23 @@ gsfInitializeMBParams (gsfMBParams *p)
 {
     int i;
 
+    /* The integer unknown values were implicitly being converted from
+       DBL_MIN to 0 in GSF 3.06 and older.
+     */
     memset(p->start_of_epoch, 0, sizeof(p->start_of_epoch));
-    p->horizontal_datum = GSF_UNKNOWN_PARAM_VALUE;
-    p->vertical_datum = GSF_UNKNOWN_PARAM_VALUE;
-    p->roll_compensated = GSF_UNKNOWN_PARAM_VALUE;
-    p->pitch_compensated = GSF_UNKNOWN_PARAM_VALUE;
-    p->heave_compensated = GSF_UNKNOWN_PARAM_VALUE;
-    p->tide_compensated = GSF_UNKNOWN_PARAM_VALUE;
-    p->ray_tracing = GSF_UNKNOWN_PARAM_VALUE;
-    p->depth_calculation = GSF_UNKNOWN_PARAM_VALUE;
-    p->vessel_type = GSF_UNKNOWN_PARAM_VALUE;
-    p->full_raw_data = GSF_UNKNOWN_PARAM_VALUE;
-    p->msb_applied_to_attitude = GSF_UNKNOWN_PARAM_VALUE;
-    p->heave_removed_from_gps_tc = GSF_UNKNOWN_PARAM_VALUE;
+    p->horizontal_datum = GSF_H_DATUM_UNKNOWN;
+    p->vertical_datum = GSF_V_DATUM_UNKNOWN;
+    p->roll_compensated = GSF_UNCOMPENSATED;
+    p->pitch_compensated = GSF_UNCOMPENSATED;
+    p->heave_compensated = GSF_UNCOMPENSATED;
+    p->tide_compensated = GSF_UNCOMPENSATED;
+    p->ray_tracing = GSF_UNCOMPENSATED;
+    /* Default changed from 0 to 3 after gsf 3.06 */
+    p->depth_calculation = GSF_DEPTH_CALC_UNKNOWN;
+    p->vessel_type = GSF_PLATFORM_TYPE_SURFACE_SHIP;
+    p->full_raw_data = GSF_FALSE;
+    p->msb_applied_to_attitude = GSF_FALSE;
+    p->heave_removed_from_gps_tc = GSF_FALSE;
     p->utc_offset = GSF_UNKNOWN_PARAM_INT;
     p->roll_reference = GSF_UNKNOWN_PARAM_INT;
     p->number_of_transmitters = GSF_UNKNOWN_PARAM_INT;
