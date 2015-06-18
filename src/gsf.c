@@ -639,7 +639,8 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
         {
             if (gsfFileTable[fileTableIndex].occupied == 0)
             {
-                strncpy (gsfFileTable[fileTableIndex].file_name, filename, sizeof(gsfFileTable[fileTableIndex].file_name));
+                strncpy (gsfFileTable[fileTableIndex].file_name, filename, sizeof(gsfFileTable[fileTableIndex].file_name) - 1);
+                gsfFileTable[fileTableIndex].file_name[sizeof(gsfFileTable[fileTableIndex].file_name) - 1] = '\0';
                 /* This is the first open for this file, so clear the
                  * pointers to dynamic memory.
                  */
