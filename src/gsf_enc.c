@@ -1705,7 +1705,7 @@ EncodeScaleFactors(unsigned char *sptr, gsfScaleFactors *sf)
     for (subrecordID = 1; subrecordID <= GSF_MAX_PING_ARRAY_SUBRECORDS; subrecordID++)
     {
         itemp = (int) (sf->scaleTable[subrecordID - 1].multiplier + 0.001);
-        if ((itemp >= MIN_GSF_SF_MULT_VALUE) && (itemp <= MAX_GSF_SF_MULT_VALUE))
+        if (itemp >= MIN_GSF_SF_MULT_VALUE)
         {
             /* First four byte integer has the id in the first byte, the
              * compression flags in the second byte, and the two lower
