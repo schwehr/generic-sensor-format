@@ -2061,7 +2061,7 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
         itemp = (int) (mult + 0.001);
 
         /* QC test on the integer value as this is the number that will get encoded on the GSF byte stream */
-        if ((itemp < MIN_GSF_SF_MULT_VALUE) || (itemp > MAX_GSF_SF_MULT_VALUE))
+        if (itemp < MIN_GSF_SF_MULT_VALUE)
         {
             gsfError = GSF_CANNOT_REPRESENT_PRECISION;
             return (-1);
@@ -2083,7 +2083,7 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
         itemp = (int) (mult + 0.001);
 
         /* QC test on the integer value as this is the number that will get encoded on the GSF byte stream */
-        if ((itemp < MIN_GSF_SF_MULT_VALUE) || (itemp > MAX_GSF_SF_MULT_VALUE))
+        if (itemp < MIN_GSF_SF_MULT_VALUE)
         {
             gsfError = GSF_CANNOT_REPRESENT_PRECISION;
             return (-1);
