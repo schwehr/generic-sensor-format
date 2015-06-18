@@ -46,6 +46,12 @@
 #include "gsf_dec.h"
 #include "gsf_enc.h"
 
+#if defined(__GNUC__) && __GNUC__ >= 4
+#  define UNUSED __attribute((__unused__))
+#else
+#  define UNUSED
+#endif
+
 /* Macro definitions for this file */
 #define RESON_MASK1 192
 #define RESON_MASK2  48
@@ -451,7 +457,7 @@ DecodeNOSHDBSpecific(gsfSBSensorSpecific * sdata, unsigned char *sptr)
  *
  ********************************************************************/
 int
-gsfDecodeSinglebeam(gsfSingleBeamPing * ping, unsigned char *sptr, GSF_FILE_TABLE *ft, int handle, int record_size)
+gsfDecodeSinglebeam(gsfSingleBeamPing * ping, unsigned char *sptr, UNUSED GSF_FILE_TABLE *ft, UNUSED int handle, int record_size)
 {
     gsfuLong        ltemp;
     int             subrecord_size;
@@ -3692,7 +3698,7 @@ DecodeElacMkIISpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  ********************************************************************/
 
 static int
-DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE *ft)
+DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, UNUSED GSF_FILE_TABLE *ft)
 {
     unsigned char   *p = sptr;
     gsfuShort       stemp;
@@ -4093,7 +4099,7 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE 
  *
  ********************************************************************/
 static int
-DecodeEM3RawSpecific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE *ft)
+DecodeEM3RawSpecific(gsfSensorSpecific *sdata, unsigned char *sptr, UNUSED GSF_FILE_TABLE *ft)
 {
     unsigned char   *p = sptr;
     char            ctemp;
@@ -4457,7 +4463,7 @@ DecodeEM3RawSpecific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TAB
  ********************************************************************/
 
 static int
-DecodeEM4Specific(gsfSensorSpecific *sdata, unsigned char *sptr, GSF_FILE_TABLE *ft)
+DecodeEM4Specific(gsfSensorSpecific *sdata, unsigned char *sptr, UNUSED GSF_FILE_TABLE *ft)
 {
     unsigned char   *p = sptr;
     char            ctemp;
