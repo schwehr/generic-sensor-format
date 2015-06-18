@@ -59,6 +59,13 @@
 #include "gsf_ft.h"
 #include "gsf_indx.h"
 
+#if defined(__GNUC__) && __GNUC__ >= 4
+#  define UNUSED __attribute((__unused__))
+#else
+#  define UNUSED
+#endif
+
+
 /* Macros required for this module */
 /* TODO(schwehr): Do this properly. */
 #ifndef __APPLE__
@@ -8461,7 +8468,7 @@ gsfIsStarboardPing(const gsfRecords *data)
  *
  ********************************************************************/
 int
-gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecordID, int reset, double min_depth, double max_depth, double *last_corrector, char c_flag, double precision)
+gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecordID, int reset, UNUSED double min_depth, double max_depth, double *last_corrector, char c_flag, double precision)
 {
     double          offset;
     double          fraction;
