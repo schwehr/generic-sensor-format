@@ -229,9 +229,9 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
         ret = gsfCreateIndexFile(ndx_file, handle, ft);
         if (ret)
         {
-            return(-1);
+            return (-1);
         }
-        return(0);
+        return (0);
     }
 
     /* The index file exists. Read the version field, if we don't
@@ -246,16 +246,16 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
         ret = gsfCreateIndexFile(ndx_file, handle, ft);
         if (ret)
         {
-            return(-1);
+            return (-1);
         }
-        return(0);
+        return (0);
     }
 
     ret = sscanf (index_header.version, "INDEX-GSF-v%d.%d", &maj_indx_num, &min_indx_num);
     if (ret != 2)
     {
         gsfError = GSF_UNRECOGNIZED_FILE;
-        return(-1);
+        return (-1);
     }
 
     /* Next four bytes contain the size of the GSF file when the index file was created */
@@ -278,9 +278,9 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
         ret = gsfCreateIndexFile(ndx_file, handle, ft);
         if (ret)
         {
-            return(-1);
+            return (-1);
         }
-        return(0);
+        return (0);
     }
 
     /* The next four bytes contain the endian indicator.  Read this to determine whether
@@ -310,9 +310,9 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
         ret = gsfAppendIndexFile(ndx_file, handle, ft);
         if (ret)
         {
-            return(-1);
+            return (-1);
         }
-        return(0);
+        return (0);
     }
     if (index_header.gsfFileSize > ft->file_size)
     {
@@ -324,9 +324,9 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
          ret = gsfCreateIndexFile(ndx_file, handle, ft);
          if (ret)
          {
-             return(-1);
+             return (-1);
          }
-         return(0);
+         return (0);
     }
 
     /* If we get here, then the index file that exists is ready to use. */
@@ -571,7 +571,7 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                             if (temp[0] == NULL)
                             {
                                 gsfError = GSF_OPEN_TEMP_FILE_FAILED;
-                                return(-1);
+                                return (-1);
                             }
                             index_header.number_record_types++;
                         }
@@ -865,7 +865,7 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
         {
             if (gsfError != GSF_READ_TO_END_OF_FILE && gsfError != GSF_PARTIAL_RECORD_AT_END_OF_FILE)
             {
-                return(-1);
+                return (-1);
             }
         }
     }
@@ -1149,7 +1149,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                     if (temp[i] == NULL)
                     {
                         gsfError = GSF_OPEN_TEMP_FILE_FAILED;
-                        return(-1);
+                        return (-1);
                     }
                 }
                 fwrite(&index_rec, sizeof(INDEX_REC), 1, temp[i]);
@@ -1218,7 +1218,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                 }
             }
             /* gsfError will have been set in gsfRead */
-            return(-1);
+            return (-1);
         }
     }
     gsfSeek(handle, GSF_PREVIOUS_RECORD);
@@ -1248,7 +1248,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                 }
             }
             /* gsfError will have been set in gsfRead */
-            return(-1);
+            return (-1);
         }
     }
     fseek(ft->fp, save_pos, SEEK_SET);
@@ -1344,7 +1344,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                             temp[0] = open_temp_file(0);
                             if (temp[0] == NULL)
                             {
-                                return(-1);
+                                return (-1);
                             }
                             index_header.number_record_types++;
                         }
@@ -1652,7 +1652,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                         close_temp_file(i, temp[i]);
                     }
                 }
-                return(-1);
+                return (-1);
             }
         }
     }
@@ -1678,7 +1678,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                 close_temp_file(i, temp[i]);
             }
         }
-        return(-1);
+        return (-1);
     }
 
     /* Write the index file header information. NOTE that the data are
@@ -1812,7 +1812,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
     if (!gsf_progress_callback) printf("                                            \r");
 #endif
 
-    return(0);
+    return (0);
 }
 
 /********************************************************************
@@ -1897,7 +1897,7 @@ open_temp_file(int type)
     if ((fp = fopen(file, "wb+")) == NULL)
     {
         perror(file);
-        return((FILE *) NULL);
+        return ((FILE *) NULL);
     }
 
     return (fp);
@@ -1971,7 +1971,7 @@ gsfCloseIndex(GSF_FILE_TABLE *ft)
         ft->index_data.scale_factor_addr = (INDEX_REC *) NULL;
     }
 
-    return(0);
+    return (0);
 }
 
 /******************************************************************************\

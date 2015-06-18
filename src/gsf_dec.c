@@ -683,7 +683,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
     if (ping->number_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* Next two byte integer contains the center beam number, portmost
@@ -1748,7 +1748,7 @@ DecodeTwoByteArray(double **array, unsigned char *sptr, int num_beams,
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* Allocate memory for the array if none has been allocated yet */
@@ -1855,7 +1855,7 @@ DecodeSignedTwoByteArray(double **array, char *sptr, int num_beams,
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* Allocate memory for the array if none has been allocated yet */
@@ -1961,7 +1961,7 @@ DecodeFourByteArray(double **array, unsigned char *sptr, int num_beams,
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* Allocate memory for the array if none has been allocated yet */
@@ -2068,7 +2068,7 @@ DecodeSignedFourByteArray(double **array, char *sptr, int num_beams,
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* Allocate memory for the array if none has been allocated yet */
@@ -2167,13 +2167,13 @@ DecodeByteArray(double **array, unsigned char *sptr, int num_beams,
     if (sf->scaleTable[id - 1].multiplier < 1.0e-6)
     {
         gsfError = GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER;
-        return(-1);
+        return (-1);
     }
 
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* Allocate memory for the array if none has been allocated yet */
@@ -2279,7 +2279,7 @@ DecodeFromByteToUnsignedShortArray(unsigned short **array, unsigned char *sptr, 
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* Allocate memory for the array if none has been allocated yet */
@@ -2382,7 +2382,7 @@ DecodeSignedByteArray(double **array, char *sptr, int num_beams,
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* Allocate memory for the array if none has been allocated yet */
@@ -2469,7 +2469,7 @@ DecodeBeamFlagsArray(unsigned char **array, unsigned char *sptr, int num_beams, 
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* Allocate memory for the array if none has been allocated yet */
@@ -2556,7 +2556,7 @@ DecodeQualityFlagsArray(unsigned char **array, unsigned char *sptr, int num_beam
     if (num_beams <= 0)
     {
         gsfError = GSF_INVALID_NUM_BEAMS;
-        return(-1);
+        return (-1);
     }
 
     /* Allocate memory for the array if none has been allocated yet */
@@ -4919,7 +4919,7 @@ DecodeGeoSwathPlusSpecific(gsfSensorSpecific *sdata, unsigned char *sptr)
     memcpy (sdata->gsfGeoSwathPlusSpecific.spare, p, sizeof (char) * 32);
     p += 32;
 
-    return(p - sptr);
+    return (p - sptr);
 }
 
 /********************************************************************
@@ -5032,7 +5032,7 @@ DecodeKlein5410BssSpecific(gsfSensorSpecific *sdata, unsigned char *sptr)
     memcpy (sdata->gsfKlein5410BssSpecific.spare, p, sizeof (char) * 32);
     p += 32;
 
-    return(p - sptr);
+    return (p - sptr);
 }
 
 /********************************************************************
@@ -6603,7 +6603,7 @@ DecodeBRBIntensity(gsfBRBIntensity ** idata, unsigned char *sptr, int num_beams,
         if (num_beams <= 0)
         {
             gsfError = GSF_INVALID_NUM_BEAMS;
-            return(-1);
+            return (-1);
         }
 
         (*idata)->time_series = (gsfTimeSeriesIntensity *) calloc(num_beams, sizeof(gsfTimeSeriesIntensity));
@@ -7297,7 +7297,7 @@ gsfDecodeHistory(gsfHistory * history, GSF_FILE_TABLE *ft, unsigned char *sptr)
     else
     {
         gsfError = GSF_HISTORY_RECORD_DECODE_FAILED;
-        return(-1);
+        return (-1);
     }
 
     /* two byte integer contains the size of the text to follow */
@@ -7315,7 +7315,7 @@ gsfDecodeHistory(gsfHistory * history, GSF_FILE_TABLE *ft, unsigned char *sptr)
     else
     {
         gsfError = GSF_HISTORY_RECORD_DECODE_FAILED;
-        return(-1);
+        return (-1);
     }
 
     /* Next two byte integer contains the size of the command line used
