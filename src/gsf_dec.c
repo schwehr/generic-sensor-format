@@ -1679,7 +1679,7 @@ DecodeScaleFactors(gsfScaleFactors *sf, unsigned char *sptr)
         offset = (double) stemp;
 
         itemp = (int) (multiplier + 0.001);
-        if ((itemp < MIN_GSF_SF_MULT_VALUE) || (itemp > MAX_GSF_SF_MULT_VALUE))
+        if (itemp < MIN_GSF_SF_MULT_VALUE)
         {
             gsfError = GSF_CANNOT_REPRESENT_PRECISION;
             return (-1);
