@@ -1,27 +1,14 @@
 /********************************************************************
  *
- * File Name : gsf_geo.c
+ * Description : Functions to compute auxiliary information about points on a ship.
  *
- * Author/Date : R.K.Wells / 26 Feb 2014
- *
- * Description : Some hopefully useful functions to compute auxiliary
- *               information about points on a ship.
- *
- * Restrictions/Limitations :
- *
- * Change Descriptions :
- *
- * Classification : Unclassified
- *
- * References :
- *
- * copyright 2014 Leidos, Inc.
+ * Copyright 2014 Leidos, Inc.
  * There is no charge to use the library, and it may be accessed at:
  * https://www.leidos.com/maritime/gsf.
  * This library may be redistributed and/or modified under the terms of
  * the GNU Lesser General Public License version 2.1, as published by the
  * Free Software Foundation.  A copy of the LGPL 2.1 license is included with
- * the GSF distribution and is avaialbe at: http://opensource.org/licenses/LGPL-2.1.
+ * the GSF distribution and is available at: http://opensource.org/licenses/LGPL-2.1.
  *
  * Leidos, Inc. configuration manages GSF, and provides GSF releases. Users are
  * strongly encouraged to communicate change requests and change proposals to Leidos, Inc.
@@ -32,22 +19,18 @@
  ********************************************************************/
 
 #include <math.h>
-
-/* rely on the network type definitions of (u_short, and u_int) */
 #include <sys/types.h>
+
 #if !defined WIN32 && !defined WIN64
 #include <netinet/in.h>
 #else
 #include <winsock.h>
 #endif
 
-#include <math.h>
-
-/* gsf library interface description */
 #include "gsf.h"
 
 /* Global external data defined in this module */
-extern int      gsfError;                               /* defined in gsf.c */
+extern int      gsfError; /* defined in gsf.c */
 
 #define SQR(x) ((x)*(x))
 #define Everest_1830        0
@@ -204,8 +187,7 @@ GSF_POSITION_OFFSETS *gsfGetPositionOffsets(GSF_POSITION gp_from, GSF_POSITION g
     int                     n, iter;
     double                  lat_diff, lon_diff;
 
-    //  need to determine number of iterations from the dist_step.
-
+    /* need to determine number of iterations from the dist_step. */
     gp_from.lat = DTOR(gp_from.lat);
     gp_from.lon = DTOR(gp_from.lon);
     gp_to.lat   = DTOR(gp_to.lat);
@@ -233,7 +215,7 @@ GSF_POSITION_OFFSETS *gsfGetPositionOffsets(GSF_POSITION gp_from, GSF_POSITION g
     else
         iter = (int)ceil(lat_diff / dist_step);
 
-    //  need to handle crossing the dateline.
+    /* need to handle crossing the dateline. */
     dlon = gp_to.lon - gp_from.lon;
     if (dlon > PI)
         dlon = ((2.0 * PI) - dlon) / (double)iter;

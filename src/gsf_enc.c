@@ -1,11 +1,7 @@
 /********************************************************************
  *
- * Module Name : GSF_ENC.C
- *
- * Author/Date : J. S. Byrne / 3 May 1994
- *
  * Description :
- *  This source file contains the gsf functions for encoding a gsf byte
+ *  This source file contains the GSF functions for encoding a GSF byte
  *   stream from host data structures.
  *
  * Restrictions/Limitations :
@@ -16,94 +12,13 @@
  * 3) This library assumes that the type short is 16 bits, and that
  *    the type int is 32 bits.
  *
- *
- * Change Descriptions :
- * who          when      what
- * ---          ----      ----
- * jsb          10-17-94  Added support for Reson SeaBat data
- * jsb          03-10-95  Modified ping record to store dynamic depth
- *                        corrector and tide corrector.
- * jsb          11-13-95  Added Unique id for EM1000
- * jsb          12-22-95  Added nearest scaled integer rounding on latitude
- *                        longitude, roll, pitch, and heave.
- * hem          08-20-96  Added gsfEncodeSinglebeam; added EncodeSASSSpecific,
- *                        EncodeTypeIIISeaBeamSpecific, EncodeSeaMapSpecific,
- *                        EncodeEchotracSpecific, EncodeMGD77Specific,
- *                        EncodeBDBSpecific, & EncodeNOSHDBSpecific; changed
- *                        gsfEncodeComment so that it uses the length of the
- *                        comment specified in the record rather than using
- *                        strlen to find the length of the comment (to allow
- *                        nulls in the comment);
- * jsb          09-27-96  Added support for SeaBeam with amplitude data
- * jsb          03-24-97  Added support for gsfSeaBatIISpecific as a replacement
- *                        of gsfSeaBatSpecific for the Reson 900x series sonars.
- *                        Added gsfSeaBat8101Specific for the Reson 8101 series
- *                        sonar.
- * hem          07-23-97  Added code to gsfEncodeSwathBathySummary,
- *                        gsfEncodeSinglebeam, and
- *                        gsfEncodeSoundVelocityProfile to handle rounding
- *                        latitudes, longitudes, depths, etc. properly before
- *                        storage in the GSF file.
- * bac          10-27-97  Added EncodeSeaBeam2112Specific to support the Sea
- *                        Beam 2112/36 sonar.
- * dwc          1-9-98    Added EncodeElacMkIISpecific to support the Elac
- *                        Bottomchart MkII sonar.
- * jsb          09/28/98  Added gsfEncodeHVNavigationError. This change made
- *                        in responce to CRs: GSF-98-001, and GSF-98-002. Also
- *                        added support for horizontal error ping array subrecord
- *                        in responce to CR: GSF-98-003. Removed the computation of
- *                        error_sum from gsfEncodeSwathBathymetryPing, now the library
- *                        will write horizontal and vertical depth estimates for each
- *                        ping if the array pointers are non-null.
- * jsb          12/29/98  Added support for Simrad em3000 series sonar systems.
- * wkm          3-30-99   Added EncodeCmpSassSpecific to deal with CMP SASS data.
- * wkm          8-02-99   Updated EncodeCmpSassSpecific to include lntens (heave) with CMP SASS data.
- * bac          10-24-00  Updated EncodeEM3Specific to include data fields from updated
- *                        EM series runtime parameter datagram.
- * bac          07-18-01  Added support for the Reson 8100 series of sonars.  Also removed the useage
- *                        of C++ reserved words "class" and "operator".
- * bac          10-12-01  Added a new attitude record definition.  The attitude record provides
- *                        a method for logging full time-series attitude measurements in the GSF
- *                        file, instead of attitude samples only at ping time.  Each attitude
- *                        record contains arrays of attitude measurements for time, roll, pitch,
- *                        heave and heading.  The number of measurements is user-definable, but
- *                        because of the way in which measurement times are stored, a single
- *                        attitude record should never contain more than sixty seconds worth of
- *                        data.
- * jsb          01-19-02  Added support for Simrad EM120, and removed references to unsued variables.
- * bac          06-19-03  Added support for bathymetric receive beam time series intensity data (i.e., Simrad
- *                        "Seabed image" and Reson "snippets").  Inlcluded RWL updates of 12-19-02 for adding
- *                        sensor-specific singlebeam information to the MB sensor specific subrecords.
- * bac          12-28-04  Added support for Navisound singlebeam, EM3000D, EM3002, and EM3002D.  Fixed
- *                        encoding of 1-byte BRB intensity values.  Corrected the encode/decode of Reson
- *                        projector angle.  Added beam_spacing to the gsfReson8100Specific subrecord.
- * bac          06-28-06  Added support for EM121A data received via Kongsberg SIS, mapped to existing
- *                        EM3 series sensor specific data structure. Replaced references to long types
- *                        with int types, for compilation on 64-bit architectures.
- * dhg          10-24-06  Added support for GeoSwathPlus interferometric sonar
- * dhg          10-31-06  Added support for GeoSwathPlus "range_error" and "angle_error"
- * dhg          11-01-06  Corrected "model_number" and "frequency" for "GeoSwathPlusSpecific" record
- * mab          02-01-09  Updates to support Reson 7125. Added new subrecord IDs and subrecord definitions for Kongsberg
- *                        sonar systems where TWTT and angle are populated from raw range and beam angle datagram. Added
- *                        new subrecord definition for EM2000.  Bug fixes in gsfOpen and gsfPercent.
- * clb          02-25-11  Changed the EncodeBRBIntensity() function when bits_per_sample is 12
- * clb          04-06-11  Changes made for DeltaT
- * clb          04-13-11  When encoding a ping, reject it if the number of beams <= 0
- * clb          06-21-11  Added em12 to list of available sensors
- * clb          09-20-11  Added support for R2Sonic
- * jcd          02-17-12  fixed EncodeQualityFlagsArray to work with num_beams not evenly divisible by 4
- *
- * Classification : Unclassified
- *
- * References : DoDBL Generic Sensor Format Sept. 30, 1993
- *
- * copyright 2014 Leidos, Inc.
+ * Copyright 2014 Leidos, Inc.
  * There is no charge to use the library, and it may be accessed at:
  * https://www.leidos.com/maritime/gsf.
  * This library may be redistributed and/or modified under the terms of
  * the GNU Lesser General Public License version 2.1, as published by the
  * Free Software Foundation.  A copy of the LGPL 2.1 license is included with
- * the GSF distribution and is avaialbe at: http://opensource.org/licenses/LGPL-2.1.
+ * the GSF distribution and is available at: http://opensource.org/licenses/LGPL-2.1.
  *
  * Leidos, Inc. configuration manages GSF, and provides GSF releases. Users are
  * strongly encouraged to communicate change requests and change proposals to Leidos, Inc.
@@ -114,25 +29,22 @@
  *
  ********************************************************************/
 
-/* standard c library includes */
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-
-/* rely on the network type definitions of (u_short, and u_int) */
+#include <string.h>
 #include <sys/types.h>
+
 #if !defined WIN32  && !defined WIN64
 #include <netinet/in.h>
 #else
 #include <winsock.h>
 #endif
 
-/* gsf library interface description */
 #include "gsf.h"
 #include "gsf_enc.h"
 
 /* Global external data defined in this module */
-extern int      gsfError;                               /* defined in gsf.c */
+extern int      gsfError; /* defined in gsf.c */
 
 /* Function prototypes for this file */
 static int      EncodeScaleFactors(unsigned char *sptr, gsfScaleFactors *sf);
@@ -159,7 +71,7 @@ static int      EncodeReson7100ImagerySpecific(unsigned char *sptr, gsfSensorIma
 static int      EncodeR2SonicImagerySpecific(unsigned char *sptr, gsfSensorImagery *sdata);
 
 #if 1
-/* 3-30-99 wkm: obsolete */
+/* obsolete */
 static int      EncodeTypeIIISeaBeamSpecific(unsigned char *sptr, gsfSensorSpecific * sdata);
 static int      EncodeSASSSpecific(unsigned char *sptr, gsfSensorSpecific * sdata);
 #endif
@@ -196,7 +108,7 @@ static int      EncodeR2SonicSpecific(unsigned char *sptr, gsfSensorSpecific * s
  *
  * Function Name : gsfEncodeHeader
  *
- * Description : This function encodes a gsf header into external byte stream
+ * Description : This function encodes a GSF header into external byte stream
  *  form from the passed gsfHeader structure.
  *
  * Inputs :
@@ -227,7 +139,7 @@ gsfEncodeHeader(unsigned char *sptr, gsfHeader * header)
  *
  * Function Name : gsfEncodeSwathBathySummary
  *
- * Description : This function encodes a gsf swath bathymetry summary record
+ * Description : This function encodes a GSF swath bathymetry summary record
  *  into external byte stream form from the passed gsfHeader structure.
  *
  * Inputs :
@@ -442,7 +354,8 @@ EncodeMGD77Specific(unsigned char *sptr, gsfSBSensorSpecific * sdata)
     p += 2;
 
     /* The Next two byte integer contains on how the sound velocity
-       correction was made */
+     * correction was made
+     */
     stemp = htons((gsfuShort) (sdata->gsfMGD77Specific.correction_code));
     memcpy(p, &stemp, 2);
     p += 2;
@@ -479,7 +392,7 @@ EncodeMGD77Specific(unsigned char *sptr, gsfSBSensorSpecific * sdata)
  * Function Name : EncodeBDBSpecific
  *
  * Description : This function encodes the BDB fields
- * into a BDB record.
+ *  into a BDB record.
  *
  * Inputs :
  *    sptr = a pointer to an unsigned char buffer to write into
@@ -569,20 +482,20 @@ EncodeNOSHDBSpecific(unsigned char *sptr, gsfSBSensorSpecific * sdata)
  *
  * Function Name : gsfEncodeSinglebeam
  *
- * Description : This function encodes a gsf single beam ping record
+ * Description : This function encodes a GSF single beam ping record
  *  in external byte stream form from a gsfSwathBathyPing structure.
  *
  * Inputs :
  *    sptr = a pointer to the unsigned char buffer to write into
  *    ping = a pointer to the gsfSwathBathPing record to read from
- *    handle = an integer handle to the gsf data file, used to track the
+ *    handle = an integer handle to the GSF data file, used to track the
  *             number of beams.
  *    ft = a pointer to the gsfFileTable, where the scale factors are
  *         maintained.
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_UNRECOGNIZED_SENSOR_ID
@@ -765,8 +678,8 @@ gsfEncodeSinglebeam(unsigned char *sptr, gsfSingleBeamPing * ping)
 
 
     /* Next possible subrecord is the sensor specific subrecord. Save the
-    *  current pointer, and leave room for the four byte subrecord identifier.
-    */
+     * current pointer, and leave room for the four byte subrecord identifier.
+     */
     temp_ptr = p;
     p += 4;
 
@@ -801,9 +714,9 @@ gsfEncodeSinglebeam(unsigned char *sptr, gsfSingleBeamPing * ping)
             return (-1);
     }
 
-    /*  Identifier has sensor specific id in first byte, and size in the
-    *  remaining three bytes
-    */
+    /* Identifier has sensor specific id in first byte, and size in the
+     * remaining three bytes
+     */
     ltemp = ping->sensor_id << 24;
     ltemp |= (gsfuLong) sensor_size;
     ltemp = htonl(ltemp);
@@ -819,20 +732,20 @@ gsfEncodeSinglebeam(unsigned char *sptr, gsfSingleBeamPing * ping)
  *
  * Function Name : gsfEncodeSwathBathymetryPing
  *
- * Description : This function encodes a gsf swath bathymetry ping record
+ * Description : This function encodes a GSF swath bathymetry ping record
  *  in external byte stream form from a gsfSwathBathyPing structure.
  *
  * Inputs :
  *    sptr = a pointer to the unsigned char buffer to write into
  *    ping = a pointer to the gsfSwathBathPing record to read from
- *    handle = an integer handle to the gsf data file, used to track the
+ *    handle = an integer handle to the GSF data file, used to track the
  *             number of beams.
  *    ft = a pointer to the gsfFileTable, where the scale factors are
  *         maintained.
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_UNRECOGNIZED_SENSOR_ID
@@ -901,8 +814,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     p += 2;
 
     /* Next two byte integer contains the center beam number, portmost
-    *  outer beam is beam number 1.
-    */
+     * outer beam is beam number 1.
+     */
     stemp = htons(ping->center_beam);
     memcpy(p, &stemp, 2);
     p += 2;
@@ -1142,8 +1055,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the across track distance array.  For this
-    * array to be encoded there must be data, and a scale factor.
-    */
+     * array to be encoded there must be data, and a scale factor.
+     */
     if (ping->across_track != (double *) NULL)
     {
         switch (ft->rec.mb_ping.scaleFactors.scaleTable[GSF_SWATH_BATHY_SUBRECORD_ACROSS_TRACK_ARRAY - 1].compressionFlag & 0xF0)
@@ -1166,8 +1079,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the along track distance array.  For this
-    * array to be encoded there must be data, and a scale factor.
-    */
+     * array to be encoded there must be data, and a scale factor.
+     */
     if (ping->along_track != (double *) NULL)
     {
         switch (ft->rec.mb_ping.scaleFactors.scaleTable[GSF_SWATH_BATHY_SUBRECORD_ALONG_TRACK_ARRAY - 1].compressionFlag & 0xF0)
@@ -1190,8 +1103,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the travel time array.  For this
-    * array to be encoded there must be data, and a scale factor.
-    */
+     * array to be encoded there must be data, and a scale factor.
+     */
     if (ping->travel_time != (double *) NULL)
     {
         switch (ft->rec.mb_ping.scaleFactors.scaleTable[GSF_SWATH_BATHY_SUBRECORD_TRAVEL_TIME_ARRAY - 1].compressionFlag & 0xF0)
@@ -1228,8 +1141,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the mean, calibrated amplitude array. For
-    * this array to be encoded there must be data, and a scale factor.
-    */
+     * this array to be encoded there must be data, and a scale factor.
+     */
     if (ping->mc_amplitude != (double *) NULL)
     {
         switch (ft->rec.mb_ping.scaleFactors.scaleTable[GSF_SWATH_BATHY_SUBRECORD_MEAN_CAL_AMPLITUDE_ARRAY - 1].compressionFlag & 0xF0)
@@ -1252,8 +1165,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the mean, relative amplitude array.  For
-    * this array to be encoded there must be data, and a scale factor.
-    */
+     * this array to be encoded there must be data, and a scale factor.
+     */
     if (ping->mr_amplitude != (double *) NULL)
     {
         switch (ft->rec.mb_ping.scaleFactors.scaleTable[GSF_SWATH_BATHY_SUBRECORD_MEAN_REL_AMPLITUDE_ARRAY - 1].compressionFlag & 0xF0)
@@ -1277,8 +1190,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the echo width array. For this
-    * array to be encoded there must be data, and a scale factor.
-    */
+     * array to be encoded there must be data, and a scale factor.
+     */
     if (ping->echo_width != (double *) NULL)
     {
         switch (ft->rec.mb_ping.scaleFactors.scaleTable[GSF_SWATH_BATHY_SUBRECORD_ECHO_WIDTH_ARRAY - 1].compressionFlag & 0xF0)
@@ -1302,8 +1215,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the quality factor array.  For this
-    * array to be encoded there must be data, and a scale factor.
-    */
+     * array to be encoded there must be data, and a scale factor.
+     */
     if (ping->quality_factor != (double *) NULL)
     {
         ret = EncodeByteArray(p, ping->quality_factor, ping->number_beams,
@@ -1316,8 +1229,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the array of ship heave at beam reception
-    * time. For this array to be encoded there must be data, and a scale factor.
-    */
+     * time. For this array to be encoded there must be data, and a scale factor.
+     */
     if (ping->receive_heave != (double *) NULL)
     {
         ret = EncodeSignedByteArray(p, ping->receive_heave, ping->number_beams,
@@ -1330,9 +1243,9 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the array of estimated depth errors.
-    * For this array to be encoded there must be data, and a scale factor.
-    * jsb 10/19/98 This subrecord is obsolete, it is replaced with vertical_error.
-    */
+     * For this array to be encoded there must be data, and a scale factor.
+     * jsb 10/19/98 This subrecord is obsolete, it is replaced with vertical_error.
+     */
     if (ping->depth_error != (double *) NULL)
     {
         ret = EncodeTwoByteArray(p, ping->depth_error, ping->number_beams,
@@ -1345,9 +1258,9 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the array of estimated across track errors.
-    * For this array to be encoded there must be data, and a scale factor.
-    * jsb 10/19/98 This subrecord is obsolete, it is replaced with horizontal_error.
-    */
+     * For this array to be encoded there must be data, and a scale factor.
+     * jsb 10/19/98 This subrecord is obsolete, it is replaced with horizontal_error.
+     */
     if (ping->across_track_error != (double *) NULL)
     {
         ret = EncodeTwoByteArray(p, ping->across_track_error, ping->number_beams,
@@ -1360,9 +1273,9 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the array of estimated along track errors.
-    * For this array to be encoded there must be data, and a scale factor.
-    * jsb 10/19/98 This subrecord is obsolete, it is replaced with horizontal_error.
-    */
+     * For this array to be encoded there must be data, and a scale factor.
+     * Obsolete, it is replaced with horizontal_error.
+     */
     if (ping->along_track_error != (double *) NULL)
     {
         ret = EncodeTwoByteArray(p, ping->along_track_error, ping->number_beams,
@@ -1399,8 +1312,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the array of signal to noise ratios.
-    * For this array to be encoded there must be new data, and a scale factor.
-    */
+     * For this array to be encoded there must be new data, and a scale factor.
+     */
     if (ping->signal_to_noise != (double *) NULL)
     {
         ret = EncodeByteArray(p, ping->signal_to_noise, ping->number_beams,
@@ -1413,8 +1326,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the beam angle forward array. For this
-    * array to be encoded there must be data, and a scale factor.
-    */
+     * array to be encoded there must be data, and a scale factor.
+     */
     if (ping->beam_angle_forward != (double *) NULL)
     {
         ret = EncodeTwoByteArray(p, ping->beam_angle_forward, ping->number_beams,
@@ -1427,8 +1340,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the array of estimated vertical errors.
-    * For this array to be encoded there must be data, and a scale factor.
-    */
+     * For this array to be encoded there must be data, and a scale factor.
+     */
     if (ping->vertical_error != (double *) NULL)
     {
         ret = EncodeTwoByteArray(p, ping->vertical_error, ping->number_beams,
@@ -1442,8 +1355,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
 
 
     /* Next possible subrecord is the array of estimated horizontal errors.
-    * For this array to be encoded there must be data, and a scale factor.
-    */
+     * For this array to be encoded there must be data, and a scale factor.
+     */
     if (ping->horizontal_error != (double *) NULL)
     {
         ret = EncodeTwoByteArray(p, ping->horizontal_error, ping->number_beams,
@@ -1531,8 +1444,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
     }
 
     /* Next possible subrecord is the sensor specific subrecord. Save the
-    *  current pointer, and leave room for the four byte subrecord identifier.
-    */
+     * current pointer, and leave room for the four byte subrecord identifier.
+     */
     temp_ptr = p;
     p += 4;
 
@@ -1582,8 +1495,8 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
             sensor_size = EncodeEM1000Specific(p, &ping->sensor_data);
             break;
 
-            #if 1
-            /* 3-30-99 wkm: obsolete */
+#if 1
+        /* obsolete */
         case (GSF_SWATH_BATHY_SUBRECORD_TYPEIII_SEABEAM_SPECIFIC):
             sensor_size = EncodeTypeIIISeaBeamSpecific(p, &ping->sensor_data);
             break;
@@ -1708,9 +1621,9 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
             return (-1);
     }
 
-   /*  Identifier has sensor specific id in first byte, and size in the
-    *  remaining three bytes
-    */
+    /* Identifier has sensor specific id in first byte, and size in the
+     * remaining three bytes
+     */
     ltemp = ping->sensor_id << 24;
     ltemp |= (gsfuLong) sensor_size;
     ltemp = htonl(ltemp);
@@ -1765,10 +1678,10 @@ EncodeScaleFactors(unsigned char *sptr, gsfScaleFactors *sf)
     ltemp = GSF_SWATH_BATHY_SUBRECORD_SCALE_FACTORS << 24;
 
     /* Next four bytes contain the size of the subrecord, need to
-    * compute this value:
-    *  4 byte number of scale factors
-    * 12 bytes per number of scale factors
-    */
+     * compute this value:
+     *  4 byte number of scale factors
+     * 12 bytes per number of scale factors
+     */
     ltemp |= 4 + (12 * sf->numArraySubrecords);
     subID = htonl(ltemp);
     memcpy(p, &subID, 4);
@@ -1780,8 +1693,8 @@ EncodeScaleFactors(unsigned char *sptr, gsfScaleFactors *sf)
     p += 4;
 
     /* Loop to encode each scale factor which has been defined.
-    * The loop counter i indexes through the known subrecord ids
-    */
+     * The loop counter i indexes through the known subrecord ids
+     */
     sf_counter = 0;
     for (subrecordID = 1; subrecordID <= GSF_MAX_PING_ARRAY_SUBRECORDS; subrecordID++)
     {
@@ -1789,8 +1702,8 @@ EncodeScaleFactors(unsigned char *sptr, gsfScaleFactors *sf)
         if ((itemp >= MIN_GSF_SF_MULT_VALUE) && (itemp <= MAX_GSF_SF_MULT_VALUE))
         {
             /* First four byte integer has the id in the first byte, the
-             *  compression flags in the second byte, and the two lower
-             *  order bytes are reserved
+             * compression flags in the second byte, and the two lower
+             * order bytes are reserved
              */
             ltemp = ((gsfuLong) subrecordID) << 24;     /* ID = loop counter */
             ltemp |= (((gsfuLong) (sf->scaleTable[subrecordID - 1].compressionFlag)) << 16);
@@ -1836,12 +1749,12 @@ EncodeScaleFactors(unsigned char *sptr, gsfScaleFactors *sf)
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of doubles from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -1876,8 +1789,8 @@ EncodeTwoByteArray(unsigned char *sptr, double *array, int num_beams,
     }
 
     /* subrecord identifier has array id in first byte, and size in the
-    *  remaining three bytes
-    */
+     * remaining three bytes
+     */
     ltemp = id << 24;
     ltemp |= num_beams * 2;
     ltemp = htonl(ltemp);
@@ -1919,12 +1832,12 @@ EncodeTwoByteArray(unsigned char *sptr, double *array, int num_beams,
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of doubles from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -1959,8 +1872,8 @@ EncodeSignedTwoByteArray(unsigned char *sptr, double *array, int num_beams,
     }
 
     /* subrecord identifier has array id in first byte, and size in the
-    *  remaining three bytes
-    */
+     * remaining three bytes
+     */
     ltemp = id << 24;
     ltemp |= num_beams * 2;
     ltemp = htonl(ltemp);
@@ -2002,12 +1915,12 @@ EncodeSignedTwoByteArray(unsigned char *sptr, double *array, int num_beams,
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of doubles from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2042,8 +1955,8 @@ EncodeFourByteArray(unsigned char *sptr, double *array, int num_beams,
     }
 
     /* subrecord identifier has array id in first byte, and size in the
-    *  remaining three bytes
-    */
+     * remaining three bytes
+     */
     ltemp = id << 24;
     ltemp |= num_beams * 4;
     ltemp = htonl(ltemp);
@@ -2084,12 +1997,12 @@ EncodeFourByteArray(unsigned char *sptr, double *array, int num_beams,
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of doubles from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2124,8 +2037,8 @@ EncodeSignedFourByteArray(unsigned char *sptr, double *array, int num_beams,
     }
 
     /* subrecord identifier has array id in first byte, and size in the
-    *  remaining three bytes
-    */
+     * remaining three bytes
+     */
     ltemp = id << 24;
     ltemp |= num_beams * 4;
     ltemp = htonl(ltemp);
@@ -2167,12 +2080,12 @@ EncodeSignedFourByteArray(unsigned char *sptr, double *array, int num_beams,
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of doubles from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2206,8 +2119,8 @@ EncodeByteArray(unsigned char *sptr, double *array, int num_beams,
     }
 
     /* subrecord identifier has array id in first byte, and size in the
-    *  remaining three bytes
-    */
+     * remaining three bytes
+     */
     ltemp = id << 24;
     ltemp |= num_beams;
     ltemp = htonl(ltemp);
@@ -2249,12 +2162,12 @@ EncodeByteArray(unsigned char *sptr, double *array, int num_beams,
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of doubles from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2287,9 +2200,8 @@ EncodeSignedByteArray (unsigned char *sptr, double *array, int num_beams, gsfSca
     }
 
     /* subrecord identifier has array id in first byte, and size in the
-    *  remaining three bytes
-    */
-
+     * remaining three bytes
+     */
     ltemp = id << 24;
     ltemp |= num_beams;
     ltemp = htonl(ltemp);
@@ -2323,12 +2235,12 @@ EncodeSignedByteArray (unsigned char *sptr, double *array, int num_beams, gsfSca
  *    sptr = a pointer to the unsigned char buffer to write to
  *    array = a pointer to the array of ints from which to read
  *    num_beams = the integer number of beams (number of doubles in the array)
- *    sf = a pointer to the gsf scale factors used to scale the data
+ *    sf = a pointer to the GSF scale factors used to scale the data
  *    id = the array subrecord id
  *
  * Returns :
  *  This function returns the number of bytes encoded if successful, or
- *  -1 if an error occured.
+ *  -1 if an error occurred.
  *
  * Error Conditions :
  *    GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
@@ -2359,7 +2271,7 @@ EncodeFromUnsignedShortToByteArray(unsigned char *sptr, unsigned short *array, i
     }
 
     /* subrecord identifier has array id in first byte, and size in the
-     *  remaining three bytes
+     * remaining three bytes
      */
     ltemp = id << 24;
     ltemp |= num_beams;
@@ -2411,8 +2323,8 @@ EncodeBeamFlagsArray(unsigned char *sptr, unsigned char *array, int num_beams)
     }
 
     /* subrecord identifier has array id in first byte, and size in the
-    *  remaining three bytes
-    */
+     * remaining three bytes
+     */
     ltemp = GSF_SWATH_BATHY_SUBRECORD_BEAM_FLAGS_ARRAY << 24;
     ltemp |= num_beams;
     ltemp = htonl(ltemp);
@@ -2486,15 +2398,16 @@ EncodeQualityFlagsArray(unsigned char *sptr, unsigned char *array, int num_beams
     }
 
 
-    /*  If shift doesn't get reset to 6 then we have a number of beams that is not evenly divisible by 4.  The problem is that
-        we actually encoded part of another byte but we didn't increment the ptr.  */
+    /* If shift doesn't get reset to 6 then we have a number of beams that is not evenly divisible by 4.  The problem is that
+     * we actually encoded part of another byte but we didn't increment the ptr.
+     */
 
     if (shift != 6) ptr++;
 
 
     /* subrecord identifier has array id in first byte, and size in the
-    *  remaining three bytes
-    */
+     * remaining three bytes
+     */
     ltemp = GSF_SWATH_BATHY_SUBRECORD_QUALITY_FLAGS_ARRAY << 24;
     ltemp |= (ptr - sptr - 4);
     ltemp = htonl(ltemp);
@@ -2512,7 +2425,7 @@ EncodeQualityFlagsArray(unsigned char *sptr, unsigned char *array, int num_beams
  *
  * Inputs :
  *    sptr = a pointer to an unsigned char to write into
- *    sdata = a pointer to a union of gsf sensor specific data
+ *    sdata = a pointer to a union of GSF sensor specific data
  *
  * Returns : This function returns the number of bytes encoded.
  *
@@ -2656,8 +2569,8 @@ EncodeEM100Specific(unsigned char *sptr, gsfSensorSpecific * sdata)
     p += 1;
 
     /* Next two byte integer contains the counter from the em100
-    * amplitude datagram
-    */
+     * amplitude datagram
+     */
     stemp = htons((gsfuShort) (sdata->gsfEM100Specific.counter));
     memcpy(p, &stemp, 2);
     p += 2;
@@ -2731,8 +2644,7 @@ EncodeEM950Specific(unsigned char *sptr, gsfSensorSpecific * sdata)
     memcpy(p, &signed_short, 2);
     p += 2;
 
-    /* Next two byte integer contains the sea surface sound speed * 10
-     */
+    /* Next two byte integer contains the sea surface sound speed * 10 */
     dtemp = (sdata->gsfEM950Specific.surface_velocity * 10.0);
     if (dtemp < 0.0)
     {
@@ -2889,8 +2801,7 @@ EncodeEM121ASpecific(unsigned char *sptr, gsfSensorSpecific *sdata)
     *p = (unsigned char) sdata->gsfEM121ASpecific.rx_status;
     p += 1;
 
-    /* Next two byte integer contains the sea surface sound speed * 10
-     */
+    /* Next two byte integer contains the sea surface sound speed * 10 */
     dtemp = (sdata->gsfEM121ASpecific.surface_velocity * 10.0);
     if (dtemp < 0.0)
     {
@@ -3098,7 +3009,7 @@ EncodeSASSSpecific(unsigned char *sptr, gsfSensorSpecific * sdata)
  * Function Name : EncodeTypeIIISeaBeamSpecific
  *
  * Description : This function encodes the Type III Seabeam specific
- *               data record to external byte stream format.
+ *  data record to external byte stream format.
  *
  * Inputs :
  *    sptr = a pointer to an unsigned char buffer to write into
@@ -3289,8 +3200,8 @@ EncodeSeaMapSpecific(unsigned char *sptr, gsfSensorSpecific * sdata, GSF_FILE_TA
     }
     stemp = htons((gsfuShort) dtemp);
     memcpy(p, &stemp, 2);
-    /* JSB 11/08/2007; looks like the pointer increment for this field in the encode processing has been missing
-     *  since this code block was first written in GSFv1.03
+    /* The pointer increment for this field in the encode processing has been missing
+     * since this code block was first written in GSFv1.03
      */
     if ((ft->major_version_number > 2) || ((ft->major_version_number == 2) && (ft->minor_version_number > 7)))
     {
@@ -3791,7 +3702,7 @@ EncodeElacMkIISpecific(unsigned char *sptr, gsfSensorSpecific *sdata)
  * Inputs :
  *    sptr = a pointer to an unsigned char buffer to write into
  *    sdata = a pointer to a union of sensor specific data.
- *    ft = a pointer to the gsf file table, this is used to determine
+ *    ft = a pointer to the GSF file table, this is used to determine
  *        is the run-time parameters should be written with this record.
  *
  * Returns : This function returns the number of bytes encoded.
@@ -3880,44 +3791,17 @@ EncodeEM3Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE 
     *p = (unsigned char) (sdata->gsfEM3Specific.offset_multiplier);
     p += 1;
 
-    /* Encode and write the run-time paremeters if any of them have changed. */
+    /* Encode and write the run-time parameters if any of them have changed. */
     run_time_id = 1;
 
-    /* JSB 3/31/99 Commented out the following code block.  For now we will encode all of the
-     *  run-time parameter fields in the sensor specific sub-record for each ping, whether the
-     *  values have been updated or not.  In a future release, we plan to support encoding this
-     *  portion of the subrecord only when the values have been updated.  This can be done by
-     *  using the model in place for the scale factors record.  We will need to support a
-     *  "scales_read" flag for write after read access, and direct access back to the ping record
-     *  with the updated run-time params prior to a direct access read.
+    /* For now we will encode all of the
+     * run-time parameter fields in the sensor specific sub-record for each ping, whether the
+     * values have been updated or not.  In a future release, we plan to support encoding this
+     * portion of the subrecord only when the values have been updated.  This can be done by
+     * using the model in place for the scale factors record.  We will need to support a
+     * "scales_read" flag for write after read access, and direct access back to the ping record
+     * with the updated run-time params prior to a direct access read.
      *
-     * run_time_id = 0;
-     * if (memcmp(&sdata->gsfEM3Specific.run_time[0], &ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[0], sizeof(gsfEM3RunTime)))
-     * {
-     *     memcpy (&ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[0], &sdata->gsfEM3Specific.run_time[0], sizeof(gsfEM3RunTime));
-     *     run_time_id |= 0x00000001;
-     * }
-     *
-     * If this is an em 3000 series dual head installation, then we'll need to save both sets of run time parameters when either set
-     *  has been updated.
-     *
-     * if ((sdata->gsfEM3Specific.model_number == 3002) ||
-     *    (sdata->gsfEM3Specific.model_number == 3003) ||
-     *    (sdata->gsfEM3Specific.model_number == 3004) ||
-     *    (sdata->gsfEM3Specific.model_number == 3005) ||
-     *    (sdata->gsfEM3Specific.model_number == 3006) ||
-     *    (sdata->gsfEM3Specific.model_number == 3007) ||
-     *    (sdata->gsfEM3Specific.model_number == 3008))
-     * {
-     *     if ((memcmp(&sdata->gsfEM3Specific.run_time[0], &ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[0], sizeof(gsfEM3RunTime))) ||
-     *         (memcmp(&sdata->gsfEM3Specific.run_time[1], &ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[1], sizeof(gsfEM3RunTime))))
-     *     {
-     *         memcpy (&ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[0], &sdata->gsfEM3Specific.run_time[0], sizeof(gsfEM3RunTime));
-     *         memcpy (&ft->rec.mb_ping.sensor_data.gsfEM3Specific.run_time[1], &sdata->gsfEM3Specific.run_time[1], sizeof(gsfEM3RunTime));
-     *         run_time_id |= 0x00000001;
-     *         run_time_id |= 0x00000002;
-     *     }
-     * }
      */
 
     /* The next four byte value specifies the existance of the run-time data strucutre */
@@ -3926,7 +3810,7 @@ EncodeEM3Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE 
     p += 4;
 
     /* If the first bit is set then this subrecord contains a new set of run-time parameters,
-     *  for a single head system otherwise the run-time parameters have not changed.
+     * for a single head system otherwise the run-time parameters have not changed.
      */
     if (run_time_id & 0x00000001)
     {
@@ -4022,7 +3906,7 @@ EncodeEM3Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE 
         p += 1;
 
         /* The next one byte value contains the receive band width in Hz. This value is
-         *  provided by the sonar with a precision of 50 hz.
+         * provided by the sonar with a precision of 50 hz.
          */
         *p = sdata->gsfEM3Specific.run_time[0].receive_bandwidth / 50 + 0.501;
         p += 1;
@@ -4074,7 +3958,7 @@ EncodeEM3Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE 
         p += 4;
 
         /* If the second bit is set then this subrecord contains a second set of new run-time
-         *  for an em3000d series sonar system.
+         * for an em3000d series sonar system.
          */
         if (run_time_id & 0x00000002)
         {
@@ -4170,7 +4054,7 @@ EncodeEM3Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE 
             p += 1;
 
             /* The next one byte value contains the receive band width in Hz. This value is
-             *  provided by the sonar with a precision of 50 hz.
+             * provided by the sonar with a precision of 50 hz.
              */
             *p = sdata->gsfEM3Specific.run_time[1].receive_bandwidth / 50 + 0.501;
             p += 1;
@@ -4236,7 +4120,7 @@ EncodeEM3Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE 
  * Inputs :
  *    sptr = a pointer to an unsigned char buffer to write into
  *    sdata = a pointer to a union of sensor specific data.
- *    ft = a pointer to the gsf file table, this is used to determine
+ *    ft = a pointer to the GSF file table, this is used to determine
  *        is the run-time parameters should be written with this record.
  *
  * Returns : This function returns the number of bytes encoded.
@@ -4472,7 +4356,6 @@ EncodeEM3RawSpecific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TAB
 
 
     /* Encode and write the run-time parameters.
-     *
      * The next two byte value contains the em model number
      */
     stemp = htons(sdata->gsfEM3RawSpecific.run_time.model_number);
@@ -4577,7 +4460,7 @@ EncodeEM3RawSpecific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TAB
     p += 1;
 
     /* The next one byte value contains the receive band width in Hz. This value is
-     *  provided by the sonar with a precision of 50 hz.
+     * provided by the sonar with a precision of 50 hz.
      */
     *p = (unsigned char) ((sdata->gsfEM3RawSpecific.run_time.rx_bandwidth / 50) + 0.501);
     p += 1;
@@ -4644,7 +4527,7 @@ EncodeEM3RawSpecific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TAB
         case 3000:
         case 3020:
             /* The next two byte value contains the transmit along track tilt in degrees.
-             * JSB: As of 3/1/09, still don't have final datagram documentation from KM
+             * Still don't have final datagram documentation from KM
              * to know whether the tx_along_tilt field is EM4 specific or if it will be supported
              * on EM3 systems.
              */
@@ -4673,7 +4556,7 @@ EncodeEM3RawSpecific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TAB
     {
         default:
             /* The next one byte value contains the HiLo frequency absorption coefficient ratio
-             * JSB: As of 3/1/09, still don't have final datagram documentation from KM
+             * Still don't have final datagram documentation from KM
              * to know whether the filter ID 2 field is EM4 specific or if it will be supported
              * on EM3 systems.
              */
@@ -4738,7 +4621,7 @@ EncodeEM3RawSpecific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TAB
  * Inputs :
  *    sptr = a pointer to an unsigned char buffer to write into
  *    sdata = a pointer to a union of sensor specific data.
- *    ft = a pointer to the gsf file table, this is used to determine
+ *    ft = a pointer to the GSF file table, this is used to determine
  *        is the run-time parameters should be written with this record.
  *
  * Returns : This function returns the number of bytes encoded.
@@ -4971,10 +4854,9 @@ EncodeEM4Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE 
     memset (p, 0, (size_t) 16);
     p += 16;
 
-    /* Encode and write the run-time parameters.
-     *
-     * The next two byte value contains the em model number
-     */
+    /* Encode and write the run-time parameters. */
+
+    /* The next two byte value contains the em model number */
     stemp = htons(sdata->gsfEM4Specific.run_time.model_number);
     memcpy(p, &stemp, 2);
     p += 2;
@@ -5077,7 +4959,7 @@ EncodeEM4Specific(unsigned char *sptr, gsfSensorSpecific *sdata, GSF_FILE_TABLE 
     p += 1;
 
     /* The next one byte value contains the receive band width in Hz. This value is
-     *  provided by the sonar with a precision of 50 hz.
+     * provided by the sonar with a precision of 50 hz.
      */
     *p = (unsigned char) ((sdata->gsfEM4Specific.run_time.rx_bandwidth / 50) + 0.501);
     p += 1;
@@ -5420,7 +5302,8 @@ EncodeKlein5410BssSpecific(unsigned char *sptr, gsfSensorSpecific *sdata)
     p += 4;
 
     /* Next four bytes contain the number of valid range, angle, amplitude
-    samples in the ping */
+     *samples in the ping
+     */
     ltemp = htonl((gsfuLong) sdata->gsfKlein5410BssSpecific.num_raa_samples);
     memcpy(p, &ltemp, 4);
     p += 4;
@@ -6403,7 +6286,7 @@ EncodeSBEchotracSpecific(unsigned char *sptr, t_gsfSBEchotracSpecific * sdata)
     memcpy(p, &stemp, 2);
     p += 2;
 
-        /* Next byte contains the most probable position source navigation */
+    /* Next byte contains the most probable position source navigation */
     *p = (unsigned char) sdata->mpp_source;
     p += 1;
 
@@ -6717,15 +6600,15 @@ EncodeEM3ImagerySpecific(unsigned char *sptr, gsfSensorImagery *sdata)
     p += 2;
 
     /* Next two bytes contain the imagery offset value used to positive bias the imagery values. This value has been added to all imagery samples
-     *  as the Kongsberg imagery datagram is decoded into GSF.
+     * as the Kongsberg imagery datagram is decoded into GSF.
      */
     sstemp = htons((gsfsShort) sdata->gsfEM3ImagerySpecific.offset);
     memcpy(p, &sstemp, 2);
     p += 2;
 
     /* Next two bytes contain the imagery scale value as specified by the manufacturer.  This value is 2 for the EM3000/EM3002/EM1002/EM300/EM120.
-     *  The following formula can be used to convert from the GSF positive biased value to dB:
-     *  dB_value = (GSF_I_value - offset) / scale
+     * The following formula can be used to convert from the GSF positive biased value to dB:
+     * dB_value = (GSF_I_value - offset) / scale
      */
     sstemp = htons((gsfsShort) sdata->gsfEM3ImagerySpecific.scale);
     memcpy(p, &sstemp, 2);
@@ -6884,15 +6767,15 @@ EncodeEM4ImagerySpecific(unsigned char *sptr, gsfSensorImagery *sdata)
     p += 2;
 
     /* Next two bytes contain the imagery offset value used to positive bias the imagery values. This value has been added to all imagery samples
-     *  as the Kongsberg imagery datagram is decoded into GSF.
+     * as the Kongsberg imagery datagram is decoded into GSF.
      */
     sstemp = htons((gsfsShort) sdata->gsfEM4ImagerySpecific.offset);
     memcpy(p, &sstemp, 2);
     p += 2;
 
     /* Next two bytes contain the imagery scale value as specified by the manufacturer.  This value is 10 for the EM710/EM302/EM122/EM2040.
-     *  The following formula can be used to convert from the GSF positive biased value to dB:
-     *  dB_value = (GSF_I_value - offset) / scale
+     * The following formula can be used to convert from the GSF positive biased value to dB:
+     * dB_value = (GSF_I_value - offset) / scale
      */
     sstemp = htons((gsfsShort) sdata->gsfEM4ImagerySpecific.scale);
     memcpy(p, &sstemp, 2);
@@ -7212,6 +7095,7 @@ EncodeR2SonicImagerySpecific(unsigned char *sptr, gsfSensorImagery *sdata)
 
     return (p - sptr);
 } /* end EncodeR2SonicImagerySpecific() */
+
 /********************************************************************
  *
  * Function Name : EncodeBRBIntensity
@@ -7425,8 +7309,8 @@ EncodeBRBIntensity(unsigned char *sptr, gsfBRBIntensity *idata, int num_beams, i
     }
 
     /* subrecord identifier has array id in first byte, and size in the
-    *  remaining three bytes
-    */
+     * remaining three bytes
+     */
     size = ptr - sptr;
     ltemp = GSF_SWATH_BATHY_SUBRECORD_INTENSITY_SERIES_ARRAY << 24;
     ltemp |= size;
@@ -7440,7 +7324,7 @@ EncodeBRBIntensity(unsigned char *sptr, gsfBRBIntensity *idata, int num_beams, i
  *
  * Function Name : gsfEncodeSoundVelocityProfile
  *
- * Description : This function encodes a gsf sound velocity profile record
+ * Description : This function encodes a GSF sound velocity profile record
  *  from internal form to external byte stream form.
  *
  * Inputs :
@@ -7473,8 +7357,8 @@ gsfEncodeSoundVelocityProfile(unsigned char *sptr, gsfSVP * svp)
     p += 4;
 
     /* Next four byte integer contains the seconds portion of the time the
-    *  new profile was put into use by the sonar system
-    */
+     * new profile was put into use by the sonar system
+     */
     ltemp = htonl(svp->application_time.tv_sec);
     memcpy(p, &ltemp, 4);
     p += 4;
@@ -7522,8 +7406,8 @@ gsfEncodeSoundVelocityProfile(unsigned char *sptr, gsfSVP * svp)
     p += 4;
 
     /* Now loop to encode the depth/sound speed pairs
-    * Scale both the depth and sound speed by 100
-    */
+     * Scale both the depth and sound speed by 100
+     */
     for (i = 0; i < svp->number_points; i++)
     {
         /* Next four byte integer contains the depth. Round the scaled
@@ -7566,7 +7450,7 @@ gsfEncodeSoundVelocityProfile(unsigned char *sptr, gsfSVP * svp)
  *
  * Function Name : gsfEncodeProcessingParameters
  *
- * Description : This function encodes into external gsf byte stream form
+ * Description : This function encodes into external GSF byte stream form
  *  a record of processing parameters.
  *
  * Inputs :
@@ -7589,8 +7473,8 @@ gsfEncodeProcessingParameters(unsigned char *sptr, gsfProcessingParameters * par
     int             i;
 
     /* First four byte integer contains the seconds portion of the time
-    *  application of the new parameters.
-    */
+     * application of the new parameters.
+     */
     ltemp = htonl(param->param_time.tv_sec);
     memcpy(p, &ltemp, 4);
     p += 4;
@@ -7627,7 +7511,7 @@ gsfEncodeProcessingParameters(unsigned char *sptr, gsfProcessingParameters * par
  *
  * Function Name : gsfEncodeSensorParameters
  *
- * Description : This function encodes into external gsf byte stream form
+ * Description : This function encodes into external GSF byte stream form
  *  a record of sonar parameters.
  *
  * Inputs :
@@ -7650,8 +7534,8 @@ gsfEncodeSensorParameters(unsigned char *sptr, gsfSensorParameters * param)
     int             i;
 
     /* First four byte integer contains the seconds portion of the time
-    *  application of the new parameters.
-    */
+     * application of the new parameters.
+     */
     ltemp = htonl(param->param_time.tv_sec);
     memcpy(p, &ltemp, 4);
     p += 4;
@@ -7708,15 +7592,15 @@ gsfEncodeComment(unsigned char *sptr, gsfComment * comment)
     gsfuLong        ltemp;
 
     /* First four byte integer contains the seconds portion of the time
-    *  the operator comment was made.
-    */
+     * the operator comment was made.
+     */
     ltemp = htonl(comment->comment_time.tv_sec);
     memcpy(p, &ltemp, 4);
     p += 4;
 
     /* Next four byte integer contains the nanoseconds portion of the
-    * comment time
-    */
+     * comment time
+     */
     ltemp = htonl(comment->comment_time.tv_nsec);
     memcpy(p, &ltemp, 4);
     p += 4;
@@ -7737,7 +7621,7 @@ gsfEncodeComment(unsigned char *sptr, gsfComment * comment)
  *
  * Function Name : gsfEncodeHistory
  *
- * Description : This function encodes a gsf history record from internal
+ * Description : This function encodes a GSF history record from internal
  *  to external byte stream form.
  *
  * Inputs :
@@ -7759,15 +7643,15 @@ gsfEncodeHistory(unsigned char *sptr, gsfHistory * history)
     gsfuShort       stemp;
 
     /* First four byte integer contains the seconds portion of the time
-    *  the history record was added to the data.
-    */
+     * the history record was added to the data.
+     */
     ltemp = htonl(history->history_time.tv_sec);
     memcpy(p, &ltemp, 4);
     p += 4;
 
     /* Next four byte integer contains the nanoseconds portion of the
-    * history time.
-    */
+     * history time.
+     */
     ltemp = htonl(history->history_time.tv_nsec);
     memcpy(p, &ltemp, 4);
     p += 4;
@@ -7847,22 +7731,22 @@ gsfEncodeNavigationError(unsigned char *sptr, gsfNavigationError * nav_error)
     gsfuLong        ltemp;
 
     /* First four byte integer contains the seconds portion of the time
-    *  of navigation error.
-    */
+     * of navigation error.
+     */
     ltemp = htonl(nav_error->nav_error_time.tv_sec);
     memcpy(p, &ltemp, 4);
     p += 4;
 
     /* Next four byte integer contains the nanoseconds portion of the
-    * history time.
-    */
+     * history time.
+     */
     ltemp = htonl(nav_error->nav_error_time.tv_nsec);
     memcpy(p, &ltemp, 4);
     p += 4;
 
     /* Next four byte integer contains the record id for the record
-    *  containing a position with this error. (registry and type number)
-    */
+     * containing a position with this error. (registry and type number)
+     */
     ltemp = htonl(nav_error->record_id);
     memcpy(p, &ltemp, 4);
     p += 4;
@@ -7908,22 +7792,22 @@ gsfEncodeHVNavigationError(unsigned char *sptr, gsfHVNavigationError *hv_nav_err
     gsfuShort       utemp;
 
     /* First four byte integer contains the seconds portion of the time
-    *  of navigation error.
-    */
+     * of navigation error.
+     */
     ltemp = htonl(hv_nav_error->nav_error_time.tv_sec);
     memcpy(p, &ltemp, 4);
     p += 4;
 
     /* The next four byte integer contains the nanoseconds portion of the
-    * history time.
-    */
+     * history time.
+     */
     ltemp = htonl(hv_nav_error->nav_error_time.tv_nsec);
     memcpy(p, &ltemp, 4);
     p += 4;
 
     /* The next four byte integer contains the record id for the record
-    *  containing a position with this error. (registry and type number)
-    */
+     * containing a position with this error. (registry and type number)
+     */
     ltemp = htonl(hv_nav_error->record_id);
     memcpy(p, &ltemp, 4);
     p += 4;
@@ -8015,7 +7899,7 @@ static void LocalSubtractTimes (struct timespec *base_time, struct timespec *sub
  *
  * Function Name : gsfEncodeAttitude
  *
- * Description : This function encodes a gsf attitude record from internal
+ * Description : This function encodes a GSF attitude record from internal
  *  to external byte stream form.
  *
  * Inputs :
@@ -8040,20 +7924,20 @@ gsfEncodeAttitude(unsigned char *sptr, gsfAttitude * attitude)
     double          time_offset;
 
     /* write the full time for the first time in the record, and save subsequent times
-     *  as an offset from this basetime
+     * as an offset from this basetime
      */
     basetime = attitude->attitude_time[0];
 
     /* First four byte integer contains the seconds portion of the base
-     *  time for the attitude record
+     * time for the attitude record
      */
     ltemp = htonl(basetime.tv_sec);
     memcpy(p, &ltemp, 4);
     p += 4;
 
     /* Next four byte integer contains the nanoseconds portion of the
-    * attitude base time.
-    */
+     * attitude base time.
+     */
     ltemp = htonl(basetime.tv_nsec);
     memcpy(p, &ltemp, 4);
     p += 4;
@@ -8146,7 +8030,7 @@ gsfEncodeAttitude(unsigned char *sptr, gsfAttitude * attitude)
  * Function Name : gsfSetDefaultScaleFactor
  *
  * Description : This function is used to estimate and set scale
- *               factors for a ping record
+ *  factors for a ping record
  *
  * Inputs :
  *    mb_ping - a pointer to a ping record.  The scale factors
@@ -8433,7 +8317,8 @@ int gsfSetDefaultScaleFactor(gsfSwathBathyPing *mb_ping)
             /* apply the multiplier and offset to the maximum value, if
              * the new value is greater then the max scale factor multiplier
              * size, decrease the multiplier by 2 until this condition is no
-             * longer violated. */
+             * longer violated.
+             */
             while (((( max + mb_ping->scaleFactors.scaleTable[id - 1].offset) * mb_ping->scaleFactors.scaleTable[id - 1].multiplier) > max_scale_factor)
                     || ((( min + mb_ping->scaleFactors.scaleTable[id - 1].offset) * mb_ping->scaleFactors.scaleTable[id - 1].multiplier) < min_scale_factor ))
             {

@@ -1,20 +1,16 @@
-# -*- makefile -*-
-
 # Copyright 2015 Google Inc. All Rights Reserved.
 #
-# This library is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public
-# License as published by the Free Software Foundation; either
-# version 2.1 of the License, or (at your option) any later version.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# Lesser General Public License for more details.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-# You should have received a copy of the GNU Lesser General Public
-# License along with this library; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 WARN := -Wall
 WARN += -Wextra
@@ -28,12 +24,12 @@ OPT += -funroll-loops -fexpensive-optimizations -ffast-math
 OPT += -DNDEBUG
 
 ifdef OPTIMIZE
-  CCFLAGS += ${OPT}
+  CFLAGS += ${OPT}
 else
-  CCFLAGS += ${DEBUG}
+  CFLAGS += ${DEBUG}
 endif
 
-CCFLAGS += ${WARN}
+CFLAGS += ${WARN}
 
 SRCS := $(wildcard *.c)
 OBJS := ${SRCS:.c=.o}
@@ -49,9 +45,10 @@ clean:
 	-rm -f *.o
 	-rm -f ${LIB}
 
-gsf.o: gsf.c gsf.h gsf_ft.h gsf_dec.h gsf_enc.h gsf_indx.h
-gsf_dec.c: gsf.h gsf_dec.h gsf_enc.h
-gsf_enc.c: gsf.h gsf_enc.h
-gsf_geo.o: gsf.h
-gsf_indx.c: gsf.h gsf_ft.h gsf_indx.h
-gsf_info.c: gsf.h
+HDRS := gsf.h gsf_ft.h gsf_dec.h gsf_enc.h gsf_indx.h
+gsf.o: gsf.c ${HDRS}
+gsf_dec.o: gsf_dec.c ${HDRS}
+gsf_enc.o: gsf_enc.c ${HDRS}
+gsf_geo.o: gsf_geo.c ${HDRS}
+gsf_indx.o: gsf_indx.c ${HDRS}
+gsf_info.o: gsf_info.c ${HDRS}
