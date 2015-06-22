@@ -103,6 +103,23 @@ TEST(GsfWriteSimple, CommentUpTo5) {
   ValidateWriteComment(filename5, false, 28, comment5, 52);
 }
 
+TEST(GsfWriteSimple, CommentLarge) {
+  char filename[] = "sample-comment-large.gsf";
+  char comment[] =
+    "ab"
+    "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    "de";
+  ValidateWriteComment(filename, false, 656, comment, 680);
+}
+
 }  // namespace
 }  // namespace test
 }  // namespace generic_sensor_format
