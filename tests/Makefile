@@ -15,6 +15,7 @@
 TESTS :=
 TESTS += read_gsf_2_9_test
 TESTS += read_gsf_3_6_test
+TESTS += write_test
 
 all: test
 	@echo "Done"
