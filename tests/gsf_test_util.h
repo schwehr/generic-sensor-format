@@ -12,6 +12,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+#ifndef GSF_TEST_UTIL_H_
+#define GSF_TEST_UTIL_H_
 
 #include "gsf.h"
 
@@ -23,6 +25,20 @@
 
 namespace generic_sensor_format {
 namespace test {
+
+// A scoped temporary directory cleans up after itself.
+// This implementation is not robust.
+// TODO(schwehr): Handle sub-directories.
+class TempDir {
+public:
+  // Set preserve to true to prevent cleanup.
+  TempDir(bool preserve);
+  ~TempDir();
+  std::string tmp_dir() const { return tmp_dir_; }
+ private:
+  std::string tmp_dir_;
+  bool preserve_;
+};
 
 std::string RecordTypeStr(unsigned int record_id);
 
@@ -127,3 +143,5 @@ void WriteArray(std::ostream &o, size_t size, const double *data,
 
 }  // namespace test
 }  // namespace generic_sensor_format
+
+#endif  // GSF_TEST_H_
