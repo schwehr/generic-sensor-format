@@ -65,14 +65,12 @@ void ValidateWriteComment(const char *filename,
 
   ASSERT_EQ(0, gsfOpen(filename, GSF_READONLY, &handle));
   ASSERT_GE(handle, 0);
-  int num_bytes;
-  num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &record, nullptr, 0);
+  gsfRecords read_record;
+  const int num_bytes
+      = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
   ASSERT_EQ(expected_write_size, num_bytes);
   ASSERT_EQ(GSF_RECORD_COMMENT, data_id.recordID);
-  ASSERT_EQ(1, record.comment.comment_time.tv_sec);
-  ASSERT_EQ(2, record.comment.comment_time.tv_nsec);
-  ASSERT_EQ(strlen(comment), record.comment.comment_length);
-  ASSERT_STREQ(comment, record.comment.comment);
+  VerifyComment(record.comment, read_record.comment);
 }
 
 TEST(GsfWriteSimple, CommentEmpty) {
