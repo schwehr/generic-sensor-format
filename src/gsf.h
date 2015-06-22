@@ -51,7 +51,7 @@ extern          "C"
 #define GSF_MAX_RECORD_SIZE    524288
 
 /* Define the maximum number of files which may be open at once */
-#define GSF_MAX_OPEN_FILES     4
+#define GSF_MAX_OPEN_FILES     128
 
 /* Define the GSF data file access flags */
 #define GSF_CREATE             1
