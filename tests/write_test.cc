@@ -34,6 +34,37 @@ TEST(GsfWriteSimple, HeaderOnly) {
   ASSERT_EQ(24, buf.st_size);
 }
 
+TEST(GsfWriteSimple, CommentEmpty) {
+  int handle;
+  ASSERT_EQ(0, gsfOpen("sample-comment-empty.gsf", GSF_CREATE, &handle));
+
+  gsfDataID data_id = {false, 0, GSF_RECORD_COMMENT, 0};
+  gsfRecords record;
+  record.comment.comment_time.tv_sec = 1;
+  record.comment.comment_time.tv_nsec = 2;
+  char comment[] = "";
+  record.comment.comment_length = strlen(comment);
+  record.comment.comment = comment;
+  ASSERT_EQ(20, gsfWrite(handle, &data_id, &record));
+
+  ASSERT_EQ(0, gsfClose(handle));
+}
+
+TEST(GsfWriteSimple, CommentEmptyWithChecksum) {
+  int handle;
+  ASSERT_EQ(0, gsfOpen("sample-comment-empty.gsf", GSF_CREATE, &handle));
+
+  gsfDataID data_id = {true, 0, GSF_RECORD_COMMENT, 0};
+  gsfRecords record;
+  record.comment.comment_time.tv_sec = 1;
+  record.comment.comment_time.tv_nsec = 2;
+  char comment[] = "";
+  record.comment.comment_length = strlen(comment);
+  record.comment.comment = comment;
+  ASSERT_EQ(24, gsfWrite(handle, &data_id, &record));
+
+  ASSERT_EQ(0, gsfClose(handle));
+}
 
 }  // namespace
 }  // namespace test
