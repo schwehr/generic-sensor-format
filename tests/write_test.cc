@@ -62,6 +62,13 @@ void ValidateWriteComment(const char *filename,
   struct stat buf;
   ASSERT_EQ(0, stat(filename, &buf));
   ASSERT_EQ(expected_file_size, buf.st_size);
+
+  ASSERT_EQ(0, gsfOpen(filename, GSF_READONLY, &handle));
+  ASSERT_GE(handle, 0);
+  int num_bytes;
+  num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &record, nullptr, 0);
+  ASSERT_EQ(expected_write_size, num_bytes);
+  ASSERT_EQ(GSF_RECORD_COMMENT, data_id.recordID);
 }
 
 TEST(GsfWriteSimple, CommentEmpty) {
@@ -74,6 +81,24 @@ TEST(GsfWriteSimple, CommentEmptyChecksum) {
   char filename[] = "sample-comment-empty-checksum.gsf";
   char comment[] = "";
   ValidateWriteComment(filename, true, 24, comment, 48);
+}
+
+TEST(GsfWriteSimple, CommentUpTo5) {
+  char filename1[] = "sample-comment-1.gsf";
+  char comment1[] = "a";
+  ValidateWriteComment(filename1, false, 24, comment1, 48);
+  char filename2[] = "sample-comment-2.gsf";
+  char comment2[] = "ab";
+  ValidateWriteComment(filename2, false, 24, comment2, 48);
+  char filename3[] = "sample-comment-3.gsf";
+  char comment3[] = "abc";
+  ValidateWriteComment(filename3, false, 24, comment3, 48);
+  char filename4[] = "sample-comment-4.gsf";
+  char comment4[] = "abcd";
+  ValidateWriteComment(filename4, false, 24, comment4, 48);
+  char filename5[] = "sample-comment-5.gsf";
+  char comment5[] = "abcde";
+  ValidateWriteComment(filename5, false, 28, comment5, 52);
 }
 
 }  // namespace
