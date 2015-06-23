@@ -1250,7 +1250,7 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
 
     /* Next possible subrecord is the array of estimated depth errors.
      * For this array to be encoded there must be data, and a scale factor.
-     * jsb 10/19/98 This subrecord is obsolete, it is replaced with vertical_error.
+     * This subrecord is obsolete, it is replaced with vertical_error.
      */
     if (ping->depth_error != (double *) NULL)
     {
@@ -1265,7 +1265,7 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
 
     /* Next possible subrecord is the array of estimated across track errors.
      * For this array to be encoded there must be data, and a scale factor.
-     * jsb 10/19/98 This subrecord is obsolete, it is replaced with horizontal_error.
+     * This subrecord is obsolete, it is replaced with horizontal_error.
      */
     if (ping->across_track_error != (double *) NULL)
     {
