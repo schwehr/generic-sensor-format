@@ -119,7 +119,9 @@ const gsfHistory GsfHistory(const struct timespec &when,
   gsfHistory history;
   history.history_time = { when.tv_sec, when.tv_nsec };
   strncpy(history.host_name, host_name, GSF_HOST_NAME_LENGTH);
-  strncpy(history.operator_name, operator_name,GSF_OPERATOR_LENGTH);
+  history.host_name[GSF_HOST_NAME_LENGTH] = '\0';
+  strncpy(history.operator_name, operator_name, GSF_OPERATOR_LENGTH);
+  history.operator_name[GSF_OPERATOR_LENGTH] = '\0';
   history.command_line = const_cast<char *>(command_line);
   history.comment = const_cast<char *>(comment);
   return history;
