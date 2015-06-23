@@ -68,7 +68,7 @@
 #endif
 #endif
 
-/*  Error flag defined in gsf.c */
+/* Error flag defined in gsf.c */
 extern int      gsfError;
 
 /* Prototypes for local functions */
@@ -846,7 +846,6 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
 
             if (old_percent != percent)
             {
-                /* JCD: now calls a callback if it is registered. */
                 if (gsf_progress_callback)
                   {
                     (*gsf_progress_callback) (1, percent);
@@ -938,11 +937,10 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
 
                 count++;
 
-                /* Print the percent spinner to stdout.  */
+                /* Print the percent spinner to stdout. */
                 percent = ((float) (count) / (float) total_recs) * 100.0;
                 if (old_percent != percent)
                 {
-                    /* JCD: now calls a callback if it is registered.  */
                     if (gsf_progress_callback)
                       {
                         (*gsf_progress_callback) (2, percent);
@@ -1172,7 +1170,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
             (INDEX_REC *) calloc(ft->index_data.number_of_records[0],
             sizeof(INDEX_REC));
 
-        /*  Couldn't calloc the memory for the scale factor addresses.  */
+        /* Couldn't calloc the memory for the scale factor addresses. */
 
         if (ft->index_data.scale_factor_addr == NULL)
         {
@@ -1205,7 +1203,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
         err = gsfRead(handle, data_id.recordID, &data_id, &records, NULL, 0);
         if (err < 0)
         {
-            /* Get rid of the temp files.  */
+            /* Get rid of the temp files. */
             for (i = 0; i < NUM_REC_TYPES; i++)
             {
                 /* If the temp file pointer is non-NULL then this record type was
@@ -1235,7 +1233,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
         err = gsfRead(handle, data_id.recordID, &data_id, &records, NULL, 0);
         if (err < 0)
         {
-            /* Get rid of the temp files.  */
+            /* Get rid of the temp files. */
             for (i = 0; i < NUM_REC_TYPES; i++)
             {
                 /* If the temp file pointer is non-NULL then this record type was
@@ -1298,7 +1296,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
             id = data_id.recordID;
             switch (id)
             {
-                /*  Don't index the header or the summary. */
+                /* Don't index the header or the summary. */
                 case GSF_RECORD_HEADER:
                     break;
 
@@ -1468,8 +1466,9 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                         index_header.number_record_types++;
                     }
 
-                    /*  Load the index record structure and write to the
-                        temp file.  */
+                    /* Load the index record structure and write to the
+                     * temp file.
+                     */
                     index_rec.sec = records.sensor_parameters.param_time.tv_sec;
                     index_rec.nsec =
                         records.sensor_parameters.param_time.tv_nsec;
@@ -1792,7 +1791,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
             /* Advance to the end of the index file */
             fseek(ft->index_data.fp, 0, SEEK_END);
 
-            /*  Get rid of the temp files.  */
+            /* Get rid of the temp files. */
 
             close_temp_file(i, temp[i]);
 

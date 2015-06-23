@@ -5105,7 +5105,7 @@ EncodeGeoSwathPlusSpecific(unsigned char *sptr, gsfSensorSpecific *sdata)
     memcpy(p, &stemp, 2);
     p += 2;
 
-    /* Next 2 bytes contain the model number  */
+    /* Next 2 bytes contain the model number. */
     stemp = htons(sdata->gsfGeoSwathPlusSpecific.model_number);
     memcpy(p, &stemp, 2);
     p += 2;
@@ -5168,7 +5168,7 @@ EncodeGeoSwathPlusSpecific(unsigned char *sptr, gsfSensorSpecific *sdata)
     memcpy(p, &stemp, 2);
     p += 2;
 
-    /* Next 2 bytes contain the number of valid beams  */
+    /* Next 2 bytes contain the number of valid beams. */
     stemp = htons((gsfuShort) sdata->gsfGeoSwathPlusSpecific.valid_beams);
     memcpy(p, &stemp, 2);
     p += 2;
@@ -5264,7 +5264,7 @@ EncodeKlein5410BssSpecific(unsigned char *sptr, gsfSensorSpecific *sdata)
     memcpy(p, &stemp, 2);
     p += 2;
 
-    /* Next 2 bytes contain the sonar model number  */
+    /* Next 2 bytes contain the sonar model number. */
     stemp = htons((gsfuShort) sdata->gsfKlein5410BssSpecific.model_number);
     memcpy(p, &stemp, 2);
     p += 2;
@@ -5366,12 +5366,12 @@ EncodeKlein5410BssSpecific(unsigned char *sptr, gsfSensorSpecific *sdata)
     memcpy(p, &ltemp, 4);
     p += 4;
 
-    /* Next 2 bytes contain the transmit pulse  */
+    /* Next 2 bytes contain the transmit pulse. */
     stemp = htons((gsfuShort) sdata->gsfKlein5410BssSpecific.tx_waveform);
     memcpy(p, &stemp, 2);
     p += 2;
 
-    /* Next 2 bytes contain the altimeter status: 0 = passive, 1 = active  */
+    /* Next 2 bytes contain the altimeter status: 0 = passive, 1 = active. */
     stemp = htons((gsfuShort) sdata->gsfKlein5410BssSpecific.altimeter);
     memcpy(p, &stemp, 2);
     p += 2;
@@ -7672,7 +7672,7 @@ gsfEncodeHistory(unsigned char *sptr, gsfHistory * history)
     memcpy(p, history->host_name, len);
     p += len;
 
-    /* Next two byte integer contains the size of the of operator field  */
+    /* Next two byte integer contains the size of the of operator field. */
     len = strlen(history->operator_name) + 1;
     stemp = htons(len);
     memcpy(p, &stemp, 2);

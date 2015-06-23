@@ -52,7 +52,7 @@ typedef struct t_gsfIndexHeader
 } GSF_INDEX_HEADER;
 
 
-/* JCD: Typedef for index progress callback */
+/* Typedef for index progress callback */
 typedef void (*GSF_PROGRESS_CALLBACK) (int state, int percent);
 
 

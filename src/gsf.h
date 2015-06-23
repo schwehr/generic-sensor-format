@@ -282,7 +282,7 @@ gsfDataID;
 #define __timespec_defined
 #define _TIMESPEC_DEFINED
 /* MAC OSX is a different bird, and while doesn't have the structures defined */
-/* above, does have the timespec structure defined. __APPLE__ will be set when  */
+/* above, does have the timespec structure defined. __APPLE__ will be set when */
 /* compiled with Apple's gcc on OSX and other third party compilers, so we use it to */
 /* insure the definition below does not conflict. */
  #ifndef __APPLE__
@@ -759,8 +759,8 @@ t_gsfSBBDBSpecific;
 /* Define the NOS HDB sensor specific data structure. */
 typedef struct t_gsfSBNOSHDBSpecific
 {
-    unsigned short  type_code;    /* Depth type code.  */
-    unsigned short  carto_code;   /* Cartographic code.  */
+    unsigned short  type_code;    /* Depth type code. */
+    unsigned short  carto_code;   /* Cartographic code. */
     char            spare[4];     /* Four bytes of reserved space */
 }
 t_gsfSBNOSHDBSpecific;
@@ -1165,8 +1165,8 @@ t_gsfBDBSpecific;
 /* Define the NOS HDB sensor specific data structure. */
 typedef struct t_gsfNOSHDBSpecific
 {
-   unsigned short  type_code;    /*  Depth type code. */
-   unsigned short  carto_code;   /*  Cartographic code. */
+   unsigned short  type_code;    /* Depth type code. */
+   unsigned short  carto_code;   /* Cartographic code. */
 }
 t_gsfNOSHDBSpecific;
 
