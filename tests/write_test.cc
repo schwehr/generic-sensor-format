@@ -14,6 +14,9 @@
 
 // Tests for writing out the basic record types.
 
+#include <iostream>
+using namespace std;
+
 #include <sys/stat.h>
 #include <string>
 
@@ -118,6 +121,65 @@ TEST(GsfWriteSimple, CommentLarge) {
     "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     "de";
   ValidateWriteComment(filename, false, 656, comment, 680);
+}
+
+void ValidateWriteHistory(const char *filename,
+                          bool checksum,
+                          int expected_write_size,
+                          const char *host_name,
+                          const char *operator_name,
+                          const char *command_line,
+                          const char *comment,
+                          int expected_file_size) {
+  ASSERT_NE(nullptr, filename);
+  ASSERT_GE(expected_write_size, 28);
+  ASSERT_NE(nullptr, host_name);
+  ASSERT_LE(strlen(host_name), GSF_HOST_NAME_LENGTH);
+  ASSERT_NE(nullptr, operator_name);
+  ASSERT_LE(strlen(operator_name), GSF_OPERATOR_LENGTH);
+  ASSERT_NE(nullptr, command_line);
+  ASSERT_NE(nullptr, comment);
+  ASSERT_GE(expected_file_size, 52);
+
+  int handle;
+  ASSERT_EQ(0, gsfOpen(filename, GSF_CREATE, &handle));
+
+  gsfDataID data_id = {checksum, 0, GSF_RECORD_HISTORY, 0};
+  gsfRecords record;
+  record.history.history_time.tv_sec = 1;
+  record.history.history_time.tv_nsec = 2;
+  strncpy(record.history.host_name, host_name, GSF_HOST_NAME_LENGTH);
+  record.history.host_name[GSF_HOST_NAME_LENGTH] = '\0';
+  strncpy(record.history.operator_name, operator_name, GSF_OPERATOR_LENGTH);
+  record.history.operator_name[GSF_OPERATOR_LENGTH] = '\0';
+  record.history.command_line = const_cast<char *>(command_line);
+  record.history.comment = const_cast<char *>(comment);
+  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
+  ASSERT_EQ(0, gsfClose(handle));
+
+  struct stat buf;
+  ASSERT_EQ(0, stat(filename, &buf));
+  ASSERT_EQ(expected_file_size, buf.st_size);
+
+  ASSERT_EQ(0, gsfOpen(filename, GSF_READONLY, &handle));
+  ASSERT_GE(handle, 0);
+  gsfRecords read_record;
+  const int num_bytes
+      = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  ASSERT_EQ(expected_write_size, num_bytes);
+  ASSERT_EQ(GSF_RECORD_HISTORY, data_id.recordID);
+  VerifyHistory(record.history, read_record.history);
+}
+
+TEST(GsfWriteSimple, History) {
+  ValidateWriteHistory(
+      "sample-history-empty.gsf", false, 28, "", "", "", "", 52);
+  ValidateWriteHistory(
+      "sample-history-empty-checksum.gsf", true, 32, "", "", "", "", 56);
+  ValidateWriteHistory(
+      "sample-history-1.gsf", false, 32, "a", "b", "c", "d", 56);
+  ValidateWriteHistory(
+      "sample-history-longer.gsf", false, 40, "ab", "cde", "fghi", "jklm", 64);
 }
 
 }  // namespace
