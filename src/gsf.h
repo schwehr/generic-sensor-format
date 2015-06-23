@@ -1518,7 +1518,7 @@ typedef struct t_gsfHistory
 gsfHistory;
 
 /* Define the navigation error record
- * jsb As of GSF v1.07, this record is replaced by gsfHVNavigationError.
+ * This record was replaced by gsfHVNavigationError in GSF v1.07.
  * All newly created files should be written using gsfHVNavigationError,
  * instead of gsfNavigationError.
  */
@@ -1531,9 +1531,9 @@ typedef struct t_gsfNavigationError
 }
 gsfNavigationError;
 
-/* jsb As of GSF v1.07, This new navigation error record replaces gsfNavigationError.
+/* This new navigation error record replaced gsfNavigationError starting at GSF v1.07.
  * The definition of gsfNavigationError will remain in the specification for several
- * release of GSF for backwards compatability. (The HV stands for Horizontal and Vertical)
+ * release of GSF for backwards compatability. HV stands for Horizontal and Vertical.
  */
 typedef struct t_gsfHVNavigationError
 {
