@@ -1240,7 +1240,6 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            /* 09/28/98 jsb - added vertical error subrecord */
             case (GSF_SWATH_BATHY_SUBRECORD_VERTICAL_ERROR_ARRAY):
                 ret = DecodeTwoByteArray(&ft->rec.mb_ping.vertical_error, p, ping->number_beams,
                     &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_VERTICAL_ERROR_ARRAY, handle);
