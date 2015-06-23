@@ -3882,8 +3882,8 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, UNUSED GSF_FILE
         sdata->gsfEM3Specific.run_time[0].spare1 = 0;
         p += 4;
 
-        /* check to see if the starboard swath width is populated, and set the total, port, and starboard
-         * swath widths accordingly. bac, 10-18-00
+        /* Check to see if the starboard swath width is populated, and set the total, port, and starboard
+         * swath widths accordingly.
          */
         if (sdata->gsfEM3Specific.run_time[0].stbd_swath_width)
         {
@@ -4044,8 +4044,8 @@ DecodeEM3Specific(gsfSensorSpecific *sdata, unsigned char *sptr, UNUSED GSF_FILE
             sdata->gsfEM3Specific.run_time[1].spare1 = 0;
             p += 4;
 
-            /* check to see if the starboard swath width is populated, and set the total, port, and starboard
-             * swath widths accordingly. bac, 10-18-00
+            /* Check to see if the starboard swath width is populated, and set the total, port, and starboard
+             * swath widths accordingly.
              */
             if (sdata->gsfEM3Specific.run_time[1].stbd_swath_width)
             {
@@ -5830,8 +5830,6 @@ DecodeR2SonicSpecific(gsfSensorSpecific * sdata, unsigned char *sptr)
  * Returns : This function returns the number of bytes decoded.
  *
  * Error Conditions : none
- *
- * History: 12/20/2002 - RWL modified for structure change in version 2.02
  *
  ********************************************************************/
 

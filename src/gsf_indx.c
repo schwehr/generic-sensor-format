@@ -316,9 +316,9 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
     }
     if (index_header.gsfFileSize > ft->file_size)
     {
-        /* if the indexed file size is greater than the current GSF file
+        /* If the indexed file size is greater than the current GSF file
          * size, then the file has gotten smaller and the index file is
-         * invalid.  delete it and create it again.  bac, 05-06-03
+         * invalid.  delete it and create it again.
          */
          remove (ndx_file);
          ret = gsfCreateIndexFile(ndx_file, handle, ft);
@@ -2009,10 +2009,6 @@ gsfCloseIndex(GSF_FILE_TABLE *ft)
 *                                                                              *
 *   Method:             Load short value with the next word to be swapped      *
 *                       swap the bytes, repeat till done.                      *
-*                                                                              *
-*   History:            dbj, 2/94: Modified from function written by D. Avery. *
-*                       dbj, 6/94: Renamed from SwapBytes to SwapLong.  Added  *
-*                                 use of typedefs plus other minor mods.       *
 *                                                                              *
 \******************************************************************************/
 
