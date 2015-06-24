@@ -60,7 +60,7 @@
 #if (defined _WIN32) && (defined _MSC_VER)
 #define fseek(x, y, z) _fseeki64((x), (y), (z))
 #define ftell(x)   _ftelli64((x))
-#else  /* Linux, MingW, MacOS */
+#else  /* Linux, MingW, MacOS. */
 #undef fopen
 #define fopen(x, y)  fopen64((x), (y))
 #define fseek(x, y, z) fseeko64((x), (y), (z))
@@ -68,10 +68,10 @@
 #endif
 #endif
 
-/* Error flag defined in gsf.c */
+/* Error flag defined in gsf.c. */
 extern int      gsfError;
 
-/* Prototypes for local functions */
+/* Prototypes for local functions. */
 static FILE *open_temp_file(int);
 static void close_temp_file(int, FILE *);
 static int gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft);
@@ -196,7 +196,7 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
     char             ndx_file[1024];
     GSF_INDEX_HEADER index_header;
 
-    /* Clear the contents of the index_header structure */
+    /* Clear the contents of the index_header structure. */
     memset (&index_header, 0, sizeof(index_header));
 
     /* Clear the last scale factor index.  This is used to decide whether
@@ -214,7 +214,7 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
         ft->index_data.start_addr[i] = 0;
     }
 
-    /* Create the GSF index file name (assuming an extension of .n##) */
+    /* Create the GSF index file name (assuming an extension of .n##). */
     strcpy(ndx_file, filename);
     ndx_file[strlen(ndx_file) - 3] = 'n';
 
@@ -258,7 +258,7 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
         return (-1);
     }
 
-    /* Next four bytes contain the size of the GSF file when the index file was created */
+    /* Next four bytes contain the size of the GSF file when the index file was created. */
     if (maj_indx_num > 1)
     {
         fread(&u_temp, 8, 1, ft->index_data.fp);
@@ -340,7 +340,7 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
     }
     ft->index_data.number_of_types = index_header.number_record_types;
 
-    /* Make sure we found a valid number_of_types */
+    /* Make sure we found a valid number_of_types. */
     if ((ft->index_data.number_of_types < 1) ||
         (ft->index_data.number_of_types > NUM_REC_TYPES))
     {
@@ -348,7 +348,7 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
         return (-1);
     }
 
-    /* Read the four four byte reserved fields */
+    /* Read the four four byte reserved fields. */
     fread(&index_header.spare1, 4, 1, ft->index_data.fp);
     fread(&index_header.spare2, 4, 1, ft->index_data.fp);
     fread(&index_header.spare3, 4, 1, ft->index_data.fp);
@@ -477,20 +477,20 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
     fclose (ft->index_data.fp);
     remove (ndx_file);
 
-    /* Clear the array of temporary file descriptors */
+    /* Clear the array of temporary file descriptors. */
     for (i=0; i<NUM_REC_TYPES; i++)
     {
         temp[i] = (FILE *) NULL;
     }
 
-    /* Initialize the contents of the index file header */
+    /* Initialize the contents of the index file header. */
     memset (&index_header, 0, sizeof(index_header));
     strncpy(index_header.version, GSF_INDEX_VERSION, GSF_INDEX_VERSION_SIZE);
     index_header.endian = endian;
     index_header.gsfFileSize = ft->file_size;
 
     /* Get the address of the end of file so we can compute percentage
-     * xprocessed for creating the index file.
+     * processed for creating the index file.
      */
     eof = ft->file_size;
     percent = 0;
@@ -870,7 +870,7 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
     }
     while (err != -1);
 
-    /* Create the index file */
+    /* Create the index file. */
     if ((ft->index_data.fp = fopen(ndx_file, "wb+")) == NULL)
     {
         gsfError = GSF_INDEX_FILE_OPEN_ERROR;
@@ -890,7 +890,7 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
     fwrite(&index_header.spare3, 4, 1, ft->index_data.fp);
     fwrite(&index_header.spare4, 4, 1, ft->index_data.fp);
 
-    /* Set the library's table entry for the number of record types for this file */
+    /* Set the library's table entry for the number of record types for this file. */
     ft->index_data.number_of_types = index_header.number_record_types;
 
     /* Clear the space for the information (write dummy info for the
@@ -973,7 +973,7 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
             fwrite(&ft->index_data.number_of_records[i], 4, 1,
                 ft->index_data.fp);
 
-            /* Advance to the end of the index file */
+            /* Advance to the end of the index file. */
             fseek(ft->index_data.fp, 0, SEEK_END);
 
             /* Get rid of the temp files. */
@@ -1060,10 +1060,10 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
     GSF_INDEX_HEADER index_header;
     long long        save_pos;
 
-    /* Clear the index header data structure */
+    /* Clear the index header data structure. */
     memset (&index_header, 0, sizeof(index_header));
 
-    /* Clear the array of temporary file descriptors */
+    /* Clear the array of temporary file descriptors. */
     for (i=0; i<NUM_REC_TYPES; i++)
     {
         temp[i] = (FILE *) NULL;
@@ -1078,7 +1078,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
     }
     ft->index_data.number_of_types = index_header.number_record_types;
 
-    /* Make sure we found a valid number_of_types */
+    /* Make sure we found a valid number_of_types. */
     if ((ft->index_data.number_of_types < 1) ||
         (ft->index_data.number_of_types > NUM_REC_TYPES))
     {
@@ -1086,7 +1086,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
         return (-1);
     }
 
-    /* Read the four four byte reserved fields */
+    /* Read the four four byte reserved fields. */
     fread(&index_header.spare1, 4, 1, ft->index_data.fp);
     fread(&index_header.spare2, 4, 1, ft->index_data.fp);
     fread(&index_header.spare3, 4, 1, ft->index_data.fp);
@@ -1128,12 +1128,12 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
     {
         if (ft->index_data.number_of_records[i] > 0)
         {
-            /* Move the index file's pointer to the first record for this type */
+            /* Move the index file's pointer to the first record for this type. */
             fseek(ft->index_data.fp, ft->index_data.start_addr[i], 0);
 
             for(j=0; j<ft->index_data.number_of_records[i]; j++)
             {
-                /* Read the index record from the disk */
+                /* Read the index record from the disk. */
                 fread(&index_rec, sizeof(INDEX_REC), 1, ft->index_data.fp);
                 if (ft->index_data.swap)
                 {
@@ -1152,7 +1152,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                 }
                 fwrite(&index_rec, sizeof(INDEX_REC), 1, temp[i]);
 
-                /* Save the address of the last record indexed */
+                /* Save the address of the last record indexed. */
                 if (index_rec.addr > last_index)
                 {
                     last_record_type = i;
@@ -1215,7 +1215,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                     close_temp_file(i, temp[i]);
                 }
             }
-            /* gsfError will have been set in gsfRead */
+            /* gsfError will have been set in gsfRead. */
             return (-1);
         }
     }
@@ -1245,7 +1245,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                     close_temp_file(i, temp[i]);
                 }
             }
-            /* gsfError will have been set in gsfRead */
+            /* gsfError will have been set in gsfRead. */
             return (-1);
         }
     }
@@ -1715,7 +1715,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
     fwrite(&index_header.spare3, 4, 1, ft->index_data.fp);
     fwrite(&index_header.spare4, 4, 1, ft->index_data.fp);
 
-    /* Set the library's table entry for the number of record types for this file */
+    /* Set the library's table entry for the number of record types for this file. */
     ft->index_data.number_of_types = index_header.number_record_types;
 
     /* Clear the space for the information (write dummy info for the
@@ -1788,7 +1788,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
             }
             fwrite(&l_temp, 4, 1, ft->index_data.fp);
 
-            /* Advance to the end of the index file */
+            /* Advance to the end of the index file. */
             fseek(ft->index_data.fp, 0, SEEK_END);
 
             /* Get rid of the temp files. */
@@ -2016,14 +2016,14 @@ SwapLong(unsigned int *base_address, int count)
 {
     union
     {
-        unsigned int    intvalue;       /* the word to swap      */
-        unsigned char   bytevalue[4];   /* bytes within the word */
+        unsigned int    intvalue;       /* The word to swap. */
+        unsigned char   bytevalue[4];   /* Bytes within the word. */
     }
     data;
 
-    unsigned char   byte0,      /* temporary storage                   */
-                    byte1;      /* temporary storage                   */
-    int             i;          /* counter for number of words swapped */
+    unsigned char   byte0,      /* Temporary storage. */
+                    byte1;      /* Temporary storage. */
+    int             i;          /* Counter for number of words swapped. */
 
     for (i = 0; i < count; i++)
     {
@@ -2045,13 +2045,13 @@ SwapLongLong(long long *base_address, int count)
 {
     union
     {
-        long long       longvalue;     /* the long long to swap      */
-        unsigned char   bytevalue[8];  /* bytes within the long long */
+        long long       longvalue;     /* The long long to swap. */
+        unsigned char   bytevalue[8];  /* Bytes within the long long. */
     }
     data;
 
-    unsigned char   byte0;      /* temporary storage */
-    int             i, j;       /* counter for number of long longs swapped */
+    unsigned char   byte0;      /* Temporary storage. */
+    int             i, j;       /* Counter for number of long longs swapped. */
 
     for (i = 0; i < count; i++)
     {

@@ -38,7 +38,7 @@ extern "C" {
 #define GSF_INDEX_VERSION       "INDEX-GSF-v02.00"
 #define GSF_INDEX_VERSION_SIZE  16
 
-/* Typedef a structure to hold the index file header information */
+/* Typedef a structure to hold the index file header information. */
 typedef struct t_gsfIndexHeader
 {
     char        version[GSF_INDEX_VERSION_SIZE+1];
@@ -52,11 +52,11 @@ typedef struct t_gsfIndexHeader
 } GSF_INDEX_HEADER;
 
 
-/* Typedef for index progress callback */
+/* Typedef for index progress callback. */
 typedef void (*GSF_PROGRESS_CALLBACK) (int state, int percent);
 
 
-/* Prototypes for this module */
+/* Prototypes for this module. */
 int OPTLK       gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft);
 int OPTLK       gsfCloseIndex(GSF_FILE_TABLE *ft);
 void OPTLK      SwapLong(unsigned int *base, int count);

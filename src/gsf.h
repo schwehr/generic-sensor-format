@@ -66,7 +66,7 @@ extern          "C"
 #define GSF_END_OF_FILE        2
 #define GSF_PREVIOUS_RECORD    3
 
-/* Typedefs for GSF short and long integers */
+/* Typedefs for GSF short and long integers. */
 typedef unsigned short gsfuShort;      /* An unsigned 16 bit integer. */
 typedef unsigned int   gsfuLong;       /* An unsigned 32 bit integer. */
 typedef short          gsfsShort;      /* A signed 16 bit integer. */
@@ -84,7 +84,7 @@ typedef int            gsfsLong;       /* A signed 32 bit integer. */
   #endif
 #endif
 
-/* Define the gsf Data Identifier structure */
+/* Define the gsf Data Identifier structure. */
 typedef struct t_gsfDataID
 {
     int             checksumFlag;       /* Boolean. */
@@ -92,8 +92,8 @@ typedef struct t_gsfDataID
     unsigned int    recordID;           /* Bits 00-11 => data type number. */
                                         /* Bits 12-22 => registry number. */
     int             record_number;      /* Specifies the nth occurance of */
-                                        /* Record type specified by recordID */
-                                        /* Relevant only for direct access */
+                                        /* record type specified by recordID */
+                                        /* relevant only for direct access. */
                                         /* The record_number counts from 1. */
 }
 gsfDataID;
@@ -454,7 +454,7 @@ t_gsfSeaBatSpecific;
  */
 typedef struct t_gsfSeaBatIISpecific
 {
-    int             ping_number;            /* 1 - 32767 */
+    int             ping_number;            /* 1 - 32767. */
     double          surface_velocity;       /* Meters/second. */
     int             mode;                   /* Bit mapped, see macros below. */
     int             sonar_range;            /* Meters. */
@@ -474,10 +474,10 @@ t_gsfSeaBatIISpecific;
 
 typedef struct t_gsfSeaBat8101Specific
 {
-    int             ping_number;            /* 1 - 65535 */
+    int             ping_number;            /* 1 - 65535. */
     double          surface_velocity;       /* Meters/second. */
     int             mode;                   /* Bit mapped, see macros below. */
-    int             range;                  /* Meters */
+    int             range;                  /* Meters. */
     int             power;                  /* 0-8 + status bits. */
     int             gain;                   /* 1-45 + status bits. */
     int             pulse_width;            /* Microseconds. */
@@ -495,10 +495,10 @@ typedef struct t_gsfSeaBat8101Specific
 t_gsfSeaBat8101Specific;
 
 /* Macro definitions for the SeaBat8101Specific and SeaBat8101Specific mode field. */
-#define GSF_8101_WIDE_MODE         0x01   /* Set if transmit on receiver */
-#define GSF_8101_TWO_HEADS         0x02   /* Set if two sonar heads */
-#define GSF_8101_STBD_HEAD         0x04   /* Set if starboard ping (seabat head 2) */
-#define GSF_8101_AMPLITUDE         0x08   /* Set if beam amplitude is available (RITHETA packet) */
+#define GSF_8101_WIDE_MODE         0x01   /* Set if transmit on receiver. */
+#define GSF_8101_TWO_HEADS         0x02   /* Set if two sonar heads. */
+#define GSF_8101_STBD_HEAD         0x04   /* Set if starboard ping (seabat head 2). */
+#define GSF_8101_AMPLITUDE         0x08   /* Set if beam amplitude is available (RITHETA packet). */
 
 typedef struct t_gsfReson7100Specific
 {
@@ -567,16 +567,16 @@ t_gsfReson7100Specific;
 #define GSF_7100_PITCH_STAB             0x0001 /* Set if pitch stabilized. */
 #define GSF_7100_ROLL_STAB              0x0001 /* Set if roll stabilized. */
 
-/* Define the SeaBeam 2112/36 specific data structure */
+/* Define the SeaBeam 2112/36 specific data structure. */
 typedef struct t_gsfSeaBeam2112Specific
 {
     int             mode;                       /* Bit mapped, see macros below. */
     double          surface_velocity;           /* Meters/second. */
     char            ssv_source;                 /* (V)elocimiter, (M)anual, (T)emperature,
                                                    (E)xternal, or (U)nknown. */
-    int             ping_gain;                  /* dB */
+    int             ping_gain;                  /* dB. */
     int             pulse_width;                /* Milliseconds. */
-    int             transmitter_attenuation;    /* dB */
+    int             transmitter_attenuation;    /* dB. */
     int             number_algorithms;          /* Algorithms per beam (1-4). */
     char            algorithm_order[5];         /* Nul terminated string, each char will be either
                                                    a space, W(MT), or B(DI). if number_algorithms
@@ -600,8 +600,8 @@ typedef struct t_gsfElacMkIISpecific
     int             ping_num;
     int             sound_vel;                  /* 0.1 m/s. */
     int             pulse_length;               /* 0.01 ms. */
-    int             receiver_gain_stbd;         /* dB */
-    int             receiver_gain_port;         /* dB */
+    int             receiver_gain_stbd;         /* dB. */
+    int             receiver_gain_port;         /* dB. */
     int             reserved;
 }
 t_gsfElacMkIISpecific;
@@ -626,7 +626,7 @@ typedef struct t_gsfEM3RunTime
     double          max_depth;                  /* Meters.. */
     double          absorption;                 /* dB/km. */
     double          pulse_length;               /* Micro seconds. */
-    double          transmit_beam_width;        /* Degrees */
+    double          transmit_beam_width;        /* Degrees. */
     int             power_reduction;            /* dB. */
     double          receive_beam_width;         /* Degrees. */
     int             receive_bandwidth;          /* Hz. */
@@ -659,19 +659,19 @@ typedef struct t_gsfEM3Specific
     int             sample_rate;                /* In Hz. */
     double          depth_difference;           /* In meters between sonar heads in em3000d configuration. */
     int             offset_multiplier;          /* Transducer depth offset multiplier. */
-    /* The gsfEM3RunTime data structure is updated with each run-time parameter datagram */
+    /* The gsfEM3RunTime data structure is updated with each run-time parameter datagram. */
     gsfEM3RunTime   run_time[2];                /* A two element array is needed to support em3000d. */
 }
 t_gsfEM3Specific;
 
-/* Define the Reson 8100 specific data structure */
+/* Define the Reson 8100 specific data structure. */
 typedef struct t_gsfReson8100Specific
 {
     int             latency;                /* Time from ping to output (milliseconds). */
     int             ping_number;            /* 4 byte ping number. */
     int             sonar_id;               /* Least significant 4 bytes of ethernet address. */
     int             sonar_model;
-    int             frequency;              /* KHz */
+    int             frequency;              /* KHz. */
     double          surface_velocity;       /* Meters/second. */
     int             sample_rate;            /* A/D samples per second. */
     int             ping_rate;              /* Pings per second * 1000. */
@@ -761,7 +761,7 @@ typedef struct t_gsfSBNOSHDBSpecific
 {
     unsigned short  type_code;    /* Depth type code. */
     unsigned short  carto_code;   /* Cartographic code. */
-    char            spare[4];     /* Four bytes of reserved space */
+    char            spare[4];     /* Four bytes of reserved space. */
 }
 t_gsfSBNOSHDBSpecific;
 
@@ -829,7 +829,7 @@ typedef struct t_gsfEMRunTime
 {
     int              model_number;                  /* From the run-time parameter datagram. */
     struct timespec  dg_time;                       /* From the run-time parameter datagram. */
-    int              ping_counter;                  /* Sequential counter 0 - 65535 */
+    int              ping_counter;                  /* Sequential counter 0 - 65535. */
     int              serial_number;                 /* The primary sonar head serial number. */
     unsigned char    operator_station_status;       /* Bit mask of status information for operator station. */
     unsigned char    processing_unit_status;        /* Bit mask of status information for sonar processor unit. */
@@ -842,7 +842,7 @@ typedef struct t_gsfEMRunTime
     double           absorption;                    /* dB/km. */
     double           tx_pulse_length;               /* In microseconds. */
     double           tx_beam_width;                 /* Degrees. */
-    double           tx_power_re_max;               /* The transmit power referenced to maximum power in dB */
+    double           tx_power_re_max;               /* The transmit power referenced to maximum power in dB. */
     double           rx_beam_width;                 /* Degrees. */
     double           rx_bandwidth;                  /* Hz. */
     double           rx_fixed_gain;                 /* dB. */
@@ -862,7 +862,7 @@ typedef struct t_gsfEMRunTime
 }
 t_gsfEMRunTime;
 
-/* Macro definitions for bits of pu_status field */
+/* Macro definitions for bits of pu_status field. */
 #define GSF_EM_VALID_1_PPS      0x0001              /* If set, then 1 PPS timing is valid. */
 #define GSF_EM_VALID_POSITION   0x0002              /* If set, then position input is valid. */
 #define GSF_EM_VALID_ATTITUDE   0x0004              /* If set, then attitude input is valid. */

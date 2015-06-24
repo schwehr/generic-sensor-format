@@ -46,7 +46,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-/* Rely on the network type definitions of (u_short, and u_int) */
+/* Rely on the network type definitions of (u_short, and u_int). */
 #if !defined WIN32 && !defined WIN64
 #include <netinet/in.h>
 #else
@@ -66,7 +66,7 @@
 #endif
 
 
-/* Macros required for this module */
+/* Macros required for this module. */
 /* TODO(schwehr): Do this properly. */
 #ifndef __APPLE__
 #undef fseek
@@ -74,7 +74,7 @@
 #if (defined _WIN32) && (defined _MSC_VER)
 #define fseek(x, y, z) _fseeki64((x), (y), (z))
 #define ftell(x)   _ftelli64((x))
-#else  /* Linux, MingW, MacOS */
+#else  /* Linux, MingW, MacOS. */
 #undef fopen
 #define fopen(x, y)  fopen64((x), (y))
 #define fseek(x, y, z) fseeko64((x), (y), (z))
@@ -85,7 +85,7 @@
 #define GSF_FILL_SIZE 8                   /* GSF packaging with no checksum. */
 #define GSF_FILL_SIZE_CHECKSUM 12         /* GSF packaging with checksum. */
 #define GSF_STREAM_BUF_SIZE 8192          /* GSF default stream buffer size. */
-#define GSF_UNKNOWN_PARAM_TEXT "UNKNWN"   /* Flag value for unknown parameter value */
+#define GSF_UNKNOWN_PARAM_TEXT "UNKNWN"   /* Flag value for unknown parameter value. */
 
 #define GSF_MAX_PARAM    999999          /* Used in gsfPutMBParams() to prevent bad values. */
 #define GSF_MIN_PARAM   -999999
@@ -109,10 +109,10 @@ static unsigned char streamBuff[GSF_MAX_RECORD_SIZE];
 static int      numOpenFiles;
 static GSF_FILE_TABLE gsfFileTable[GSF_MAX_OPEN_FILES];
 
-/* Global external data defined in this module */
-int             gsfError;       /* Used to report most recent error */
+/* Global external data defined in this module. */
+int             gsfError;       /* Used to report most recent error. */
 
-/* Static functions used, but not exported from this source file */
+/* Static functions used, but not exported from this source file. */
 static gsfuLong gsfChecksum(unsigned char *buff, unsigned int num_bytes);
 static int      gsfSeekRecord(int handle, gsfDataID *id);
 static int      gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *rptr, unsigned char *buf, int max_size);
@@ -662,7 +662,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
     gsfFileTable[fileTableIndex].occupied = 1;
     *handle = fileTableIndex + 1;
 
-    /* Set the desired buffer size */
+    /* Set the desired buffer size. */
     if (setvbuf(fp, NULL, _IOFBF, buf_size))
     {
         gsfClose ((int) *handle);
@@ -2015,7 +2015,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
 
     gsfFileTable[handle - 1].last_record_type = id->recordID;
 
-    /* Return the number of bytes written, */
+    /* Return the number of bytes written. */
     return (dataSize);
 }
 
@@ -2164,7 +2164,7 @@ gsfGetScaleFactor(int handle, unsigned int subrecordID, unsigned char *c_flag, d
     /* Set the compression flag. */
     *c_flag = gsfFileTable[handle-1].rec.mb_ping.scaleFactors.scaleTable[subrecordID-1].compressionFlag;
 
-    /* Set the multiplier, */
+    /* Set the multiplier. */
     *multiplier = gsfFileTable[handle-1].rec.mb_ping.scaleFactors.scaleTable[subrecordID-1].multiplier;
 
     /* Set the offset. */
@@ -2195,7 +2195,7 @@ gsfFree (gsfRecords *rec)
 {
     int i;
 
-    /* Free the array subrecords in ping data structure */
+    /* Free the array subrecords in ping data structure. */
     if (rec->mb_ping.depth != (double *) NULL)
     {
         free (rec->mb_ping.depth);
@@ -7629,7 +7629,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
             }
             if (!num_rx)
                 num_rx = gsfNumberParams(rec->process_parameters.param[i]);
-        }  /** end of "to apply" values */
+        }  /* End of "to apply" values. */
         else if (strncmp(rec->process_parameters.param[i], "APPLIED_DRAFT", strlen("APPLIED_DRAFT")) == 0)
         {
             p->applied.draft[0] = GSF_UNKNOWN_PARAM_VALUE;
@@ -7640,7 +7640,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->applied.draft[0],
                     &p->applied.draft[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7655,7 +7655,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->applied.pitch_bias[0],
                     &p->applied.pitch_bias[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7670,7 +7670,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->applied.roll_bias[0],
                     &p->applied.roll_bias[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -8112,15 +8112,15 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
         case GSF_SWATH_BATHY_SUBRECORD_EM100_SPECIFIC:
             switch (data->mb_ping.sensor_data.gsfEM100Specific.mode)
             {
-                case(1):  /* wide */
+                case(1):  /* Wide. */
                    *athwartship = 2.5;
                    break;
 
-                case(2):  /* ulta-wide */
+                case(2):  /* Ulta-wide. */
                    *athwartship = 5.5;
                    break;
 
-                case(3):  /* narrow */
+                case(3):  /* Narrow. */
                    *athwartship = 2.0;
                    break;
 
@@ -8148,7 +8148,7 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
             *athwartship = data->mb_ping.sensor_data.gsfEM121Specific.beam_width;
             break;
 
-        /* obsolete */
+        /* Obsolete. */
         case GSF_SWATH_BATHY_SUBRECORD_SASS_SPECIFIC:
             ret = -1;
             break;
@@ -8395,7 +8395,7 @@ gsfIsStarboardPing(const gsfRecords *data)
         case GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC:
         case GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC:
         case GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC:
-            /* it is assumed that the center_beam is set to the vertical beam. */
+            /* It is assumed that the center_beam is set to the vertical beam. */
             if (data->mb_ping.center_beam < data->mb_ping.number_beams / 2)
             {
                 /* Most of the beams are to starboard of vertical. */

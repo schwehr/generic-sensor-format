@@ -40,11 +40,10 @@
 #include <winsock.h>
 #endif
 
-
 #include "gsf.h"
 
-/* Global external data defined in this module */
-extern int      gsfError;  /* defined in gsf.c */
+/* Global external data defined in this module. */
+extern int      gsfError;  /* Defined in gsf.c. */
 
 /********************************************************************
  *
@@ -135,7 +134,7 @@ gsfFileSupportsRecalculateXYZ(int handle, int *status)
             }
             else
             {
-                /* gsfError should already be set to indicate the type of failure that occurred */
+                /* gsfError should already be set to indicate the type of failure that occurred. */
                 return (-1);
             }
         }
@@ -218,7 +217,7 @@ gsfFileSupportsRecalculateXYZ(int handle, int *status)
         }
     }
 
-    /* reset the file pointer to where it was when function was called
+    /* Reset the file pointer to where it was when function was called.
      * Rewind the file so that the pointer is at the first record.
      */
     ret = gsfSeek(handle, GSF_REWIND);
@@ -317,7 +316,7 @@ gsfFileSupportsRecalculateTPU(int handle, int *status)
             }
             else
             {
-                /* gsfError should already be set to indicate the type of failure that occurred */
+                /* gsfError should already be set to indicate the type of failure that occurred. */
                 return (-1);
             }
         }
@@ -376,7 +375,7 @@ gsfFileSupportsRecalculateTPU(int handle, int *status)
         }
     }
 
-    /* reset the file pointer to where it was when function was called
+    /* Reset the file pointer to where it was when function was called.
      * Rewind the file so that the pointer is at the first record.
      */
     ret = gsfSeek(handle, GSF_REWIND);
@@ -476,7 +475,7 @@ gsfFileSupportsRecalculateNominalDepth(int handle, int *status)
             }
             else
             {
-                /* gsfError should already be set to indicate the type of failure that occurred */
+                /* gsfError should already be set to indicate the type of failure that occurred. */
                 return (-1);
             }
         }
@@ -521,7 +520,7 @@ gsfFileSupportsRecalculateNominalDepth(int handle, int *status)
         }
     }
 
-    /* reset the file pointer to where it was when function was called
+    /* Reset the file pointer to where it was when function was called
      * Rewind the file so that the pointer is at the first record.
      */
     ret = gsfSeek(handle, GSF_REWIND);
@@ -617,7 +616,7 @@ gsfFileContainsMBAmplitude(int handle, int *status)
             }
             else
             {
-                /* gsfError should already be set to indicate the type of failure that occurred */
+                /* gsfError should already be set to indicate the type of failure that occurred. */
                 return (-1);
             }
         }
@@ -638,7 +637,7 @@ gsfFileContainsMBAmplitude(int handle, int *status)
         }
     }
 
-    /* reset the file pointer to where it was when function was called
+    /* Reset the file pointer to where it was when function was called
      * Rewind the file so that the pointer is at the first record.
      */
     ret = gsfSeek(handle, GSF_REWIND);
@@ -734,7 +733,7 @@ gsfFileContainsMBImagery(int handle, int *status)
             }
             else
             {
-                /* gsfError should already be set to indicate the type of failure that occurred */
+                /* gsfError should already be set to indicate the type of failure that occurred. */
                 return (-1);
             }
         }
@@ -755,8 +754,9 @@ gsfFileContainsMBImagery(int handle, int *status)
         }
     }
 
-    /* reset the file pointer to where it was when function was called */
-    /* Rewind the file so that the pointer is at the first record. */
+    /* Reset the file pointer to where it was when function was called
+     * Rewind the file so that the pointer is at the first record.
+     */
     ret = gsfSeek(handle, GSF_REWIND);
     if (ret)
     {

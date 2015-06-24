@@ -29,8 +29,8 @@
 
 #include "gsf.h"
 
-/* Global external data defined in this module */
-extern int      gsfError; /* defined in gsf.c */
+/* Global external data defined in this module. */
+extern int      gsfError; /* Defined in gsf.c. */
 
 #define SQR(x) ((x)*(x))
 #define Everest_1830        0
@@ -187,7 +187,7 @@ GSF_POSITION_OFFSETS *gsfGetPositionOffsets(GSF_POSITION gp_from, GSF_POSITION g
     int                     n, iter;
     double                  lat_diff, lon_diff;
 
-    /* need to determine number of iterations from the dist_step. */
+    /* Need to determine number of iterations from the dist_step. */
     gp_from.lat = DTOR(gp_from.lat);
     gp_from.lon = DTOR(gp_from.lon);
     gp_to.lat   = DTOR(gp_to.lat);
@@ -215,7 +215,7 @@ GSF_POSITION_OFFSETS *gsfGetPositionOffsets(GSF_POSITION gp_from, GSF_POSITION g
     else
         iter = (int)ceil(lat_diff / dist_step);
 
-    /* need to handle crossing the dateline. */
+    /* Need to handle crossing the dateline. */
     dlon = gp_to.lon - gp_from.lon;
     if (dlon > PI)
         dlon = ((2.0 * PI) - dlon) / (double)iter;
