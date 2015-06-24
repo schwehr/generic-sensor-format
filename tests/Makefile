@@ -15,6 +15,7 @@
 TESTS :=
 TESTS += read_gsf_2_9_test
 TESTS += read_gsf_3_6_test
+TESTS += write_test
 
 all: test
 	@echo "Done"
@@ -96,4 +97,7 @@ read_gsf_2_9_test: read_gsf_2_9_test.o gtest_main.a libgsftest.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../src/libgsf.a
 
 read_gsf_3_6_test: read_gsf_3_6_test.o gtest_main.a libgsftest.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../src/libgsf.a
+
+write_test: write_test.o gtest_main.a libgsftest.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../src/libgsf.a

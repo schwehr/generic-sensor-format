@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cstdio>
 #include <cstring>
+#include <dirent.h>
+#include <unistd.h>
 
 #include <string>
 #include <vector>
@@ -29,9 +32,28 @@ using std::vector;
 
 #include <iostream>
 
-
 namespace generic_sensor_format {
 namespace test {
+
+TempDir::TempDir(bool preserve) : preserve_(preserve) {
+  char _template[] = "tmp_testdirXXXXXX";
+  tmp_dir_ = mkdtemp(_template);
+}
+
+TempDir::~TempDir() {
+  if (preserve_) {
+    return;
+  }
+  DIR* dir = opendir(tmp_dir_.c_str());
+  struct dirent *entry;
+  while ((entry = readdir(dir))) {
+    if (entry->d_type != DT_REG) {
+      continue;
+    }
+    unlink(entry->d_name);
+  }
+  rmdir(tmp_dir_.c_str());
+}
 
 string RecordTypeStr(unsigned int record_id) {
   switch (record_id) {
@@ -97,7 +119,9 @@ const gsfHistory GsfHistory(const struct timespec &when,
   gsfHistory history;
   history.history_time = { when.tv_sec, when.tv_nsec };
   strncpy(history.host_name, host_name, GSF_HOST_NAME_LENGTH);
-  strncpy(history.operator_name, operator_name,GSF_OPERATOR_LENGTH);
+  history.host_name[GSF_HOST_NAME_LENGTH] = '\0';
+  strncpy(history.operator_name, operator_name, GSF_OPERATOR_LENGTH);
+  history.operator_name[GSF_OPERATOR_LENGTH] = '\0';
   history.command_line = const_cast<char *>(command_line);
   history.comment = const_cast<char *>(comment);
   return history;
