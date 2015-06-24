@@ -39,6 +39,11 @@ TEST(GsfWriteSimple, HeaderOnly) {
   ASSERT_EQ(24, buf.st_size);
 }
 
+// TODO(schwehr): GSF_RECORD_SWATH_BATHYMETRY_PING.
+// TODO(schwehr): GSF_RECORD_SOUND_VELOCITY_PROFILE
+// TODO(schwehr): GSF_RECORD_PROCESSING_PARAMETERS
+// TODO(schwehr): GSF_RECORD_SENSOR_PARAMETERS
+
 void ValidateWriteComment(const char *filename,
                           bool checksum,
                           int expected_write_size,
@@ -172,6 +177,12 @@ TEST(GsfWriteSimple, History) {
   ValidateWriteHistory(
       "sample-history-longer.gsf", false, 40, "ab", "cde", "fghi", "jklm", 64);
 }
+
+// TODO(schwehr): GSF_RECORD_NAVIGATION_ERROR
+// TODO(schwehr): GSF_RECORD_SWATH_BATHY_SUMMARY
+// TODO(schwehr): GSF_RECORD_SINGLE_BEAM_PING
+// TODO(schwehr): GSF_RECORD_HV_NAVIGATION_ERROR
+// TODO(schwehr): GSF_RECORD_ATTITUDE
 
 }  // namespace
 }  // namespace test
