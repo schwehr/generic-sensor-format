@@ -223,33 +223,32 @@ TEST(GsfWriteSimple, AttitudeEmpty) {
 }
 
 TEST(GsfWriteSimple, AttitudeLength1) {
-  {
-    const struct timespec times0[] = {{5, 6}};
-    const double data0[] = {0.0};
-    const gsfAttitude attitude0
-        = GsfAttitude(1, times0, data0, data0, data0, data0);
-    ValidateWriteAttitude(
-        "sample-attitude-length1-0.gsf", false, 28, attitude0, 52);
-  }
-  {
+  const struct timespec times0[] = {{5, 6}};
+  const double data0[] = {0.0};
+  const gsfAttitude attitude0
+      = GsfAttitude(1, times0, data0, data0, data0, data0);
+  ValidateWriteAttitude(
+      "sample-attitude-length1-0.gsf", false, 28, attitude0, 52);
+
+  // Small positive values.
   const struct timespec times1[] = {{7, 8}};
-  const double data1[] = {1.2};
+  const double pitch1[] = {1.2};
+  const double roll1[] = {2.2};
+  const double heave1[] = {3.3};
+  const double heading1[] = {4.4};
   const gsfAttitude attitude1
-      = GsfAttitude(1, times1, data1, data1, data1, data1);
+      = GsfAttitude(1, times1, pitch1, roll1, heave1, heading1);
   ValidateWriteAttitude(
       "sample-attitude-length1-1-checksum.gsf", true, 32, attitude1, 56);
-  }
 
-  {
-  const struct timespec times2[] = {{7, 8}};
+  const struct timespec times2[] = {{9, 10}};
   const double data2[] = {-2.3};
   // TODO(schwehr): -2.3 heading became 653.06.
   const double heading2[] = {4.5};
-  const gsfAttitude attitude1
+  const gsfAttitude attitude2
       = GsfAttitude(1, times2, data2, data2, data2, heading2);
   ValidateWriteAttitude(
-      "sample-attitude-length1-2neg.gsf", false, 28, attitude1, 52);
-  }
+      "sample-attitude-length1-2neg.gsf", false, 28, attitude2, 52);
 }
 
 }  // namespace
