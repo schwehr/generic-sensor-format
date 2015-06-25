@@ -182,7 +182,45 @@ TEST(GsfWriteSimple, History) {
 // TODO(schwehr): GSF_RECORD_SWATH_BATHY_SUMMARY
 // TODO(schwehr): GSF_RECORD_SINGLE_BEAM_PING
 // TODO(schwehr): GSF_RECORD_HV_NAVIGATION_ERROR
-// TODO(schwehr): GSF_RECORD_ATTITUDE
+
+void ValidateWriteAttitude(const char *filename,
+                           bool checksum,
+                           int expected_write_size,
+                           const gsfAttitude &attitude,
+                           int expected_file_size) {
+  ASSERT_NE(nullptr, filename);
+  ASSERT_GE(expected_write_size, 20);
+  ASSERT_GE(expected_file_size, 44);
+
+  int handle;
+  ASSERT_EQ(0, gsfOpen(filename, GSF_CREATE, &handle));
+
+  gsfDataID data_id = {checksum, 0, GSF_RECORD_ATTITUDE, 0};
+  gsfRecords record;
+  record.attitude = attitude;
+  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
+  ASSERT_EQ(0, gsfClose(handle));
+
+  struct stat buf;
+  ASSERT_EQ(0, stat(filename, &buf));
+  ASSERT_EQ(expected_file_size, buf.st_size);
+
+  ASSERT_EQ(0, gsfOpen(filename, GSF_READONLY, &handle));
+  ASSERT_GE(handle, 0);
+  gsfRecords read_record;
+  const int num_bytes
+      = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  ASSERT_EQ(expected_write_size, num_bytes);
+  ASSERT_EQ(GSF_RECORD_ATTITUDE, data_id.recordID);
+  VerifyAttitude(record.attitude, read_record.attitude);
+}
+
+TEST(GsfWriteSimple, Attitude) {
+  const struct timespec times[] = {{3, 4}};
+  const gsfAttitude attitude
+      = GsfAttitude(0, times, nullptr, nullptr, nullptr, nullptr);
+  ValidateWriteAttitude("sample-attitude-empty.gsf", false, 20, attitude, 44);
+}
 
 }  // namespace
 }  // namespace test
