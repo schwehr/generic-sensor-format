@@ -41,8 +41,20 @@ CPPFLAGS += -isystem $(GMOCK_DIR)/include
 CPPFLAGS +=  -I../src
 CPPFLAGS += -I$(GTEST_DIR) -I$(GMOCK_DIR)
 
-CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += -std=c++11
+CXXFLAGS += -Wall -Wextra -pthread
+
+DBG := -g
+DBG += -O0
+
+OPT := -O3
+OPT += -funroll-loops -fexpensive-optimizations -ffast-math
+
+ifdef OPTIMIZE
+  CXXFLAGS += ${OPT}
+else
+  CXXFLAGS += ${DBG}
+endif
 
 
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
