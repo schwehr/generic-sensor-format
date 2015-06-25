@@ -16,10 +16,10 @@
 //
 // TODO(schwehr): Does this have to free what was read?
 
-#include <iostream>
-using namespace std;
 
 #include <sys/stat.h>
+
+#include <memory>
 #include <string>
 
 #include "gsf.h"
@@ -27,9 +27,21 @@ using namespace std;
 #include "gsf_test_util.h"
 #include "gtest/gtest.h"
 
+// #include <iostream>  // TODO(schwehr): Remove.
+// using namespace std;  // TODO(schwehr): Remove.
+
+using std::unique_ptr;
+
 namespace generic_sensor_format {
 namespace test {
 namespace {
+
+// TODO(schwehr): Switch to make_unique when C++14 is available on Travis-CI.
+template <typename T, typename... Args>
+std::unique_ptr<T> MakeUnique(Args&&... args)
+{
+    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
 
 TEST(GsfWriteSimple, HeaderOnly) {
   int handle;
@@ -217,31 +229,47 @@ void ValidateWriteAttitude(const char *filename,
   VerifyAttitude(record.attitude, read_record.attitude);
 }
 
-gsfAttitude WriteAttitudeAndReturnRead(const char *filename,
-                                       const gsfAttitude &attitude,
-                                       int *file_size,
-                                       int *num_bytes) {
+unique_ptr<gsfAttitude> WriteAttitudeAndReturnRead(
+    const char *filename,
+    const gsfAttitude &attitude,
+    int *file_size,
+    int *num_bytes) {
   // TODO(schwehr): Add error handling.
   int handle;
-  gsfOpen(filename, GSF_CREATE, &handle);
+  if (0 != gsfOpen(filename, GSF_CREATE, &handle)) {
+    return nullptr;
+  }
 
   gsfDataID data_id = {false, 0, GSF_RECORD_ATTITUDE, 0};
   gsfRecords record;
   record.attitude = attitude;
-  gsfWrite(handle, &data_id, &record);
-  gsfClose(handle);
+  if (gsfWrite(handle, &data_id, &record) < 20) {
+    // Do not check return since we are already in trouble.
+    gsfClose(handle);
+    return nullptr;
+  }
+  if (0 != gsfClose(handle)) {
+    return nullptr;
+  }
 
   struct stat buf;
-  stat(filename, &buf);
+  if (0 != stat(filename, &buf)) {
+    return nullptr;
+  }
   *file_size = buf.st_size;
 
-  gsfOpen(filename, GSF_READONLY, &handle);
+  if (0 != gsfOpen(filename, GSF_READONLY, &handle)) {
+    return nullptr;
+  }
 
   gsfRecords read_record;
   *num_bytes
       = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  if (*num_bytes < 24) {
+    return nullptr;
+  }
 
-  return read_record.attitude;
+  return MakeUnique<gsfAttitude>(read_record.attitude);
 }
 
 TEST(GsfWriteSimple, AttitudeEmpty) {
@@ -290,18 +318,20 @@ TEST(GsfWriteSimple, AttitudeRounding) {
       = GsfAttitude(1, times, pitch, roll, heave, heading);
   int file_size;
   int num_bytes;
-  const gsfAttitude dst
+  const unique_ptr<gsfAttitude> dst
       = WriteAttitudeAndReturnRead("attitude-round.gsf",
                                    src, &file_size, &num_bytes);
+  ASSERT_NE(nullptr, dst);
   ASSERT_EQ(52, file_size);
   ASSERT_EQ(28, num_bytes);
+
   const double pitch2[] = {-1.00};
   const double roll2[] = {-2.01};
   const double heave2[] = {3.00};
   const double heading2[] = {4.01};
   const gsfAttitude expected
     = GsfAttitude(1, times, pitch2, roll2, heave2, heading2);
-  VerifyAttitude(expected, dst);
+  VerifyAttitude(expected, *dst);
 }
 
 }  // namespace
