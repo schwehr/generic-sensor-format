@@ -1560,15 +1560,18 @@ gsfHVNavigationError;
 #define GSF_POS_TYPE_PLBL "PLBL"   /* Post-processed One or more long-baseline acoustic navigation lines of position. */
 #define GSF_POS_TYPE_PSBL "PSBL"   /* Post-processed ultra-short baseline acoustic navigation. */
 
-/* Define the data structure for a ping from a swath bathymetric system. */
+/* Define the data structure for a ping from a swath bathymetric system.
+ * Only 2 decimal places are preserved in the file and stored in short integers.
+ */
 typedef struct t_gsfAttitude
 {
     short            num_measurements;      /* Number of attitude measurements in this record. */
     struct timespec *attitude_time;         /* Seconds and nanoseconds. */
-    double          *pitch;                 /* Degrees. */
-    double          *roll;                  /* Degrees. */
+    double          *pitch;                 /* Degrees. ‐180.00 to +180.00. */
+    double          *roll;                  /* Degrees. ‐180.00 to +180.00. */
     double          *heave;                 /* Meters. */
-    double          *heading;               /* Degrees. */
+    /* Stored as uint16 in the file. */
+    double          *heading;               /* Degrees. 0.00 to 360.00. */
 }
 gsfAttitude;
 

@@ -300,7 +300,7 @@ TEST(GsfWriteSimple, AttitudeLength1) {
 
   const struct timespec times2[] = {{9, 10}};
   const double data2[] = {-2.3};
-  // TODO(schwehr): -2.3 heading became 653.06.
+  // Heading is stored as a uint16 with value * 100.
   const double heading2[] = {4.5};
   const gsfAttitude attitude2
       = GsfAttitude(1, times2, data2, data2, data2, heading2);

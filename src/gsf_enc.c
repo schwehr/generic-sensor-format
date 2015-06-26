@@ -8009,7 +8009,7 @@ gsfEncodeAttitude(unsigned char *sptr, gsfAttitude * attitude)
         memcpy(p, &stemp, 2);
         p += 2;
 
-        /* Next two byte integer contains the heading. Round the scaled quantity
+        /* Next two byte unsigned integer contains the heading. Round the scaled quantity
          * to the nearest whole integer.
          */
         dtemp = attitude->heading[i] * 100.0;

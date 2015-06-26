@@ -7786,9 +7786,8 @@ gsfDecodeAttitude(gsfAttitude *attitude, GSF_FILE_TABLE *ft, unsigned char *sptr
         attitude->heave[i] = ((double) signed_short) / 100.0;
         p += 2;
 
-        /* Next two byte integer contains the heading. */
+        /* Next two byte unsigned integer contains the heading. */
         memcpy(&stemp, p, 2);
-        /* TODO(schwehr): Why is this one different?  Seems to have a bug. */
         attitude->heading[i] = ((double) ntohs(stemp)) / 100.0;
         p += 2;
     }
