@@ -380,16 +380,9 @@ The first is a polar coordinate system with the vessel at the center of a sphere
 soundings are located by measuring the range from the vessel to the bottom and the beam
 angle.  The pitch angle is also required and is usually constant for a given ping.
 
-Figure text:
-- Pitch Angle
-- Depth
-- Range Beam Angle
-- Acrosstrack
-- Alongtrack
-- Cartesian Coordinates
-- Polar Coordinates
+![Coordinate Systems](figures/figure-3-1.svg "Coordinate Systems")
 
-Figure 3-1  Coordinate systems for beam location
+**Figure 3-1** Coordinate systems for beam location.
 
 GSF also supports a Cartesian system in which individual soundings are located by describing
 their depth, acrosstrack and alongtrack offsets.  Alongtrack offsets may be expressed for
@@ -412,16 +405,9 @@ offsets are positive to the vessel's starboard and negative to port, and alongtr
 positive forward of the vessel's reference position and negative astern of it.  Heave is
 positive if the vessel moves below the mean or reference surface.
 
-Figure text: 
-- x
-- y
-- z
-- Positive angular measures
-- Roll - Starboard side moves down
-- Pitch - Bow move up
-- Heading or Yaw - Vessel turns to starboard
+![Ship-based Coordinate Systems](figures/figure-3-2.svg "Ship-based Coordinate System")
 
-Figure 3-2  Ship-based coordinate system
+**Figure 3-2** Ship-based coordinate system.
 
 ## 3.5 Units of measure
 
@@ -553,22 +539,9 @@ subsequent tables.  Fields may be big-endian binary (most significant byte first
 may be fixed- or variable-length.  This specification presents GSF records in tabular form.
 Figure 3-3 describes the conventions used in these tables.
 
-Figure text:
+![GSF definitions](figures/figure-3-3.svg "GSF definitions")
 
-- Items in Bold Italics are the labels for the header
-- Field Name
-- Field Description
-- Field Type
-- Count
-- RECORD_POSITION Position of record in file, in bytes I 4
-- RECORD_LENGTH Length of record, in bytes I 4
-- Name for each field in the file, as specified in the file header
-- Description for each field in the file, as specified in the header.
-  Items in Bold (not shown) are common to all DoDBL raster data sets
-  and specify the actual field entry.
-- Field Type and Count for each field in the file, as specified in the header.
-
-Figure 3-3 GSF definition conventions
+**Figure 3-3** GSF definition conventions.
 
 # 4. DATA STRUCTURE
 
@@ -581,18 +554,9 @@ are:
 - Metadata Files that describe the contents and nature of a given collection of data, and
 - Files containing the data themselves.
 
-Figure text:
+![Data Set Organization](figures/figure-4-4.svg "Data Set Organization")
 
-- Transmittal Header File (optional)
-- Metadata File (optional)
-- Data File 1
-- Data File 2
-- Other Data Sets
-- Data File 3
-- ...
-- Data File n
-
-Figure 4-4  Data Set Organization
+**Figure 4-4** Data Set Organization
 
 Transmittal files are developed to describe a particular transaction.  Transmittal files are not
 a permanent record that describes the data, but record the transfer of data, document the
@@ -621,7 +585,7 @@ File.  The use of the Transmittal Header File is mandatory for exchanges within 
 but is optional for data exchanged outside of the DoDBL.  Table 4-1 specifies the contents of
 the Transmittal Header File.
 
-Table 4-1  Transmittal Header File
+**Table 4-1** Transmittal Header File.
 
 Field Name | Field Description | Field Type | Count
 -----------|-------------------|------------|------
@@ -658,6 +622,7 @@ however, to assure uniform maintenance of important descriptive data.  The HYSAS
 Requirements Document (HRD) specifies the contents of the Metadata File.
 
 ## 4.3 GSF Data File
+
 GSF data files are composed of a series of records arranged sequentially in time.  A header
 record is the first record in the file; otherwise, there is no prescribed ordering.  Note,
 however, that specific processing implementations may require the presence of other
@@ -670,25 +635,9 @@ the data portion of the record.  The second word is an identifier field consisti
 checksum flag, a reserved field and a record identification field.  Figure 4-5 illustrates this
 structure.
 
-Figure text:
+![GSF Data File Structure](figures/figure-4-5.svg "GSF Data File Structure")
 
-- Record Structure Header
-- Size of Data Record Identifier
-- Checksum (optional)
-- Data
-- Record 1
-- Record 2
-- Record 3
-- Record N
-- Record Identifier Field
-- Checksum Flag 1
-- Reserved 9
-- Registry Number 10
-- Data Type Number 12
-- Bit Number
-- # Bits
-
-Figure 4-5  GSF Data File Structure
+**Figure 4-5** GSF Data File Structure.
 
 #### 4.3.1.1 Checksum flag
 
@@ -770,7 +719,7 @@ chronological order.  The format of each GSF data record is defined in the follo
 The header record contains a single text field recording the version number of the GSF data
 file format as described in Table 4-2.
 
-Table 4-2  Header Record Definition
+**Table 4-2** Header Record Definition.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
@@ -802,32 +751,9 @@ number of the beam located nearest the vessel's keel, a ping flag, and both tide
 offsets for the ping.  Any tide and depth offsets present have already been added to the
 depth values in the ping's array records.
 
-Figure Text:
+![Ping record schematic](figures/figure-4-6.svg "Ping record schematic")
 
-- Ping Record Structure
-- Size of Data
-- Record Identifier
-- Checksum (optional)
-- Ping Header
-- Ping
-- Record
-- Subrecord Identifier
-- Data Subrecord
-- Subrecord Identifier
-- Data Subrecord
-- Subrecord Identifier
-- Data Subrecord
-- Subrecord Identifier Field
-- 31
-- Subrecord Identifier
-- Subrecord Size
-- Bit Number
-- 0
-- # Bits
-- 8
-- 24
-
-Figure 4-6  Ping record schematic
+**Figure 4-6**  Ping record schematic
 
 Two sets of flags are available in the ping record to provide for data to be flagged to indicate
 whether it is usable or not.  Each ping header has a ping flag that is a 16-bit word that
@@ -854,7 +780,7 @@ scale factors sub-record of the ping record. This subrecord exists for the first
 file, and then again whenever the scale factors change. As a disk-space saving mechanism,
 this subrecord is not written for every ping record.
 
-Table 4-3  Swath Bathymetry Ping Record Definition
+**Table 4-3** Swath Bathymetry Ping Record Definition.
 
 Ping Header Subrecord: 42 in versions prior to 3.01; 56 otherwise
 
@@ -955,27 +881,9 @@ future use to specify an optional compression algorithm.  In order to transform 
 the array subrecord into the engineering units defined Table 4-3, each element in the array
 must be divided by the multiplier and the offset subtracted from the result.
 
-Figure text:
+![Ping Scale Factor Subrecord Schematic](figures/figure-4-7.svg "Ping Scale Factor Subrecord Schematic")
 
-- Scale Factor Subrecord Structure
-- 100 (Subrecord Identifier)
-- Number of Scale Factors
-- Scale Factor Array
-- 31
-- Word 0
-- 23
-- Record ID to be scaled
-- Bit Number
-- 15
-- Compression Flag
-- 0
-- Reserved
-- Word 1
-- Scaling Multiplier
-- Word 2
-- Scaling Offset
-
-Figure 4-7  Ping Scale Factor Subrecord Schematic
+**Figure 4-7** Ping Scale Factor Subrecord Schematic.
 
 #### 4.3.4.3 Array subrecords
 
@@ -988,7 +896,6 @@ Table 4-3 defines valid array subrecords; subsequent sections describe these arr
 subrecords in more detail.  Some array subrecords are composed of either 8-bit or 16-bit
 integers that may represent either signed or unsigned quantities depending upon the kind
 of data they contain.  For each array subrecord, the first beam is the outermost port beam.
-
 
 #### 4.3.4.4 Depth Array Subrecord
 
@@ -1160,7 +1067,6 @@ This field contains an array of incident beam adjustment angles for each beam in
 This field contains the beam angle correction for ray-bending that is required to calculate
 the beam’s true incidence angle on the seafloor. Each field is encoded as a 1-byte integer.
 
-
 The units are expressed in degrees before being scaled as defined in the scaling factor
 subrecord.
 
@@ -1227,7 +1133,7 @@ Table 4-4 defines the single beam sounding record.  The basis for the single bea
 record is the swath bathymetry ping record, but the single beam sounding record is much
 simpler.
 
-Table 4-4  Single-beam Sounding Record Definition
+**Table 4-4** Single-beam Sounding Record Definition.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
@@ -1254,7 +1160,7 @@ The summary record contains a temporal and spatial synopsis of the data stored i
 These records allow application programs to rapidly determine whether the data in the file
 are of interest.  Table 4-5 defines the format of a summary record.
 
-Table 4-5  Summary Record Definition
+**Table 4-5** Summary Record Definition.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
@@ -1277,7 +1183,7 @@ was introduced into the sounding location procedure, the position of the observa
 number of points in the profile, and the individual points, expressed as depth and sound
 velocity pairs.  Table 4-6 defines the format of a sound velocity profile record.
 
-Table 4-6  Sound Velocity Profile Record Definition
+**Table 4-6** Sound Velocity Profile Record Definition.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
@@ -1299,7 +1205,7 @@ Table 4-7 defines the format of a processing parameter record. Each processing p
 record contains a time, a count of the parameters defined within the record, and a text
 string for each parameter definition.  The string's length begins each parameter text string.
 
-Table 4-7  Processing Parameter Record Definition
+**Table 4-7** Processing Parameter Record Definition.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
@@ -1323,7 +1229,7 @@ are known when the data are recorded but have not been applied to the data.  Tab
 defines the necessary processing parameter records.  The first column defines acceptable
 keywords, the second defines a description of the values.
 
-Table 4-8  Defined Processing Parameter Text Strings
+**Table 4-8** Defined Processing Parameter Text Strings.
 
 Keyword | Description
 --------|------------
@@ -1404,7 +1310,7 @@ of the parameter.  Sensor parameter records are by nature sensor-specific, there
 are no standard keywords defined for these parameters.  Important values such as draft
 correctors or sensor locations are reproduced in the processing parameter record.
 
-Table 4-9  Sensor Parameter Record Definition
+**Table 4-9** Sensor Parameter Record Definition.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
@@ -1426,7 +1332,7 @@ other records.  It consists of a time, a text string and the length of the strin
 be to include entry of watch personnel comments during a survey.  Table 4-10 defines the
 format of a comment record.
 
-Table 4-10  Comment Record Definition
+**Table 4-10** Comment Record Definition.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
@@ -1445,7 +1351,7 @@ along with any command line arguments or pertinent parameters; and a comment fie
 available for a summary of the processing that occurred when the program was run.  Table
 4-11 defines the format of a history record.
 
-Table 4-11  History Record Definition
+**Table 4-11** History Record Definition.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
@@ -1473,7 +1379,7 @@ so that a file containing different types of records, each of which contain posi
 attribute error estimates for each record. Table 4-12 defines the format of a navigation error
 record.
 
-Table 4-12  Navigation Error Record Definition
+**Table 4-12** Navigation Error Record Definition.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
@@ -1483,7 +1389,6 @@ LONGITUDE_ERROR | Estimated error in decimeters, 95% CE. | I | 4
 LATITUDE_ERROR | Estimated error in decimeters, 95% CE. | I | 4
 
 Navigation Error Record Size: 20
-
 
 ### 4.3.13 HV - Navigation error record
 
@@ -1498,7 +1403,7 @@ of the available four character positioning system codes.  Additionally, a field
 characters has been reserved for future use.  Table 4-13 defines the format of a HV
 Navigation error record.
 
-Table 4-13  HV Navigation Error Record Definition
+**Table 4-13** HV Navigation Error Record Definition.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
@@ -1523,7 +1428,7 @@ measurement.  The number of measurements is variable and user-definable, but any
 attitude record should contain no more than sixty seconds worth of measurements.  Table
 4-14 defines the format of an Attitude record.
 
-Table 4-14  Attitude Record Definition
+**Table 4-14** Attitude Record Definition.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
@@ -1684,15 +1589,15 @@ Table B-1.  Appendix A.2 defines subrecord identifiers for each subrecord.  This
 does not provide detailed information about the data items within these subrecords.  Use of
 these data requires a detailed knowledge of the sensor being used.
 
-Table B-1  Swath Bathymetry Ping Sensor-specific Subrecord Definitions
+**Table B-1** Swath Bathymetry Ping Sensor-specific Subrecord Definitions.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
  | | | 
-SEABEAM | Subrecord containing fields peculiar to SEABEAM sonar. | |  2
+**SEABEAM** | Subrecord containing fields peculiar to SEABEAM sonar. | |  2
 ECLIPSE_TIME | Eclipse computer clock at time of ping. | U | 2
  | | | 
-KONGSBERG EM12 | Subrecord containing fields particular to Kongsberg EM12 sonar. | | 39
+**KONGSBERG EM12** | Subrecord containing fields particular to Kongsberg EM12 sonar. | | 39
 PING_NUMBER | Number assigned to the ping by the sonar | I | 2
 RESOLUTION | Indicates the resolution of data values | I | 1
 PING_QUALITY | Number of beams with accepted bottom detection | I | 1
@@ -1700,7 +1605,7 @@ SOUND_VELOCITY | Sound velocity at transducer depth, either measured or set by t
 MODE | Defines if mode is shallow or deep and if beam spacing is equiangular or equidistant | I | 1
 SPARE | Reserved for future use | I | 32
  | | | 
-KONGSBERG EM100 | Subrecord containing fields peculiar to Kongsberg EM100 sonar. | | 11
+**KONGSBERG EM100** | Subrecord containing fields peculiar to Kongsberg EM100 sonar. | | 11
 SHIP_PITCH | Pitch of ship at ping time in 0.01 degree. | I | 2
 TRANSDUCER_PITCH | Angle of mechanical pitch stabilizer at ping time in 0.01 degree. | I | 2
 MODE | Description of sonar's mode. | I | 1
@@ -1710,7 +1615,7 @@ TVG | Description of receiver's time-varying gain curve. | I | 1
 PULSE_LENGTH | Description of transmitted pulse length. | I | 1
 COUNTER | Ping counter from Kongsberg amplitude datagram | I | 2
  | | | 
-KONGSBERG EM950 |Subrecord containing fields peculiar to Kongsberg EM950 sonar.|| 10
+**KONGSBERG EM950** | Subrecord containing fields peculiar to Kongsberg EM950 sonar.|| 10
 PING_NUMBER | Number assigned to ping by sonar. | U | 2
 MODE | Description of sonar's mode. | U | 1
 QUALITY | Description of ping quality. | U | 1
@@ -1718,7 +1623,7 @@ SHIP_PITCH | Pitch of ship at ping time in hundredths of degrees. | I | 2
 TRANSDUCER_PITCH | Angle of mechanical pitch stabilizer at ping time in hundredths of degrees. | I | 2
 SURFACE_SOUND_VELOCITY | Surface sound velocity used to calculate beam angle in tenths of meters/seconds.| U | 2
  | | | 
-KONGSBERG EM1000 | Subrecord containing fields peculiar to Kongsberg EM1000 sonar. | | 
+**KONGSBERG EM1000** | Subrecord containing fields peculiar to Kongsberg EM1000 sonar. | | 
 PING_NUMBER | Number assigned to ping by sonar. | I | 2
 MODE | Description of sonar's mode. | I | 1
 QUALITY | Description of ping quality. | I | 1
@@ -1726,7 +1631,7 @@ SHIP_PITCH | Pitch of ship at ping time in hundredths of degrees. | I | 2
 TRANSDUCER_PITCH | Angle of mechanical pitch stabilizer at ping time in hundredths of degrees. | I | 2
 SURFACE_SOUND_VELOCITY | Surface sound velocity used to calculate beam angle in tenths of meters/seconds. | I | 2
  | | | 
-KONGSBERG EM121 | Subrecord containing fields peculiar to Kongsberg EM121 sonar. | | 11
+**KONGSBERG EM121** | Subrecord containing fields peculiar to Kongsberg EM121 sonar. | | 11
 PING_NUMBER | Number assigned to ping by sonar. | I | 2
 MODE | Description of sonar's mode. | I | 1
 VALID_BEAMS | Number of valid beams in ping. | I | 1
@@ -1737,7 +1642,7 @@ TRANSMIT_STATUS | Number of transmit channels not working. | I | 1
 RECEIVE_STATUS | Number of receive channels not working. | I | 1
 SURFACE_SOUND_VELOCITY | Surface sound velocity used to calculate beam angle in tenths of meters/seconds. | I | 2
  | | |
-KONGSBERG EM121A | Subrecord containing fields peculiar to Kongsberg EM121A sonar. | | x11
+**KONGSBERG EM121A** | Subrecord containing fields peculiar to Kongsberg EM121A sonar. | | 11
 PING_NUMBER | Number assigned to ping by sonar. | I | 2
 MODE | Description of sonar's mode. | I | 1
 VALID_BEAMS | Number of valid beams in ping. | I | 1
@@ -1748,7 +1653,7 @@ TRANSMIT_STATUS | Number of transmit channels not working. | I | 1
 RECEIVE_STATUS | Number of receive channels not working. | I | 1
 SURFACE_SOUND_VELOCITY | Surface sound velocity used to calculate beam angle in tenths of meters/seconds. | I | 2
  | | | 
-KONGSBERG EM120, EM300, EM1002, EM2000, EM3000, EM3002, and EM121A_SIS | Subrecord containing fields particular to Kongsberg EM120, EM300, EM1002, EM2000, EM3000, EM3002, and EM121A_SIS series sonars. | | 21+49*L
+**KONGSBERG EM120, EM300, EM1002, EM2000, EM3000, EM3002, and EM121A_SIS** | Subrecord containing fields particular to Kongsberg EM120, EM300, EM1002, EM2000, EM3000, EM3002, and EM121A_SIS series sonars. | | 21+49*L
 MODEL_NUMBER | Model number of Kongsberg sensor acquiring ping data. | I | 2
 PING_NUMBER | Number assigned to ping by sonar. | I | 2
 SERIAL_NUMBER | Serial number of multibeam sonar. | I | 2
@@ -1814,7 +1719,7 @@ RUN_TIME_STBD_SWATH_WIDTH(2) | Maximum starboard swath width in meters | I | 2
 RUN_TIME_HILO_FREQ_ABSORP_RATIO(2) | HiLo frequency absorption coefficient ratio | I | 1
 RUN_TIME_SPARE(2) | Reserved for future use. | I | 4
  | | | 
-KONGSBERG EM120, EM300, EM1002, EM2000, EM3000, EM3002, and EM121A_SIS | Data collected using the raw range and beam angle datagram. Subrecord containing fields specific to Kongsberg EM120, EM300, EM1002, EM2000, EM3000, EM3002, and EM121A_SIS series sonars. |  | 63 + Ntx*38 + 63 +23
+**KONGSBERG EM120, EM300, EM1002, EM2000, EM3000, EM3002, and EM121A_SIS** | Data collected using the raw range and beam angle datagram. Subrecord containing fields specific to Kongsberg EM120, EM300, EM1002, EM2000, EM3000, EM3002, and EM121A_SIS series sonars. |  | 63 + Ntx*38 + 63 +23
 MODEL_NUMBER | Model number of Kongsberg sensor acquiring ping data. | I | 2
 PING_COUNTER | Number assigned to ping by sonar. | I | 2
 SERIAL_NUMBER | Serial number of multibeam sonar. | I | 2
@@ -1876,7 +1781,7 @@ ACHIEVED_STDB_COVERAGE | Achieved coverage to starboard in degrees | I | 1
 YAW_STABILIZATION | Yaw stabilization in degrees | I | 2
 SPARE | Reserved for future use | I | 16
  | | |
-SEAMAP | Subrecord containing fields peculiar to Seamap sonar. | | 22
+**SEAMAP** | Subrecord containing fields peculiar to Seamap sonar. | | 22
 PORT_TRANSMIT_1 | Level of first port transmitter. | I | 2
 PORT_TRANSMIT_2 | Level of second port transmitter. | I | 2
 STBD_TRANSMIT_1 | Level of first starboard transmitter. | I | 2
@@ -1889,7 +1794,7 @@ PRESSURE_DEPTH | Depth measured by pressure sensor, in tenths of meters. (Note: 
 ALTITUDE | Distance of tow body from seafloor, in tenths of meters. | I | 2
 TEMPERATURE | Temperature at tow body location, in tenths of degrees Centigrade. | I | 2
  | | |
-SEABAT 9000 | Subrecord containing fields peculiar to RESON SeaBat 9000 Series sonars. Obsolete; see SEABAT 9000 II Subrecord. | | 8
+**SEABAT 9000** | Subrecord containing fields peculiar to RESON SeaBat 9000 Series sonars. Obsolete; see SEABAT 9000 II Subrecord. | | 8
 PING_NUMBER | Number assigned to ping by sonar. | I | 2
 SURFACE_SOUND_VELOCITY | Surface sound velocity used to calculate beam angle in tenths of meters/seconds. | I | 2
 MODE | Description of sonar mode setting. | I | 1
@@ -1897,7 +1802,7 @@ RANGE | Description of sonar range setting. | I | 1
 TRANSMIT_POWER | Description of transmitter's power level. | I | 1
 RECEIVE_GAIN | Description of receiver's gain setting. | I | 1
  | | | 
-SEABEAM with Amplitude | Subrecord containing fields peculiar to SEABEAM sonar with amplitude beam values. | | 10
+**SEABEAM with Amplitude** | Subrecord containing fields peculiar to SEABEAM sonar with amplitude beam values. | | 10
 HOUR | Hour of Eclipse computer clock at time of ping. | I | 1
 MINUTE | Minute of Eclipse computer clock at time of ping | I | 1
 SECOND | Seconds of Eclipse computer clock at time of ping | I | 1
@@ -1905,7 +1810,7 @@ HUNDREDTHS | Hundredths of seconds of Eclipse computer clock at time of ping | I
 BLOCK_NUMBER | Block number | I | 4
 AVG_GATE_DEPTH | Average Depth of Bottom Gate | I | 2
  | | |
-SEABAT 9000 II | Subrecord containing fields peculiar to RESON SeaBat 9000 Series sonars.  First SEABAT 9000 Subrecord is obsolete. | | 18
+**SEABAT 9000 II** | Subrecord containing fields peculiar to RESON SeaBat 9000 Series sonars.  First SEABAT 9000 Subrecord is obsolete. | | 18
 PING_NUMBER | Number assigned to ping by sonar. | I | 2
 SURFACE_SOUND_VELOCITY | Surface sound velocity used to calculate beam angle in tenths of meters/seconds. | I | 2
 MODE | Description of sonar mode setting. | I | 2
@@ -1916,7 +1821,7 @@ TRANSMIT_BEAMWIDTH | Transmit beam width, in tenths of degrees. | I | 1
 RECEIVE_BEAMWIDTH | Receive array beam width, in tenths of degrees. | I | 1
 RESERVED | Reserved for future use | I | 4
  | | | 
-| SEABAT 8101 | Subrecord containing fields peculiar to RESON SeaBat 8101 Series sonars. Obsolete.  See Reson 8100 subrecord. | | 31
+**SEABAT 8101** | Subrecord containing fields peculiar to RESON SeaBat 8101 Series sonars. Obsolete.  See Reson 8100 subrecord. | | 31
 PING_NUMBER | Number assigned to ping by sonar. | I | 2
 SURFACE_SOUND_VELOCITY | Surface sound velocity used to calculate beam angle in tenths of meters/seconds. | I | 2
 MODE | Description of sonar mode setting. | I | 2
@@ -1935,7 +1840,7 @@ DEPTH_FILTER_MAXIMUM | Depth filter maximum value in meters. | I | 2
 PROJECTOR_TYPE | Type of projector used for transmission | I | 1
 RESERVED | Reserved for future use | I | 4
  | | | 
-| SEABEAM 2112 | Subrecord containing fields peculiar to SEABEAM 2112 sonars. | | 14
+**SEABEAM 2112** | Subrecord containing fields peculiar to SEABEAM 2112 sonars. | | 14
 MODE | Sonar mode of operation | I | 1
 SURFACE_SOUND_VELOCITY | Surface sound velocity in hundredths of meters/second | I | 2
 SSSV_SOURCE | Source of surface sound velocity | I | 1
@@ -1946,7 +1851,7 @@ NUMBER_ALGORITHMS | Number of algorithms in use. | I | 1
 ALGORITHM_ORDER | Order of algorithm use. | I | 4
 RESERVED | Reserved | I | 2
  | | | 
-ELAC MKII | Subrecord containing fields peculiar to ELAC BottomChart MkII sonar. | | 11
+**ELAC MKII** | Subrecord containing fields peculiar to ELAC BottomChart MkII sonar. | | 11
 MODE | Sonar mode of operation | I | 2
 COUNTER | Ping counter | I | 2
 SURFACE_SOUND_VELOCITY | Surface sound velocity in meters/sec. | I | 2
@@ -1955,7 +1860,7 @@ RECEIVER_GAIN_STBD | Starboard transceiver receive gain in decibels | I | 1
 RECEIVER_GAIN_PORT | Port transceiver receive gain in decibels | I | 1
 RESERVED | Reserved | I | 2
  | | | 
-TYPEIII SASS | Subrecord containing fields peculiar to SASS TypeIII data.  This subrecord will be replaced by the COMPRESSED SASS subrecord.  Future releases should use the COMPRESSED SASS subrecord. | | 12
+**TYPEIII SASS** | Subrecord containing fields peculiar to SASS TypeIII data.  This subrecord will be replaced by the COMPRESSED SASS subrecord.  Future releases should use the COMPRESSED SASS subrecord. | | 12
 LEFTMOST_BEAM | Leftmost beam of sonar ping | I | 2
 RIGHTMOST_BEAM | Rightmost beam of sonar ping | I | 2
 TOTAL_NUMBER_OF_BEAMS | Number of  beams in ping | I | 2
@@ -1963,11 +1868,11 @@ NAVIGATION_MODE | Description of sonar’s navigation mode | I | 2
 PING_NUMBER | Number assigned to ping by sonar | I | 2
 MISSION_NUMBER | Mission number assigned to ping | I | 2
 | | | 
-COMPRESSED SASS (BOSDATA) | Subrecord containing fields peculiar to the SASS*YERG Compressed Data Format.  This format may contain SASS, SASS IV, SASS V, NAVO Seabeam, BTOSS or Kongsberg Sonar Data. | | 4
+**COMPRESSED SASS (BOSDATA)** | Subrecord containing fields peculiar to the SASS*YERG Compressed Data Format.  This format may contain SASS, SASS IV, SASS V, NAVO Seabeam, BTOSS or Kongsberg Sonar Data. | | 4
 LFREQ | Sea surface sound velocity in tenths of feet/second, from BOSDAT (lfreq) | I | 2
 LNTENS | Since 1992, used to record heave value for ping in tenths of meters; prior to 1992, the content of this field is undocumented. | | 
  | | |
-RESON 7100 |  Subrecord containing fields peculiar to RESON SeaBat 7100 Series sonars.  This format may contain data from an 7125  sonar | | 186
+**RESON 7100** | Subrecord containing fields peculiar to RESON SeaBat 7100 Series sonars.  This format may contain data from an 7125  sonar | | 186
 PROTOCOL_VERSION | Protocol version defined in the Data Record Frame (DRF) | U | 2
 DEVICE_ID | The model number of the sonar (i.e. 7101, 7111, 7125, etc.) Obtained from the DRF | U | 4
 RESERVED | Placeholder for growth of fields from DRF | U | 16
@@ -2005,18 +1910,17 @@ RECEIVE_FLAGS | 0-3: Roll stabilization method 4-7: Dynamic focusing method 8-11
 RECEIVE_BEAM_WIDTH | angle in degrees, from record 7000 | I | 2
 RANGE_FILT_MIN | range filter, minimum value, meters, from record 7000 | I | 2
 RANGE_FILT_MAX | range filter, maximum value, meters, from record 7000 | I | 2
-DEPTH_FILT_MIN | depth filter, minimum value, meters, from record 7000 | I | 2 | DEPTH_FILT_MAX
-depth filter, maximum value, meters, from record 7000 | I | 2
+DEPTH_FILT_MIN | depth filter, minimum value, meters, from record 7000 | I | 2
+DEPTH_FILT_MAX | depth filter, maximum value, meters, from record 7000 | I | 2
 ABSORPTION | absorption in dB/km, from record 7000 | I | 4
 SOUND_VELOCITY | sound speed in m/s at transducer, from record 7000 | I | 2
-SPREADING | spreading loss in dB from record
-7000 | I | 4
+SPREADING | spreading loss in dB from record 7000 | I | 4
 RESERVED | spare space, for future use | I | 16
 SV_SOURCE | (0: measured, 1: manual), from 7K Bathymetric Data Record (7006) | U | 1
 LAYER_COMP_FLAG | (0: off, 1: on), from record 7006 | U | 1
 RESERVED | spare space, for future use | I | 8
  | | | 
-RESON 8100 | Subrecord containing fields peculiar to RESON SeaBat 8100 Series sonars.  This format may contain data from an 8101, 8111, 8124, 8125, 8150 or 8160 sonar. | | 52
+**RESON 8100** | Subrecord containing fields peculiar to RESON SeaBat 8100 Series sonars.  This format may contain data from an 8101, 8111, 8124, 8125, 8150 or 8160 sonar. | | 52
 LATENCY | Time from ping to output (milliseconds). | I | 2
 PING_NUMBER | Number assigned to ping by sonar. | I | 4
 SONAR_ID | Least significant 4 bytes of Ethernet address. | I | 4
@@ -2045,7 +1949,7 @@ TEMPERATURE | Temperature at sonar head. | I | 2
 BEAM_SPACING | Across-track angular beam spacing in degrees. | I | 2
 RESERVED | Reserved for future use | I | 2
  | | | 
-KONGSBERG EM710, EM302, EM122, EM2040 | Subrecord containing fields peculiar to Kongsberg EM710, EM302, EM122, and EM2040 series sonars. | | 48 +40*L + 102
+**KONGSBERG EM710, EM302, EM122, EM2040** | Subrecord containing fields peculiar to Kongsberg EM710, EM302, EM122, and EM2040 series sonars. | | 48 +40*L + 102
 MODEL_NUMBER | Model number of Kongsberg sensor acquiring ping data. | I | 2
 PING_COUNTER | Number assigned to ping by sonar. | I | 2
 SERIAL_NUMBER | Serial number of multibeam sonar. | I | 2
@@ -2055,7 +1959,7 @@ VALID_DETECTIONS | Number of beams with a valid detection for this ping. | I | 2
 SAMPLING_FREQUENCY | Sampling rate (f) in 4.0e-9 Hz. | I | 8
 DOPPLER_CORRECTION_SCALE | Scale factor value to be applied to Doppler correction field prior to applying correction | I | 4
 VEHICLE_DEPTH | From 0x66 datagram, non-zero when sonar head is mounted on a sub-sea platform in 0.001 meters. | I | 4
-SPARE_1 | I | 16
+SPARE_1 | | I | 16
 TRANSMIT_SECTORS (Number Sectors) | The number of transmit sectors for this ping (L) | I | 2
 | Number Sector entries of: | Array of structures with transmit sector information, cycle repeats for each sector. | | 
 Tilt Angle | The transmitter title angle in degrees. | I | 2
@@ -2107,7 +2011,7 @@ ACHIEVED_STDB_COVERAGE | Achieved coverage to starboard in degrees | I | 1
 YAW_STABILIZATION | Yaw stabilization in degrees | I | 2
 SPARE | | | 16
  | | | 
-| Klein 5410 Bathymetric Sidescan | Subrecord containing fields peculiar to Klein 5410 sidescan/bathymetry sonar systems. | | 86 
+**Klein 5410 Bathymetric Sidescan** | Subrecord containing fields peculiar to Klein 5410 sidescan/bathymetry sonar systems. | | 86 
 DATA_SOURCE | Descriptor for source data format: 0 indicates SDF. | U | 2
 SIDE | Descriptor for port/starboard side: 0 indicates port; 1 indicates starboard. | U | 2
 MODEL_NUMBER | Descriptor to indicate the specific Klein model number. | U | 2
@@ -2126,7 +2030,7 @@ ALTIMETER | Altimeter status: 0 = passive, 1 = active. | U | 2
 RAW_DATA_CONFIG | Raw data configuration. | U | 4
 SPARE[32] | Spare space reserved for potential use in the future. | I | 32
  | | |
-GeoAcoustics Ltd GeoSwath Plus | Subrecord containing fields peculiar to Geoacoustics GS+ interferrometric side-scan/bathymetry sonar systems.  This format may contain data from an GS+ sonar. | | 82
+**GeoAcoustics Ltd GeoSwath Plus** | Subrecord containing fields peculiar to Geoacoustics GS+ interferrometric side-scan/bathymetry sonar systems.  This format may contain data from an GS+ sonar. | | 82
 DATA_SOURCE | Descriptor for source data format. 0 indicates CBF, 1 indicates RDF | I | 2
 SIDE | Descriptor for port/starboard side. 0 indicates port, 1 indicates starboard. | I | 2
 MODEL_NUMBER | Descriptor to indicate the specific GS+ model number (100, 250, 500, ...) | I | 2
@@ -2153,7 +2057,7 @@ RANGE_UNCERTAINTY | The range measurement uncertainty in meters | I | 2
 ANGLE_UNCERTAINTY | The angle measurement uncertainty in degrees | I | 2
 SPARE[32] | Spare space reserved for potential us in the future. | I | 32
  | | |
-Imagenex Delta T | Subrecord containing fields peculiar to the Imagenex Delta T multibeam sonar |  | 93
+**Imagenex Delta T** | Subrecord containing fields peculiar to the Imagenex Delta T multibeam sonar |  | 93
 FILE EXTENSION | Source data file extension | C | 4
 VERSION NUMBER | Imagenex minor version number | C | 1
 PING BYTE SIZE | Size in bytes for this ping | I | 2
@@ -2184,7 +2088,7 @@ FORE AFT BEAM WIDTH | Effective f/a beam width in degrees | I | 1
 ATHWARTSHIPS BEAM WIDTH | Effective athwart ships beam width in degrees. | I | 1
 SPARE[32] | Spare space reserved for potential us in the future. | I | 32
 | | | 
-R2Sonic | Subrecord containing fields particular to R2Sonic models 2020, 2022 and 2024 | | 204
+**R2Sonic** | Subrecord containing fields particular to R2Sonic models 2020, 2022 and 2024 | | 204
 MODEL_NUMBER | Model number, e.g., 2020, 2022 or 2024 | T | 12
 SERIAL_NUMBER | Serial number | T | 12
 TIME | Time of the ping | I | 8
@@ -2215,14 +2119,14 @@ G0_DEPTH_GATE_MAX | Global maximum gate (seconds) | I | 4
 G0_DEPTH_GATE_SLOPE | Slope of depth gate (radians) | I | 4
 SPARE | Reserved for future use | I | 32
  | | | 
-SB_ECHOTRAC | Subrecord containing fields peculiar to ODOM Echotrac and PDD single-beam sonars, as well as ODEC Bathy 2000 single-beam sonars. | | 10
+**SB_ECHOTRAC** | Subrecord containing fields peculiar to ODOM Echotrac and PDD single-beam sonars, as well as ODEC Bathy 2000 single-beam sonars. | | 10
 NAV_ERROR | Navigation error. | I | 2 
 MPP_SOURCE | Flag to determine source of navigation. | I | 1
 TIDE_SOURCE | Source of tide correctors, this information should also be stored in the ping flags. | I | 1
 DYNAMIC_DRAFT | Speed induced draft in meters | I | 2
 SPARE | Reserved for future use. | I | 4 |  | | | 
  | | | 
-SB_MGD77 | Subrecord containing fields peculiar to MGD77 single-beam archival data. | | 18
+**SB_MGD77** | Subrecord containing fields peculiar to MGD77 single-beam archival data. | | 18
 TIME_ZONE_CORR | Time zone corrector | I | 2
 POSITION_TYPE_CODE | Position type code. | I | 2
 CORRECTION_CODE | Manner in which sound velocity correction was made. | I | 2
@@ -2231,7 +2135,7 @@ QUALITY_CODE | Navigation quality code. | I | 2
 TRAVEL_TIME | Two way travel time in 0.0001 seconds | I | 4
 SPARE | Reserved for future use. | I | 4
  | | | 
-SB_BDB | Subrecord containing fields peculiar to BDB single-beam archival data. | | 14
+**SB_BDB** | Subrecord containing fields peculiar to BDB single-beam archival data. | | 14
 DOC_NO  | Doc. No. | I | 4
 EVAL | Evaluation flag. | I | 1
 CLASSIFICATION | Classification flag. | I | 1
@@ -2241,12 +2145,12 @@ PT_OR_TRACK_LN | Discrete point of track line flag. | I | 1
 DATUM_FLAG | Datum flag | I | 1
 SPARE | Reserved for future use. | I | 4 | 8
  | | | 
-SB_NOSHDB | Subrecord containing fields peculiar to NOS HDB single-beam archival data. | | 8
+**SB_NOSHDB** | Subrecord containing fields peculiar to NOS HDB single-beam archival data. | | 8
 TYPE_CODE | Depth type code | I | 2
 CARTO_CODE | Cartographic code | I | 2
 SPARE | Reserved for future use. | I | 4
  | | |
-SB_NAVISOUND | Subrecord containing fields peculiar to Navisound single-beam data. | | 10
+**SB_NAVISOUND** | Subrecord containing fields peculiar to Navisound single-beam data. | | 10
 PULSE_LENGTH | Pulse length in meters. | I | 2
 SPARE | Reserved for future use. | I | 8
 
@@ -2257,21 +2161,21 @@ Subrecord identifiers for each subrecord are defined in Appendix A.3.  This spec
 not provide detailed information about the data items within these subrecords.  Usage of these
 data requires a detailed knowledge of the sensor being used.
 
-Table B-2  Single-beam Sounding Sensor-specific Subrecord Definitions
+**Table B-2** Single-beam Sounding Sensor-specific Subrecord Definitions.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
-ECHOTRAC | Subrecord containing fields peculiar to ODOM Echotrac sonar. | | 4
+**ECHOTRAC** | Subrecord containing fields peculiar to ODOM Echotrac sonar. | | 4
 NAV_ERROR | Navigation error | I | 2
 NAV_SOURCE | Source of navigation | I | 1
 TIDE_SOURCE | Source of tide correctors. | I | 1
  | | | 
-BATHY2000 | Subrecord containing fields peculiar to ODEC Bathy 2000  sonar. | | 4
+**BATHY2000** | Subrecord containing fields peculiar to ODEC Bathy 2000  sonar. | | 4
 NAV_ERROR | Navigation error | I | 2
 NAV_SOURCE | Source of navigation | I | 1
 TIDE_SOURCE | Source of tide correctors. | I | 1
  | | |
-MGD77 | Subrecord containing fields peculiar to MGD77 archival data. | | 14
+**MGD77** | Subrecord containing fields peculiar to MGD77 archival data. | | 14
 TIME_ZONE_CORR | Time zone corrector | I | 2
 POSITION_TYPE_CODE | Position type code. | I | 2
 CORRECTION_CODE | Manner in which sound velocity correction was made. | I | 2
@@ -2279,7 +2183,7 @@ BATHY_TYPE_CODE | Manner in which bathymetry was obtained | I | 2
 QUALITY_CODE | Navigation quality code. | I | 2
 TRAVEL_TIME | Two way travel time in 0.0001 seconds | I | 4
  | | | 
-BDB | Subrecord containing fields peculiar to BDB archival data. | | 10
+**BDB** | Subrecord containing fields peculiar to BDB archival data. | | 10
 DOC_NO | Doc. No. | I | 4
 EVAL | Evaluation flag. | I | 1
 CLASS | Classification flag. | I | 1
@@ -2288,7 +2192,7 @@ SOURCE_FLAG | Source flag. | I | 1
 PT_OR_TRACK_LN | Discrete point of track line flag. | I | 1
 DATUM_FLAG | Datum flag | I | 1
  | | |
-NOSHDB | Subrecord containing fields peculiar to NOS HDB archival data. | | 4
+**NOSHDB** | Subrecord containing fields peculiar to NOS HDB archival data. | | 4
 TYPE_CODE | Depth type code | I | 2 | CARTO_CODE | Cartographic code | I | 2
 
 ## Appendix B.3   Bathymetric Receive Beam Imagery Sensor-specific Subrecord Definitions
@@ -2298,11 +2202,11 @@ Ping subrecords, and Wide Receive Beam Intensity subrecords.  This specification
 provide detailed information about the data items within these subrecords.  Usage of these data
 requires a detailed knowledge of the sensor being used.
 
-Table B-3  Imagery Sensor-specific Subrecord Definitions
+**Table B-3** Imagery Sensor-specific Subrecord Definitions.
 
 Field Name | Description | Field Type | Count
 -----------|-------------|------------|------
-KONGSBERG EM120, EM300, EM1002, EM2000, EM3000, EM3002, and EM121A_SIS | Subrecord containing fields specific to Kongsberg EM120, EM300, EM1002, EM2000, EM3000,  EM3002, and EM121A_SIS series sonars.| | 18
+**KONGSBERG EM120, EM300, EM1002, EM2000, EM3000, EM3002, and EM121A_SIS** | Subrecord containing fields specific to Kongsberg EM120, EM300, EM1002, EM2000, EM3000,  EM3002, and EM121A_SIS series sonars.| | 18
 RANGE_NORM | Range to normal incidence used to correct sample amplitudes (in samples) | I | 2
 START_TVG_RAMP | Start range sample of TVG ramp if not enough dynamic range (0 else) | I | 2
 STOP_TVG_RAMP | Stop range sample of TVG ramp if not enough dynamic range (0 else) | I | 2
@@ -2313,14 +2217,14 @@ Offset | The DC offset used to scale imagery sample received from the sonar to r
 Scale | The multiplier used to scale the values received from the sonar to range of positive values for storage in GSF. | I | 2
 SPARE | For future use. | I
  | | | 
-RESON 7100 | | | 4 | 66 | Subrecord containing fields peculiar to RESON SeaBat 7100 Series sonars. This format may contain data from a 7125 sonar. | | 66
+**RESON 7100** | | | 4 | 66 | Subrecord containing fields peculiar to RESON SeaBat 7100 Series sonars. This format may contain data from a 7125 sonar. | | 66
 SIZE | The size of the imagery specific record | U | 2
 SPARE | For future use | U | 64
  | | |
-RESON 8100 | Subrecord containing fields peculiar to RESON SeaBat 8100 Series sonars. This format may contain data from an 8101, 8111, 8125, 8150 or 8160 sonar. | | 8
+**RESON 8100** | Subrecord containing fields peculiar to RESON SeaBat 8100 Series sonars. This format may contain data from an 8101, 8111, 8125, 8150 or 8160 sonar. | | 8
 SPARE | For future use. | I | 8
  | | |
-KONGSBERG EM122, EM302, EM710, EM2040 | Subrecord containing fields peculiar to Kongsberg EM122, EM302, EM710, and EM2040 series sonars. | | 50
+**KONGSBERG EM122, EM302, EM710, EM2040** | Subrecord containing fields peculiar to Kongsberg EM122, EM302, EM710, and EM2040 series sonars. | | 50
 SAMPLING_FREQUENCY | The sonar system digitizing rate in 4e-9 Hz. | I | 8
 MEAN_ABSORPTION | The mean absorption coefficient in dB/kilometer. | I | 2
 TX_PULSE_LENGTH | The transmit pulse length in microseconds | I | 2
@@ -2335,13 +2239,13 @@ Offset | The DC offset used to scale imagery sample received from the sonar to r
 Scale | The multiplier used to scale the values received from the sonar to range of positive values for storage in GSF. | I | 2
 SPARE | | I | 20
  | | | 
-Klein 5410 Bathymetric Sidescan | Subrecord containing fields peculiar to Klein 5410 sidescan/bathymetry sonar systems. | | 18
+**Klein 5410 Bathymetric Sidescan** | Subrecord containing fields peculiar to Klein 5410 sidescan/bathymetry sonar systems. | | 18
 RES_MODE | Descriptor for resolution mode: 0 = normal; 1 = high. | U | 2
 TVG_PAGE | TVG page number. | U | 2
 BEAM_ID[5] | An array of identifiers for five sidescan beam magnitude time series, starting with beam id 1 as the forward-most. | U | 2*5
 SPARE | For future use. | I | 4
  | | | 
-R2Sonic Imagery | Subrecord containing fields particular to R2Sonic Models 2020, 2022 and 2024 | | 168
+**R2Sonic Imagery** | Subrecord containing fields particular to R2Sonic Models 2020, 2022 and 2024 | | 168
 MODEL_NUMBER | Model number; e.g., 2020, 2022 or 2024 | T | 12
 SERIAL_NUMBER | Serial number | T | 12
 TIME | Time of the ping | I | 8
@@ -2396,7 +2300,6 @@ BAD_TIDE_CORRECTOR | GSF_PING_USER_FLAG_09
 BAD_SVP | GSF_PING_USER_FLAG_10
 NO_POSITION | GSF_PING_USER_FLAG_11
 
-
 The bit GSF_PING_USER_FLAG_12 is used to indicate that a delayed heave correction has been
 applied.
 
@@ -2416,7 +2319,7 @@ GPS_BASED_VERTICAL_CONTROL | GSF_PING_USER_FLAG_13
 The bits GSF_PING_USER_FLAG_14 and GSF_PING_USER_FLAG_15 are used to describe the
 source of the tide correctors applied to a ping, as described in Table C-1.
 
-Table C-1  Ping Flag Tide Source Descriptions
+**Table C-1** Ping Flag Tide Source Descriptions.
 
 Source of tide corrector. | Bit 15 | Bit 14
 --------------------------|--------|-------
@@ -2425,12 +2328,12 @@ Predicted | 0 | 1
 Observed, preliminary | 1 | 0
 Observed, verified | 1 | 1
 
-
 An example of ping flags is shown in Table C-2.  In this example, bits 14 and 15 are set.  This
 indicates that observed, verified tides have been applied to this ping.  If only bit 14 were set, it
 would mean that predicted tides have been applied.  If only bit 15 were set, it would mean that
 observed, preliminary tides have been applied.
-TABLE  C-2.  EXAMPLE PING FLAG, OBSERVED, VERIFIED TIDES APPLIED
+
+**Table C-2** Example ping flag, observed, verified tides applied.
 
 Bit Number | 15 | 14 | 13 | 12 | 11 | 10 | 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
 ----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|
@@ -2439,7 +2342,7 @@ Value | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
 Another example of ping flags is shown in Table C-3.  In this example, bit 12 has been set,
 indicating that delayed heave has been applied.
 
-TABLE  C-3.  EXAMPLE PING FLAG, DELAYED HEAVE APPLIED
+**Table C-3** Example ping flag, delayed heave applied.
 
 Bit Number | 15 | 14 | 13 | 12 | 11 | 10 | 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
 ----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----
@@ -2451,7 +2354,7 @@ why the ping is invalid.  Table C-4 shows an example of an invalid ping.  In thi
 invalid because it has a bad position.  If a ping is flagged as invalid in the first bit, but bits 1
 through 11 are all 0, then the ping did not get bottom detection.
 
-TABLE  C-4.  EXAMPLE PING FLAG, PING IS INVALID BECAUSE OF BAD POSITION
+**Table C-4** Example ping flag, ping is invalid because of bad position.
 
 Bit Number | 15 | 14 | 13 | 12 | 11 | 10 | 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
 ----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----
@@ -2489,7 +2392,6 @@ charting significance. All features result in an override of the final bathymetr
 2 A designated sounding creates an override of the final bathymetry model, but is not of charting
 significance.
 
-
 Bit 0 is defined as the "ignore beam" bit.  If this bit is 0 the beam is considered valid and should
 be used for processing.  If the beam is invalid, this bit will be set to 1 and the other bits will
 provide information as to why the beam is invalid.  Table C-5 shows an example of beam flags.
@@ -2497,19 +2399,18 @@ In this case, bits 0 and 7 are set, meaning the beam should be ignored because i
 uncertainty criteria.  If bit 0 is 1 and none of the other bits are set, it means that beam had no
 bottom detection.
 
-TABLE C-5.  BEAM FLAGGED AS 'IGNORE' BECAUSE THE UNCERTAINTY CRITERIA IS EXCEEDED
+**Table C-5** Beam flagged as 'ignore' because the uncertainty criteria is exceeded.
 
 Bit Number | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
 ----|----|----|----|----|----|----|----|----
 Value | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1
-
 
 Bit 1 is defined as the "selected sounding" bit.  If this bit is set, that indicates that this beam’s
 depth has some special significance.  The other bits in the beam flags will describe why this
 sounding has been selected.  Table C-6 gives an example of a beam with bits 1 and 6 set,
 meaning the sounding has been selected as a feature.
 
-TABLE C-6.  BEAM FLAGGED AS 'SELECTED' AS A FEATURE
+**Table C-6** Beam flagged as 'selected' as a feature.
 
 Bit Number | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
 ----|----|----|----|----|----|----|----|----
@@ -2518,19 +2419,18 @@ Value | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0
 If none of the bits in the beam flag are set, the beam is valid.  Bits 0 and 1 should be mutually
 exclusive; i.e. an invalid beam should never be a selected sounding.
 
-
 ## Appendix C.3 Flag Mapping Between GSF and HDCS
 
 Table C-7 gives a useful mapping of HDCS flags to GSF flags.  Table C-8 gives the reverse mapping
 of GSF flags to HDCS flags.
 
-TABLE C-7 MAPPING OF HDCS FLAGS TO GSF FLAGS
+**Table C-7** Mapping of HDCS flags to GSF flags.
 
 HDCS Flags | Description | Beam Hex Code | Bitmask | Comment
 -----------|-----------|-----------|-----------|-----------
 OD_EXAMINED_BY_HYDROG_MASK | Indicates that the data has been examined by a hydrographer. It is not currently used by HIPS programs. | No flag to be applied to GSF file upon export from HDCS. | | 
 OD_EXAMINED_BY_FILTER_MASK | Indicates that the data has been flagged using a depth filter. It is set by the conversion programs when converting raw data into HIPS files. This flag is not used by any other HIPS programs. | No flag to be applied to GSF file upon export from HDCS. | | 
-OD_SVP_CORRECTED_MASK | Indicates that the observed depths file has been generated by post-processing sound velocity correction algorithm. This algorithm is part of the hdcs merge algorithm. | No flag to be applied to GSF file upon export from HDCS. | | 
+OD_SVP_CORRECTED_MASK | Indicates that the observed depths file has been generated by post-processing sound velocity correction algorithm. This algorithm is part of the HDCS merge algorithm. | No flag to be applied to GSF file upon export from HDCS. | | 
 OD_SINGLEBEAM_MASK | Indicates that the observed depths file contains single beam data. A single beam file may contain single or dual frequency soundings. | No flag to be applied to GSF file |upon export from HDCS.
 Profiles: | | | |
 OD_PROFILE_REJECTED_MASK | Indicates that the profile has been rejected. It implies that all soundings within the profile are also rejected. |  0001 | 0000 0000 0000 0001 | IGNORE_PING
@@ -2538,7 +2438,7 @@ OD_PROFILE_REJECTED_BY_HYDROG_MASK | Indicates that the profile is rejected by t
 OD_PROFILE_BAD_SVP_MASK | Indicates that the profile has been rejected as a result of SVP correction. | 0401 | 0000 0100 0000 0001 | BAD_SVP
 Depths: | | | |
 OD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. | 01 | 0000 0001 | Null Invalidated - No detection was made by the sonar
-OD_DEPTH_REJECTED_BY_SWATHED_MASK | Indicates that the sounding was reject by the user in the swath editor. Soundings that are rejected in this manner are not displayed in the hdcs subset mode. | 05 | 0000 0101 |  Manually edited (i.e., MVE).
+OD_DEPTH_REJECTED_BY_SWATHED_MASK | Indicates that the sounding was reject by the user in the swath editor. Soundings that are rejected in this manner are not displayed in the HDCS subset mode. | 05 | 0000 0101 |  Manually edited (i.e., MVE).
 OD_DEPTH_DISABLED_BEAM_MASK | Indicates that the reason for rejection was because the beam was disabled. The VCF dictates the status (enabled or disabled) for each beam. The conversion programs read the VCF and set the status word accordingly. Soundings that have been rejected in this manner do not appear during subsequent processing. | 01 | 0000 0001 | Null Invalidated - No detection was made by the sonar
 OD_DEPTH_REJECTE D_BY_GATE_MASK | Indicates that the reason for rejection was because the beam failed the minimum and maximum depth criteria. This criteria is specified by the user in the conversion programs. Any soundings that are rejected because of this criteria do not appear during subsequent processing. | 09 | 0000 1001 | Filter edited
 OD_DEPTH_QUALITY_0_MASK | Indicates that the bit 0 of the 2-bit sounding quality flag is set.| No flag to be applied to GSF file upon export from HDCS. | | 
@@ -2549,7 +2449,6 @@ OD_DEPTH_REJECTED_BY_TOTAL_PROPAGATION_ERROR (TPE) | Indicates that the reason f
 OD_DEPTH_REJECTED_BY_HYDROG_MASK | Indicate that depth has been rejected manually. This is basically a mirror of the processed depths flag, where the actual functions are implemented. Again this flag's been around for a while. | 05 | 0000 0101 | Manually edited (i.e., MVE).
 OD_DEPTH_REJECTED_BY_STATISTICAL_MASK | Indicate that depth has been rejected by statistical functions. This is basically a mirror of theprocessed depths flag, where the actual functions are implemented. | 09 | 0000 1001 | Filter edited
 OD_DEPTH_DESIGNATED_MASK | This is the only sounding bit which indicates that a sounding is a "selected" sounding. A user has to manually select a sounding, and no reason for selection is stored.  This is basically a mirror of the processed depths flag, where the actual functions are implemented. | 02 | 0000 0010 | Filter edited
-
 
 - TODO(schwehr): The above table was likely mangled during conversion.
 - TODO(schwehr): We who?
@@ -2570,8 +2469,6 @@ PD_TRACK_LINE_MASK | This bit is used by the CHS to indicate that the survey is 
 PD_TIDE_APPLIED_MASK | This bit indicates that tide has been applied to the data. It is set by the merging program. | No flag to be applied to GSF file upon export from HDCS. | | 
 PD_SVP_CORRECTED_MASK | This is a mirror of the bit in the observed depths file, where the SV correction functions are implemented. It indicates that the line has been SV corrected. | No flag to be applied to GSF file upon export from HDCS. | | 
 
-
-
 HDCS Flags | Description | Beam Hex Code | Bitmask | Comment
 -----------|-----------|-----------|-----------|-----------
 Profiles: | | | |
@@ -2589,17 +2486,17 @@ PD_PROFILE_BAD_DRAFT_MASK | This is set by the merge function, and indicates tha
 HDCS Flags | Description | Beam Hex Code | Bitmask | Comment
 -----------|-----------|-----------|-----------|-----------
 Depths: | | | | 
-PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by hdcs. | 01 | 0000 0001 | Null Invalidated - No detection was made by the sonar 
-PD_DEPTH_REJECTED_BY_HYDROG_MASK | Indicates that the reason for rejection was because of a hydrographer’s action. This bit is set by hdcs in subset cleaning mode. | 05 | 0000 0101 | Manually edited (i.e., MVE).
-PD_DEPTH_DISABLED_BEAM_MASK | Indicates that the reason for rejection was because the beam was disabled. This bit is inherited from the Observed Depths file. Soundings that have been rejected in this manner are not visible in hdcs. | 01 | 0000 0001 | Null Invalidated - No detection was made by the sonar
-PD_DEPTH_REJECTED_BY_GATE_MASK | Indicates that the reason for rejection was because the beam failed the minimum and maximum depth criteria. This bit is inherited from the Observed Depths file. Soundings that have been rejected in this manner are not visible in hdcs. | 09 | 0000 1001 | Filter edited
+PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by HDCS. | 01 | 0000 0001 | Null Invalidated - No detection was made by the sonar 
+PD_DEPTH_REJECTED_BY_HYDROG_MASK | Indicates that the reason for rejection was because of a hydrographer’s action. This bit is set by HDCS in subset cleaning mode. | 05 | 0000 0101 | Manually edited (i.e., MVE).
+PD_DEPTH_DISABLED_BEAM_MASK | Indicates that the reason for rejection was because the beam was disabled. This bit is inherited from the Observed Depths file. Soundings that have been rejected in this manner are not visible in HDCS. | 01 | 0000 0001 | Null Invalidated - No detection was made by the sonar
+PD_DEPTH_REJECTED_BY_GATE_MASK | Indicates that the reason for rejection was because the beam failed the minimum and maximum depth criteria. This bit is inherited from the Observed Depths file. Soundings that have been rejected in this manner are not visible in HDCS. | 09 | 0000 1001 | Filter edited
 PD_DEPTH_REJECTED_BY_TOTAL_PROPAGATION_ERROR (TPE) | Indicates that the reason for rejection was because the beam failed Total Propagation Error (TPE). | 81 | 1000 0001 | This beam is to be ignored, it exceeds the IHO standards for Horizontal OR Vertical error.
-PD_DEPTH_OUTSTANDING_MASK | This is not a rejection flag. It is set by hdcs subset mode, and indicates that the sounding should be examined further. | No flag to be applied to GSF file upon export from HDCS. | | 
-PD_DEPTH_EXAMINED_MASK | This is not a rejection flag. It is set by hdcs subset mode, and indicates that the sounding has been verified. |No flag to be applied to GSF file upon export from HDCS. | | 
+PD_DEPTH_OUTSTANDING_MASK | This is not a rejection flag. It is set by HDCS subset mode, and indicates that the sounding should be examined further. | No flag to be applied to GSF file upon export from HDCS. | | 
+PD_DEPTH_EXAMINED_MASK | This is not a rejection flag. It is set by HDCS subset mode, and indicates that the sounding has been verified. |No flag to be applied to GSF file upon export from HDCS. | | 
 
 HDCS Flags | Description | Beam Hex Code | Bitmask | Comment
 -----------|-----------|-----------|-----------|-----------
-PD_DEPTH_REJECTED_BY_SWATHED_MASK | Indicates that the sounding has been rejected in the swath editor. Soundings which are rejected in this manner are not visible in older versions of hdcs, but are visible in the newer PC based software. | 05 | 0000 0101 | Manually edited (i.e., MVE).
+PD_DEPTH_REJECTED_BY_SWATHED_MASK | Indicates that the sounding has been rejected in the swath editor. Soundings which are rejected in this manner are not visible in older versions of HDCS, but are visible in the newer PC based software. | 05 | 0000 0101 | Manually edited (i.e., MVE).
 PD_DEPTH_QUALITY_0_MASK | Indicates that the bit 0 of the 2-bit sounding quality flag is set. | No flag to be applied to GSF file upon export from HDCS. | | 
 PD_DEPTH_QUALITY_1_MASK | Indicates that the bit 1 of the 2-bit sounding quality flag is set. | No flag to be applied to GSF file upon export from HDCS. | | 
 PD_DEPTH_DECIMATED_MASK | Indicates that the sounding is flagged as decimated. |  | No flag to be applied to GSF file upon export from HDCS. | | 
@@ -2607,8 +2504,7 @@ PD_DEPTH_REJECTED_BY_STATISTICAL_MASK | Indicate that depth has been rejected by
 PD_DEPTH_DESIGNATED_MASK | Indicates that the user has explicitly selected this sounding as a designated sounding. | 82 | 1000 0010 | Selected sounding, it has been identified as a designated sounding
 PD_DEPTH_REJECTED_BY_CUBE_MASK | | 09 | 0000 1001 | Filter edited
 
-
-TABLE C-8 MAPPING OF GSF BEAM FLAGS TO HDCS
+**Table C-8** Mapping of GSF beam flags to HDCS.
 
 GSF Beam Flags | Comment | CARIS Flag | Comment
 ---------------|---------|------------|--------
@@ -2620,14 +2516,14 @@ GSF Beam Flags | Comment | CARIS Flag | Comment
 0010 0010 | Selected sounding, it has been identified as a feature | PD_DEPTH_DESIGNATED_MASK | Indicates that the user has explicitly selected this sounding as a designated sounding.
 0100 0010 | Spare bit Field | N/A | 
 0000 0001 | Selected sounding, it has been identified as a designated sounding | PD_DEPTH_DESIGNATED_MASK | Indicates that the user has explicitly selected this sounding as a designated sounding.
-0000 0001 | Null Invalidated - No detection was made by the sonar | PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by hdcs.
-0000 0101 | Manually edited (i.e., MVE). | PD_DEPTH_REJECTED_BY_SWATHED_MASK | Indicates that the sounding has been rejected in the swath editor. Soundings which are rejected in this manner are not visible in older versions of hdcs, but are visible in the newer PC based software.
-0000 1001 | Filter edited | PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by hdcs.
-0010 0001 | Does NOT meet Class2 | PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by hdcs.
-0100 0001 | Resolution Invalidated - Exceeds maximum footprint | PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by hdcs.
+0000 0001 | Null Invalidated - No detection was made by the sonar | PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by HDCS.
+0000 0101 | Manually edited (i.e., MVE). | PD_DEPTH_REJECTED_BY_SWATHED_MASK | Indicates that the sounding has been rejected in the swath editor. Soundings which are rejected in this manner are not visible in older versions of HDCS, but are visible in the newer PC based software.
+0000 1001 | Filter edited | PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by HDCS.
+0010 0001 | Does NOT meet Class2 | PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by HDCS.
+0100 0001 | Resolution Invalidated - Exceeds maximum footprint | PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by HDCS.
 1000 0001 | This beam is to be ignored; it exceeds the IHO standards for Horizontal OR Vertical error. | PD_DEPTH_REJECTED_BY_TOTAL_PROPAGATION_ERROR (TPE)  | Indicates that the reason for rejection was because the beam failed Total Propagation Error (TPE).
 
-Table C-10 Mapping of GSF ping flags to HDCS
+**Table C-10** Mapping of GSF ping flags to HDCS.
 
 GSF Ping Flags | Description | Proposed HDCS Mapping | Comment
 ---------------|-------------| ----------------------|--------

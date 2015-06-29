@@ -1,377 +1,108 @@
-GSFlib,
-The Generic Sensor Format
-Library
+# GSFlib, The Generic Sensor Format Library
 
-
-
-30 June 2014
-
-
-
-GSFLib Documentation, version 03.06
-
-i
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
+    30 June 2014
+    GSFLib Documentation, version 03.06
+    Leidos doc 98-16(19)
 
 Prepared For:
-Naval Oceanographic Office
-Stennis Space Center, MS  39522
 
+    Naval Oceanographic Office
+    Stennis Space Center, MS  39522
 
 Prepared By:
-Leidos Corporation
-221 Third Street
-Newport, RI  02840
 
-GSFLib Documentation, version 03.06
-
-ii
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-
-GSFlib, the Generic Sensor Format Library
-
-REVISIONS
-
-
-Pages
-Affected
-
-Rev
-
-Date
-
-0
-
-04 SEP 1998
-
-All
-
-Baseline Version
-
-1
-
-12 NOV 1998
-
-All
-
-Updated specification to reflect changes due to
-implementations through GSF‐v1.07.
-
-2
-
-07 OCT 1999
-
-All
-
-Updated specification to reflect changes due to
-implementations through GSF‐v1.08.
-
-3
-
-12 OCT 1999
-
-All
-
-Updated specification to reflect changes due to
-implementations through GSF‐v1.09.
-
-4
-
-20 OCT 2000
-
-All
-
-Updated specification to reflect changes due to
-implementations through GSF‐v1.10
-
-5
-
-16 JAN 2001
-
-All
-
-Updated specification to reflect changes due to
-implementations through GSF‐v1.11
-
-6
-
-29 MAR 2002
-
-Various
-
-Updated Library Documentation to reflect changes made for
-GSF version 2.0.  Including: (c++ support, and support for
-Simrad EM120)
-
-7
-
-08 JUL 2002
-
-Various
-
-Updated Library Documentation to reflect changes made for
-GSF version 2.01.
-
-8
-
-20 JUN 2003
-
-Various
-
-Updated Library Documentation to reflect changes made for
-GSF version 2.02, including support for bathymetric receive
-beam time series intensities.
-
-9
-
-29 DEC 2004
-
-Various
-
-Updated Library Documentation to reflect changes made for
-GSF version 2.03.
-
-10
-
-30 JUN 2006
-
-Various
-
-Updated Library Documentation to reflect changes made for
-GSF version 2.04.
-
-Remarks
-
-GSFLib Documentation, version 03.06
-
-i
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-11
-
-09 MAR 2007
-
-Various
-
-Updated Library Documentation to reflect changes made for
-GSF version 2.05.
-
-12
-
-04 Sep 2007
-
-Various
-
-Updated Library Documentation to reflect changes made for
-GSF version 2.06 and 2.07
-
-13
-
-03 Dec 2007
-
-None
-
-No change to the text for GSF version 2.08
-
-14
-
-30 Jan 2008
-
-Various
-
-Updated Library Documentation to reflect changes made for
-GSF version 2.09
-
-15
-
-20 Mar 2009
-
-Various
-
-Updated Library Documentation to reflect changes made for
-GSF version 03.01
-
-16
-
-24 Sep 2010
-
-Various
-
-Updates for GSF version 03.02.
-
-17
-
-24 Sep 2011
-
-Various
-
-Updates for GSF verson 03.03.  Includes Kongsberg EM12 and
-R2Sonic support
-
-18
-
-8 June 2012
-
-Various
-
-Updates for GSF version 03.04.
-
-19
-
-02 May 2014
-
-Various
-
-Updates for GSF version 03.05.
-
-20
-
-30 Jun 2014
-
-Various
-
-Updates for GSF version 03.06.
-
-
-GSFLib Documentation, version 03.06
-
-ii
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-Table of Contents
-
-
-1.Introduction1‐1
-1.1Implementation Concept .................................................................................................... 1‐1
-1.2Development History .......................................................................................................... 1‐3
-1.3Restrictions and Limitations ............................................................................................... 1‐7
-1.4References .......................................................................................................................... 1‐8
-1.5Distribution ......................................................................................................................... 1‐8
-1.6Sensors Supported .............................................................................................................. 1‐8
-1.7Computer Platforms Supported ....................................................................................... 1‐10
-1.8Documentation Conventions ............................................................................................ 1‐11
-2.Function Definitions ................................................................................................................... 2‐1
-2.1Access Functions ................................................................................................................. 2‐1
-2.1.1Function:  gsfOpen ..................................................................................................... 2‐1
-2.1.2Function:  gsfOpenBuffered ....................................................................................... 2‐3
-2.1.3Function:  gsfRead ...................................................................................................... 2‐6
-2.1.4Function:  gsfWrite ..................................................................................................... 2‐8
-2.1.5Function:  gsfSeek ..................................................................................................... 2‐10
-2.1.6Function:  gsfClose .................................................................................................... 2‐11
-2.2Utility Functions ................................................................................................................ 2‐13
-2.2.1Function:  gsfCopyRecords ....................................................................................... 2‐13
-2.2.2Function:  gsfFree ..................................................................................................... 2‐14
-2.2.3Function:  gsfPutMBParams ..................................................................................... 2‐14
-2.2.4Function:  gsfGetMBParams ..................................................................................... 2‐16
-2.2.5Function:  gsfStat ...................................................................................................... 2‐17
-GSFLib Documentation, version 03.06
-
-iii
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-2.2.6Function:  gsfLoadScaleFactor .................................................................................. 2‐17
-2.2.7Function:  gsfGetScaleFactor .................................................................................... 2‐21
-2.2.8Function: gsfSetDefaultScaleFactor .......................................................................... 2‐22
-2.2.9Function:  gsfLoadDepthScaleFactorAutoOffset ...................................................... 2‐23
-2.2.10Function:  gsfGetPositionDestination ..................................................................... 2‐25
-2.2.11Function:  gsfGetPositionOffsets ............................................................................ 2‐25
-2.2.12Macro: gsfTestPingStatus ....................................................................................... 2‐26
-2.2.13Macro: gsfSetPingStatus ......................................................................................... 2‐27
-2.2.14Macro: gsfClearPingStatus ..................................................................................... 2‐28
-2.3Information Functions ...................................................................................................... 2‐28
-2.3.1Function: gsfInterror ................................................................................................ 2‐29
-2.3.2Function:  gsfPrintError ............................................................................................ 2‐29
-2.3.3Function:  gsfStringError ........................................................................................... 2‐30
-2.3.4Function:  gsfIndexTime ........................................................................................... 2‐31
-2.3.5Function:  gsfPercent ................................................................................................ 2‐32
-2.3.6Function:  gsfGetNumberRecords ............................................................................ 2‐33
-2.3.7Function:  gsfGetSwathBathyBeamWidths .............................................................. 2‐34
-2.3.8Function:  gsfGetSwathBathyArrayMinMax ............................................................. 2‐35
-2.3.9Function:  gsfIsStarboardPing ................................................................................... 2‐36
-2.3.10Function:  gsf_register_progress_callback ............................................................. 2‐37
-2.3.11Function: gsfGetSonarTextName ........................................................................... 2‐38
-2.3.12Function: gsfFileSupportsRecalculateXYZ ............................................................... 2‐38
-2.3.13Function: gsfFileSupportsRecalculateTPU .............................................................. 2‐40
-2.3.14Function: gsfFileSupportsRecalculateNominalDepth ............................................. 2‐42
-2.3.15Function: gsfFileContainsMBAmplitude ................................................................. 2‐43
-GSFLib Documentation, version 03.06
-
-iv
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-2.3.16Function: gsfFileContainsMBImagery ..................................................................... 2‐45
-2.3.17Function: gsfIsNewSurveyLine ................................................................................ 2‐47
-2.3.18Function: gsfInitializeMBParams ............................................................................ 2‐48
-3.ERROR CODE DESCRIPTIONS .................................................................................................... 3‐48
-4.C‐language Definitions of Structures used by GSFlib ................................................................. 4‐1
-4.1Definition of GSF Data Records .......................................................................................... 4‐1
-4.1.1Header Record ............................................................................................................ 4‐1
-4.1.2Swath Bathymetry Ping Record .................................................................................. 4‐2
-4.1.3Single‐beam Bathymetry Record .............................................................................. 4‐44
-4.1.4Sound Velocity Profile (SVP) Record ......................................................................... 4‐47
-4.1.5Processing Parameters Record ................................................................................. 4‐47
-4.1.6Sensor Parameters Record ....................................................................................... 4‐51
-4.1.7Comment Record ...................................................................................................... 4‐51
-4.1.8History Record .......................................................................................................... 4‐52
-4.1.9Navigation Error Record ........................................................................................... 4‐52
-4.1.10Swath Bathymetry Summary Record ..................................................................... 4‐53
-4.1.11Attitude Record ...................................................................................................... 4‐54
-4.2Supporting Data Structures and Definitions ..................................................................... 4‐54
-4.2.1Record Identifier ....................................................................................................... 4‐54
-4.2.2Time Structure .......................................................................................................... 4‐55
-4.2.3Null values used to represent missing data ............................................................. 4‐55
-4.2.4Positioning System Type Codes ................................................................................ 4‐56
-
-GSFLib Documentation, version 03.06
-
-v
-
-Leidos doc 98‐16(19)
-
-30 June 2014
+    Leidos Corporation
+    221 Third Street
+    Newport, RI  02840
+
+
+## Table of Contents
+
+    1. Introduction ........................................................ 1-1
+    1.1 Implementation Concept ............................................. 1-1
+    1.2 Development History ................................................ 1-3
+    1.3 Restrictions and Limitations ....................................... 1-7
+    1.4 References ......................................................... 1-8
+    1.5 Distribution ....................................................... 1-8
+    1.6 Sensors Supported .................................................. 1-8
+    1.7 Computer Platforms Supported ....................................... 1-10
+    1.8 Documentation Conventions .......................................... 1-11
+    2. Function Definitions ................................................ 2-1
+    2.1 Access Functions ................................................... 2-1
+    2.1.1 Function: gsfOpen ................................................ 2-1
+    2.1.2 Function: gsfOpenBuffered ........................................ 2-3
+    2.1.3 Function: gsfRead ................................................ 2-6
+    2.1.4 Function: gsfWrite ............................................... 2-8
+    2.1.5 Function: gsfSeek ................................................ 2-10
+    2.1.6 Function: gsfClose ............................................... 2-11
+    2.2 Utility Functions .................................................. 2-13
+    2.2.1 Function: gsfCopyRecords ......................................... 2-13
+    2.2.2 Function: gsfFree ................................................ 2-14
+    2.2.3 Function: gsfPutMBParams ......................................... 2-14
+    2.2.4 Function: gsfGetMBParams ......................................... 2-16
+    2.2.5 Function: gsfStat ................................................ 2-17
+    2.2.6 Function: gsfLoadScaleFactor ..................................... 2-17
+    2.2.7 Function: gsfGetScaleFactor ...................................... 2-21
+    2.2.8 Function: gsfSetDefaultScaleFactor ............................... 2-22
+    2.2.9 Function: gsfLoadDepthScaleFactorAutoOffset ...................... 2-23
+    2.2.10 Function: gsfGetPositionDestination ............................. 2-25
+    2.2.11 Function: gsfGetPositionOffsets ................................. 2-25
+    2.2.12 Macro: gsfTestPingStatus ........................................ 2-26
+    2.2.13 Macro: gsfSetPingStatus ......................................... 2-27
+    2.2.14 Macro: gsfClearPingStatus ....................................... 2-28
+    2.3 Information Functions .............................................. 2-28
+    2.3.1 Function: gsfInterror ............................................ 2-29
+    2.3.2 Function: gsfPrintError .......................................... 2-29
+    2.3.3 Function: gsfStringError ......................................... 2-30
+    2.3.4 Function: gsfIndexTime ........................................... 2-31
+    2.3.5 Function: gsfPercent ............................................. 2-32
+    2.3.6 Function: gsfGetNumberRecords .................................... 2-33
+    2.3.7 Function: gsfGetSwathBathyBeamWidths ............................. 2-34
+    2.3.8 Function: gsfGetSwathBathyArrayMinMax ............................ 2-35
+    2.3.9 Function: gsfIsStarboardPing ..................................... 2-36
+    2.3.10 Function: gsf_register_progress_callback ........................ 2-37
+    2.3.11 Function: gsfGetSonarTextName ................................... 2-38
+    2.3.12 Function: gsfFileSupportsRecalculateXYZ ......................... 2-38
+    2.3.13 Function: gsfFileSupportsRecalculateTPU ......................... 2-40
+    2.3.14 Function: gsfFileSupportsRecalculateNominalDepth ................ 2-42
+    2.3.15 Function: gsfFileContainsMBAmplitude ............................ 2-43
+    2.3.16 Function: gsfFileContainsMBImagery .............................. 2-45
+    2.3.17 Function: gsfIsNewSurveyLine .................................... 2-47
+    2.3.18 Function: gsfInitializeMBParams ................................. 2-48
+    3. ERROR CODE DESCRIPTIONS ............................................. 3-48
+    4. C-language Definitions of Structures used by GSFlib ................. 4-1
+    4.1 Definition of GSF Data Records ..................................... 4-1
+    4.1.1 Header Record .................................................... 4-1
+    4.1.2 Swath Bathymetry Ping Record ..................................... 4-2
+    4.1.3 Single-beam Bathymetry Record .................................... 4-44
+    4.1.4 Sound Velocity Profile (SVP) Record .............................. 4-47
+    4.1.5 Processing Parameters Record ..................................... 4-47
+    4.1.6 Sensor Parameters Record ......................................... 4-51
+    4.1.7 Comment Record ................................................... 4-51
+    4.1.8 History Record ................................................... 4-52
+    4.1.9 Navigation Error Record .......................................... 4-52
+    4.1.10 Swath Bathymetry Summary Record ................................. 4-53
+    4.1.11 Attitude Record ................................................. 4-54
+    4.2 Supporting Data Structures and Definitions ......................... 4-54
+    4.2.1 Record Identifier ................................................ 4-54
+    4.2.2 Time Structure ................................................... 4-55
+    4.2.3 Null values used to represent missing data ....................... 4-55
+    4.2.4 Positioning System Type Codes .................................... 4-56
 
 List of Figures
 
-Figure 1‐1  GSFLib Functions ...................................................................................................................... 1‐3
+    Figure 1-1 GSFLib Functions ............................................ 1-3
 
 List of Tables
 
-Table 2‐1 GSF Beam Array Field Size Definitions ..................................................................................... 2‐18
-Table 3‐1 GSF Error Codes ....................................................................................................................... 3‐49
-Table 4‐1 Sensor ID allocation to Sensor Specific Subrecord Data Structure .......................................... 4‐37
+    Table 2-1 GSF Beam Array Field Size Definitions ........................ 2-18
+    Table 3-1 GSF Error Codes .............................................. 3-49
+    Table 4-1 Sensor ID allocation to Sensor Specific Subrecord Data Structure . 4-37
 
+# 1. INTRODUCTION
 
-GSFLib Documentation, version 03.06
-
-vi
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-1. INTRODUCTION
 The Generic Sensor Format (GSF) library contains functions for creating and accessing multibeam and
-single‐beam sonar data that have been stored in a generic byte stream format corresponding to the
+single-beam sonar data that have been stored in a generic byte stream format corresponding to the
 sequential encapsulation described in the Generic Sensor Format Specification.  This specification
 defines a set of ten record types that are used to store bathymetric data.
 
@@ -379,19 +110,21 @@ This document is derived from documentation within the GSFlib source code, prima
 gsf.h.  The intent is to present that information in a more accessible, organized form and to describe
 the library’s design and implementation.  Because the information presented herein is derived from the
 source code, the code itself should be the primary reference for application developers.
-1.1 Implementation Concept
-The GSF library (gsflib) is a “thin” layer of software that transfers data between the data format
+
+## 1.1 Implementation Concept
+
+The GSF library (gsflib) is a "thin" layer of software that transfers data between the data format
 described in the specification and a standardized set of data structures. This is necessary because the
 specified data format is a byte stream of data containing records of arbitrary length that have been
 extensively optimized for compactness and is not easily manipulated.  The organization of the data
 structures populated by GSFlib is for the developer’s convenience and presents the data in a uniform
-manner with a consistent set of physical units.  There is a one‐to‐one correspondence between the
+manner with a consistent set of physical units.  There is a one-to-one correspondence between the
 record types defined in the specification and the data structures made available through the library.
 
-Figure 1‐1 illustrates the GSF library functions.  There are three functional categories in the library
+Figure 1-1 illustrates the GSF library functions.  There are three functional categories in the library
 routines: those that provide access to the data when stored on disk, those that perform utility
 operations and those that provide information about the data.  The access functions, which translate
-between the memory‐based data structures and the byte‐stream data format, include operations to
+between the memory-based data structures and the byte-stream data format, include operations to
 open and close, read and write to data files and seek functions to access data by time and record type.
 
 Utility functions include routines that copy data structures, free memory, translate processing
@@ -402,40 +135,15 @@ Access to processing parameters is necessary when they are required or need to b
 factor information defines how the data are packaged into the GSF data files.  They are automatically
 applied to read operations and need to be manipulated only when the application is writing data to disk
 
-GSFLib Documentation, version 03.06
-
-1‐1
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 Informational functions provide a variety of facts about the data.  These functions provide capabilities
 such as:
-
 
-describing error conditions,
-
-
-
-returning the relative location of the file pointer within the file,
-
-
-
-providing counts of the number of records of a given type,
-
-
-
-discriminating between starboard and port‐directed beams in dual transducer configurations
-
-
-
-Providing beam widths for the data being processed.
-
-
-
-Providing the name of the sensor
-
+- describing error conditions,
+- returning the relative location of the file pointer within the file,
+- providing counts of the number of records of a given type,
+- discriminating between starboard and port-directed beams in dual transducer configurations
+- providing beam widths for the data being processed.
+- providing the name of the sensor
 
 It should be noted that for some sonars this beam width information is not stored within the data but is
 provided by lookup tables within the library source code.
@@ -449,79 +157,12 @@ data file to be written sequentially and for the index file to be created by the
 examine it using direct access.  At this time, the index file format is not a part of the GSF data
 specification but is defined only within the library.
 
-GSFLib Documentation, version 03.06
+![GSFLib Functions](figures/figure-1-1.svg "GSFLib Functions")
 
-1‐2
+**Figure 1-1** GSFLib Functions.
 
-Leidos doc 98‐16(19)
+## 1.2 Development History
 
-30 June 2014
-
-Application Software
-
-Memory
-Management
-
-Information
-
-gsfGetScaleFactors
-
-gsfPutMBParams
-
-gsfLoadScaleFactors
-gsfLoadDepthScaleFactorAutoOffset
-
-gsfGetMBParams
-gsfFree
-
-GSF Library Data Structures
-
-gsfIndexTime
-gsfIsStarboardPing
-gsfGetNumberRecords
-gsfGetSwathBathyBeamWidths
-gsfGetSwathBathyArrayMinMax
-
-gsfDataID
-gsfRecords
-
-Processing
-Parameters
-gsfCopyRecords
-gsfMBParams
-
-gsfHeader
-gsfSwathBathyPing
-gsfSingleBeamPing
-gsfSVP
-gsfProcessingParameters
-gsfSensorParameters
-gsfComment
-gsfHistory
-gsfHVNavigationError
-gsfSwathBathySummary
-
-gsfPercent
-
-Scale Factor
-Information
-gsfScaleFactors
-
-gsfOpen
-gsfOpenBuffered
-gsfClose
-gsfSeek
-gsfWrite
-
-gsfRead
-
-Index File
-
-GSF Data File
-
-
-Figure 1‐1  GSFLib Functions
-1.2 Development History
 J. Scott Ferguson and Brad Ward of SAIC and Daniel Chayes of the Naval Research Lab developed the
 GSF specification.  The Defense Mapping Agency supported its development and it was first published
 on 31 March 1994.  The initial author of the GSF library is Shannon Byrne of Leidos (formerly SAIC). The
@@ -534,678 +175,169 @@ board to accept updates.  The working group exchanges technical information most
 mailing list can be subscribed to by filling out the form located here:
 https://www.leidos.com/maritime/gsf.  Both the specification and the GSF library are maintained under
 configuration control by Leidos with input from members of the GSF working group.
-GSFLib Documentation, version 03.06
 
-1‐3
 
-Leidos doc 98‐16(19)
 
-30 June 2014
+## 1.3 Restrictions and Limitations
 
-The library’s release history is as follows:
-Release Date
+The following restrictions or limitations apply to the GSFlib code:
 
-Version ID
-
-Description
-
-03 May 1994
-
-GSF‐v01.00
-
-Initial Release.
-
-14 Aug 1995
-
-GSF‐v01.01
-
-Direct and sequential access now works through common
-gsfRead and gsfWrite API.  All pointers to dynamically allocated
-memory are now maintained by the library.
-
-22 Dec 1995
-
-GSF‐v01.02
-
-Added gsfGetMBParams, gsfPutMBParams,
-gsfIsStarboardPing, and gsfGetSwathBathyBeamWidths. Also
-added GSF_APPEND as a file access mode, and modified
-GSF_CREATE access mode so that files can be updated (read
-and written).
-
-20 Aug 1996
-
-GSF‐v01.03
-
-Added support for single beam echosounders.  Added
-gsfStringError function.
-
-24 Mar 1997
-
-GSF‐v01.04
-
-Added support for RESON 8101 sonar and enhanced support for
-“classic” Seabeam sonar.  Increased the maximum record size
-from 4 kbytes to 32 kbytes.
-
-04 Sep 1998
-
-GSF‐v01.06
-
-Added support for SeaBeam 2100 series multibeam sonars and
-for Elac Bottomchart MkII sonars.  Minor enhancements to code
-portability.
-
-12 Nov 1998
-
-GSF‐v01.07
-
-Defined a new GSF navigation error record
-gsfHVNavigationError that replaces the currently defined
-navigation error record gsfNavigationError.  Modified encode of
-the existing error array subrecords (depth_error,
-across_track_error, and along_track_error) as two byte
-quantities.  Added two new array subrecords to the GSF swath
-bathymetry ping data structure, namely horizontal error and
-vertical error.  Modified the gsfPrintError function so that it
-calls the gsfStringError function.  gsfStringError function
-expanded so that all defined error conditions are handled.
-
-07 Oct 1999
-
-GSF‐v01.08
-
-Added support for Simrad multibeam models EM‐3000, EM‐
-1002 and EM‐300, as  well as added a new compressed SASS
-(gsfCmpSassSpecific) specific data structure.  Added two new
-functions gsfGetSwathBathyArrayMinMax and
-gsfLoadDepthScaleFactorAutoOffset in support of signed
-depth.  Also added processing in the
-gsfGetSwathBathyBeamWidths function to return the beam
-width values specified within the EM‐3000 series data formats.
-Increased the GSF_MAX_PROCESSING_PARAMETERS macro
-from sixty‐four to one hundred and twenty‐eight and the
-GSF_MAX_SENSOR_PARAMETERS macro from thirty‐two to one
-
-GSFLib Documentation, version 03.06
-
-1‐4
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-hundred and twenty‐eight.  Modified gsfPutMBParameters
-function to allow processing parameters to contain the
-appropriate designator for the vertical datum.
-12 Oct 1999
-
-GSF‐v01.09
-
-Updated the contents of the compressed SASS
-(gsfCmpSassSpecific) specific subrecord.  Added a comment
-block to the compressed SASS specific subrecord definition to
-describe the mapping between SASS and GSF data. Included
-annotations informing that the gsfCmpSassSpecific data structure is
-intended to replace the gsfTypeIIISpecific data structure in a future
-release. All new coding should use the gsfCmpSassSpecific data
-structure.
-
-20 Oct 2000
-
-GSF‐v01.10
-
-Enhancements for index file portability between big and little
-endian‐based host machines.  Updates to source code for minor
-bug fixes.
-
-16 Jan 2001
-
-GSF‐v01.11
-
-Updated the contents of the gsfEM3RunTime data structure to
-include separate elements for port and starboard swath width
-and for port and starboard coverage sectors.  Updated the
-contents of the gsfEM3RunTime data structure to include the
-HiLo frequency absorption coefficient ratio.  Added checks for
-LINUX specific defines before defining timespec structure.
-Added support for more tidal datums.  Fixed errors in decoding
-of HV Navigation Error records.
-
-29 Mar 2002
-
-GSF‐v02.00
-
-Modified to support access from c++ applications, address file
-sharing problems on multiprocessor Linux configurations,
-resolve compile macros used for Win32, resolved several minor
-bug fixes, remove unused automatic variables, add support for
-the Simrad EM120 sonar,  reserve subrecord IDs for the latest
-datagram format for Reson 8101, 8111, 8125, 8150, and 8160
-sonar systems, and ensure that a string terminating NULL is
-applied when strncpy is used.
-
-08 Jul 2002
-
-GSF‐v02.01
-
-Added gsfAttitude record to allow storage of full time series of
-attitude data.  Added a new sensor specific subrecord for Reson
-8101, 8111, 8125, 8150, and 8160 sonar systems.  Expanded the
-gsfMBOffsets structure to include motion sensor offsets.
-Updated gsfGetMBParams and gsfPutMBParams to encode and
-decode new motion sensor offsets in the process_parameters
-record.
-
-20 Jun 2003
-
-GSF‐v02.02
-
-Added support for bathymetric receive beam time series
-intensity data.  Added sensor‐specific single‐beam information
-to the multibeam sensor specific subrecords.
-
-29 Dec 2004
-
-GSF‐v02.03
-
-Fixed memory leaks, fixed encoding and decoding of 1‐byte BRB
-intensity values, updated gsfLoadDepthScaleFactorAutoOffset
-
-GSFLib Documentation, version 03.06
-
-1‐5
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-to vary the offset interval based on precision, added beam
-spacing to Reson 8100 sensor‐specific subrecord, reserved
-sensor Ids for Simrad EM3002, EM3002D, and EM3000D, added
-sensor specific support for Reson Navisound singlebeam, added
-copy of vertical_error and horizontal_error arrays in
-gsfCopyRecords, and added definitions for RTG position type to
-gsfHVNavigationError record.
-30 Jun 2006
-
-GSF‐v2.04
-
-Added support for EM121A data received via Kongsberg SIS.
-Added support for EM3000D and EM3002D in gsfIsStarboard
-ping function.  Added new service to allow calling programs to
-register a callback function for reporting progress of index file
-creation.  Updated gsfCopyRecords to copy all HV Nav Error
-data from source to target data structure.  Updates to support
-compilation on 64‐bit architectures, and compilation on MAC
-OSX operating system.
-
-09 Mar 2007
-
-GSF‐v2.05
-
-Added support for bathymetry data from the GeoAcoustics Ltd.
-GS+ Interferrometric side‐scan sonar system.
-Reserve sub‐record IDs for the Kongsberg EM122, EM302, and
-EM710 systems.
-
-04 Sep 2007
-
-GSF‐v2.06, GSF‐
-v2.07
-
-Added support for the Kongsberg EM122, EM302, and EM710
-multibeam systems.   Added application level control over the
-field size to be used for a subset of the beam array subrecords.
-Improved error checking in gsfLoadScaleFactor().  Fixed a
-problem in DecodeSignedByteArray that was only an issue on
-the SGI platform.
-
-03 Dec 2007
-
-GSF‐v2.08
-
-Modified the approach used to parse the beam array
-subrecords to no longer depend on the compression flag field of
-the scale factor subrecord for determining the field size.  This
-dependency on the compression flag field was added in
-GSFv2.06 on the premise that a default value of zero could
-(always) be expected.
-
-30 Jan 2008
-
-GSF‐v2.09
-
-Added support for Klein 5410 Bathymetric Sidescan.
-
-20 Mar 2009
-
-GSF‐v03.01
-
-Added support for the Reson 7125 and EM2000.  Added fields
-for height, separation, and GPS tide corrector to the
-gsfSwathBathyPing record.  Added new processing parameter
-record values: vessel_type, full_raw_data,
-msb_applied_to_attitude, heave_removed_from gps_tc. Added
-new sensor ids for EM3 sensors to differentiate between data
-logged from the depth datagram and the raw range and beam
-angle datagram.
-
-GSFLib Documentation, version 03.06
-
-1‐6
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-24 Sep 2010
-
-GSF‐v03.02
-
-Added support for KM2040. Added support for Imagenex Delta‐
-T. Add new query functions to provide calling applications with
-a simple means to determine what data are contained in the
-GSF file and what processing operations can be supported given
-the parameters available in the input file. Added separation
-uncertainty field to the Navigation uncertainty record. Several
-bugs resolved.
-
-24 Sep 2011
-
-GSF‐v03.03
-
-Added support for Kongsberg EM12 and R2Sonic
-
-18 April 2012
-
-GSF‐v03.04
-
-Several bugs resolved.
-
-30 March 2014
-
-GSF‐v03.05
-
-Geodetic functions added.  Added new ping subarray for sonar’s
-vertical uncertainty.  Added support for files larger than 2
-gigabytes in size.  Added support for different number of
-multibeam transmitters and receivers.  Some bugs resolved.
-
-GSF‐v03.06
-
-Minor update to correct large file support issues new to GSF‐
-v03.06.
-
-30 June 2014
-
-1.3 Restrictions and Limitations
-The following restrictions or limitations apply to the GSFlib code.
-
-
-The library assumes the host computer uses the ASCII character set.
-
-
-
-The library is written in the C language and assumes that the type short is 16 bits, and that the type
+- The library assumes the host computer uses the ASCII character set.
+- The library is written in the C language and assumes that the type short is 16 bits, and that the type
 int is 32 bits.
+- The library provides access to individual data files only and does not support the development of
+  metadata or transmittal files.  It should be noted, however, that many of the data items recorded in
+  the files’ summary and parameter records may be used to populate metadata records.
+- Data compression flags are maintained within the ping scale factors subrecord but data compression
+  is not supported.
+- The index function creates separate index files that make assumptions about the file naming
+  convention.  The library names the index file the same as the data file name but replaces the third to
+  the last character with an "n".  This is because the files are expected to be named using a file naming
+  convention adhered to within NAVOCEANO for data collected by their Integrated Survey Systems
+  (ISS and ISS-60).  No protection exists for the case where a GSF data file already has an "n" in the
+  third to the last character.  As of GSFv03.05, the GSF library supports files larger than 2 gigabytes in
+  size. As of GSFv03.05, the format of the index files has changed to accommodate 8-byte file offset
+  pointers. When an older format index file is encountered by the new library, the index file will
+  automatically be recreated.  A GSFv03.05 format index file will not be usable by older versions of
+  library.
+- Time is recorded in precise form only with fractional seconds included in all time fields.  The
+  beginning of the epoch is required to be midnight of 1 January 1970, thus data recorded prior to this
+  date is not supported.  All times in GSF are required to be relative to UTC.
+- The only horizontal datum supported is "WGS-84"; supported tidal datums include "UNKNOWN",
+  "MLLW", "MLW", "ALAT", "ESLW", "ISLW", "LAT", "LLW", "LNLW", "LWD", "MLHW", "MLLWS",
+  "MLWN", and "MSL".  This is a limitation with the data structure gsfMBParams which represents
+  horizontal and vertical datums as integers.  Only these datums have integer definitions in gsf.h.
+- Data record compression is not supported.
+- The current version of GSFlib library does provide text string translations for all error code returns;
+  however, all definitions do not have unique values.
+- The name of the gsfSwathBathySummary record implies that the data in this structure is specific to
+  the Swath Bathy Ping Record.  This is not the case; the data structure is implemented to represent
+  the Summary Record as defined in the specification.
 
-
+## 1.4 References
 
-The library provides access to individual data files only and does not support the development of
-metadata or transmittal files.  It should be noted, however, that many of the data items recorded in
-the files’ summary and parameter records may be used to populate metadata records.
+- Generic Sensor Format Specification, 02 May 2014, Prepared for: Naval Oceanographic Office, Stennis
+  Space Center, MS, by Leidos, 221 Third Street, Newport RI.
 
-
-
-Data compression flags are maintained within the ping scale factors subrecord but data compression
-is not supported.
-
-
-
-The index function creates separate index files that make assumptions about the file naming
-convention.  The library names the index file the same as the data file name but replaces the third to
-the last character with an “n”.  This is because the files are expected to be named using a file naming
-convention adhered to within NAVOCEANO for data collected by their Integrated Survey Systems
-(ISS and ISS‐60).  No protection exists for the case where a GSF data file already has an “n” in the
-third to the last character.  As of GSFv03.05, the GSF library supports files larger than 2 gigabytes in
-size. As of GSFv03.05, the format of the index files has changed to accommodate 8‐byte file offset
-pointers. When an older format index file is encountered by the new library, the index file will
-
-GSFLib Documentation, version 03.06
-
-1‐7
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-automatically be recreated.  A GSFv03.05 format index file will not be usable by older versions of
-library.
-
-
-Time is recorded in precise form only with fractional seconds included in all time fields.  The
-beginning of the epoch is required to be midnight of 1 January 1970, thus data recorded prior to this
-date is not supported.  All times in GSF are required to be relative to UTC.
-
-
-
-The only horizontal datum supported is “WGS‐84”; supported tidal datums include “UNKNOWN”,
-“MLLW”, “MLW”, “ALAT”, “ESLW”, “ISLW”, “LAT”, “LLW”, “LNLW”, “LWD”, “MLHW”, “MLLWS”,
-“MLWN”, and “MSL”.  This is a limitation with the data structure gsfMBParams which represents
-horizontal and vertical datums as integers.  Only these datums have integer definitions in gsf.h.
-
-
-
-Data record compression is not supported.
-
-
-
-The current version of GSFlib library does provide text string translations for all error code returns;
-however, all definitions do not have unique values.
-
-
-
-The name of the gsfSwathBathySummary record implies that the data in this structure is specific to
-the Swath Bathy Ping Record.  This is not the case; the data structure is implemented to represent
-the Summary Record as defined in the specification.
-
-1.4
-
-References
-
-Generic Sensor Format Specification, 02 May 2014, Prepared for: Naval Oceanographic Office, Stennis
-Space Center, MS, by Leidos, 221 Third Street, Newport RI.
-1.5
-
-Distribution
+## 1.5 Distribution
 
 The information in this document and the GSF library source code itself is unclassified and may be
 distributed without restriction.  Copyright permission for the GSF sources is made available under the
 terms of LGPLv2.1. Releases of the GSF library are produced solely by Leidos. Leidos will receive and
 review source changes provided from contributors and review these with the GSF working group for
 consideration in future a future GSF release.
-1.6
 
-Sensors Supported
+## 1.6 Sensors Supported
 
 Multibeam echosounders
-
 
-Elac Bottomchart Mk II
-
-
-
-RESON SEABAT 9000 Series
-
-
-
-RESON 7125
-
-
-
-RESON 8101
-
-GSFLib Documentation, version 03.06
-
-1‐8
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-
-
-RESON 8111
-
-
-
-RESON 8124
-
-
-
-RESON 8125
-
-
-
-RESON 8150
-
-
-
-RESON 8160
-
-
-
-SeaBeam 2100 series
-
-
-
-Kongsberg EM12
-
-
-
-Kongsberg EM100
-
-
-
-Kongsberg EM121
-
-
-
-Kongsberg EM121A
-
-
-
-Kongsberg EM300
-
-
-
-Kongsberg EM950
-
-
-
-Kongsberg EM1000
-
-
-
-Kongsberg EM1002
-
-
-
-Kongsberg EM2000
-
-
-
-Kongsberg EM3000 and EM3000D
-
-
-
-Kongsberg EM120
-
-
-
-Kongsberg EM3002 and EM3002D
-
-
-
-Kongsberg EM122
-
-
-
-Kongsberg EM302
-
-
-
-Kongsberg EM710
-
-
-
-Kongsberg EM2040
-
-
-
-Imagenex Delta‐T
-
-
-
-R2Sonic 2022
-
-GSFLib Documentation, version 03.06
-
-1‐9
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-
-
-R2Sonic 2024
-
-
-
-R2Sonic 2020
-
-Interferrometric Side‐Scan Systems
-
-
-SEAMAP
-
-
-
-GeoAcoustics GS+
+- Elac Bottomchart Mk II
+- RESON SEABAT 9000 Series
+- RESON 7125
+- RESON 8101
+- RESON 8111
+- RESON 8124
+- RESON 8125
+- RESON 8150
+- RESON 8160
+- SeaBeam 2100 series
+- Kongsberg EM12
+- Kongsberg EM100
+- Kongsberg EM121
+- Kongsberg EM121A
+- Kongsberg EM300
+- Kongsberg EM950
+- Kongsberg EM1000
+- Kongsberg EM1002
+- Kongsberg EM2000
+- Kongsberg EM3000 and EM3000D
+- Kongsberg EM120
+- Kongsberg EM3002 and EM3002D
+- Kongsberg EM122
+- Kongsberg EM302
+- Kongsberg EM710
+- Kongsberg EM2040
+- Imagenex Delta-T
+- R2Sonic 2022
+- R2Sonic 2024
+- R2Sonic 2020
+
+Interferrometric Side-Scan Systems
+
+- SEAMAP
+- GeoAcoustics GS+
 
 Multibeam Archival Formats
-
 
-Compressed SASS
+- Compressed SASS
 
-Single‐beam Echosounders
-
+Single-beam Echosounders
 
-Odom Echotrac
+- Odom Echotrac
+- ODEC Bathy2000
+- Reson Navisound
 
-
+Single-beam Archival Formats
 
-ODEC Bathy2000
-
-
-
-Reson Navisound
-
-Single‐beam Archival Formats
-
-
-MGD77
-
-
-
-BDB
-
-
-
-NOS HDB
+- MGD77
+- BDB
+- NOS HDB
 
 Bathymetric Sidescan Systems
-
-1.7
 
-Klein 5410
-Computer Platforms Supported
+- Klein 5410
+
+## 1.7 Computer Platforms Supported
 
 The GSF library has been used on the following platforms:
-
 
-HP Series 7000 workstations running HPUX 9.0, 10.0, and 11.0
-
-
-
-PCs running IBM OS/2, versions 2.0, 3.0 and 4.0, LINUX (32 bit and 64 bit), and WINDOWS NT,
-2000, XP, 7, 8
-
-
-
-Digital Alpha Workstation running Digital UNIX, version
-
-
-
-Silicon Graphics running IRIX 6.3
-
-
-
-Sun
-
-GSFLib Documentation, version 03.06
-
-1‐10
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-
-
-Mac OSX
+- HP Series 7000 workstations running HPUX 9.0, 10.0, and 11.0
+- PCs running IBM OS/2, versions 2.0, 3.0 and 4.0, LINUX (32 bit and 64 bit), and WINDOWS NT, 2000, XP, 7, 8
+- Digital Alpha Workstation running Digital UNIX, version
+- Silicon Graphics running IRIX 6.3
+- Sun
+- Mac OSX
 
 In order to support files larger than two gigabytes, redefinitions of the standard functions fopen, stat,
 ftell, and fseek were made in gsf.c and gsf_indx.c. The function redefinitions are made in these .c files to
-avoid any un‐intended redefinition affecting user application code.  Compiler directives steer the
+avoid any un-intended redefinition affecting user application code.  Compiler directives steer the
 redefinition of these functions for the appropriate underlying Operation System.  The following
 combinations are supported: Windows using Microsoft Visual Studio and Mingw, Linux using gcc, and
 MacOS using gcc.
+
 When compiling the source code in Linux, the –D_LARGEFILE_SOURCE  flag must be used to provide
 access to the fopen64, stat64, ftello64, and fseeko64 functions.  When compiling in Windows/mingW,
 these functions are available without this define.  When compiling in Windows/MSC, the _ftelli64 and
 _fseeki64 functions are readily available.
 
-1.8
+## 1.8 Documentation Conventions
 
-Documentation Conventions
-
-
-
-References to GSF functions are bolded.
-
-
-
-References to GSF data structures or definitions are italicized.
-
-
-
-Function prototypes, function arguments and other references to C‐language source code are in
+- References to GSF functions are bolded.
+- References to GSF data structures or definitions are italicized.
+- Function prototypes, function arguments and other references to C-language source code are in
 Courier type (e.g., int)
 
-GSFLib Documentation, version 03.06
+## 2. FUNCTION DEFINITIONS
 
-1‐11
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-2. FUNCTION DEFINITIONS
 The library function definitions in this section are in three functional categories, those used to access
 data, those used to perform utility functions, and those that provide information about the data.
-2.1 Access Functions
+
+## 2.1 Access Functions
+
 Access functions include those used to open and close data files, read and write data and place the file
 pointer as various locations within the file.
-2.1.1 Function:  gsfOpen
-Usage:
-int gsfOpen(const char *filename,
-const int
-int
 
-mode
+## 2.1.1 Function: gsfOpen
 
-,
+__Usage:__
 
-*handle
+    int gsfOpen(const char *filename,
+                int mode,
+                const int *handle)
 
-)
+__Description:__
 
-
-Description:
-This function attempts to open a GSF data file.  If the file exists and is opened for read‐only or for
+This function attempts to open a GSF data file.  If the file exists and is opened for read-only or for
 update, the GSF header is read to confirm that this is a GSF data file.  If the file is opened for creation,
 the GSF header containing the version number of the software library is written into the header.  This
 function passes an integer handle back to the calling application.  The handle is used for all further
@@ -1220,75 +352,55 @@ increased in size since the index file was created.  If not, subsequent file acc
 the index file does not exist, the gsfOpen function automatically creates it.  If the GSF file is larger than
 that recorded in the index file, the index file is updated to correspond to the new records in the GSF file.
 
-Inputs:
+__Inputs:__
 
-GSFLib Documentation, version 03.06
+- filename 
+  - a fully qualified path to the GSF file to be opened
+- mode
+  - may have the following values:
+    - GSF_READONLY open an existing file for read-only access
+    - GSF_UPDATE open an existing file for reading and writing
+    - GSF_CREATE create a new GSF file
+    - GSF_READONLY_INDEX open an existing file for read only access with an index file
+    - GSF_UPDATE_INDEX open an existing file for reading and writing with an index file
+    - GSF_APPEND open an existing file for appending
+- handle
+  - a pointer to an integer to be assigned a handle which will be referenced for all future file
+    access.
 
-2‐1
+__Returns:__
 
-Leidos doc 98‐16(19)
+This function returns zero if successful, or -1 if an error occurred. gsfError is set to indicate the error.
 
-30 June 2014
+__Error Conditions:__
+ 
+- GSF_BAD_ACCESS_MODE
+- GSF_FILE_SEEK_ERROR
+- GSF_FLUSH_ERROR
+- GSF_FOPEN_ERROR
+- GSF_READ_ERROR
+- GSF_SETVBUF_ERROR
+- GSF_TOO_MANY_OPEN_FILES
+- GSF_UNRECOGNIZED_FILE
+- GSF_OPEN_TEMP_FILE_FAILED
+- GSF_CORRUPT_INDEX_FILE_ERROR
+- GSFLib Documentation, version 03.06
+- GSF_INDEX_FILE_OPEN_ERROR
+- GSF_FILE_TELL_ERROR
+- GSF_MEMORY_ALLOCATION_FAILED
 
-filename
+### 2.1.2 Function: gsfOpenBuffered
 
-a fully qualified path to the GSF file to be opened
+__Usage:__
 
-mode
+    int gsfOpenBuffered(const char *filename,
+                        const int mode,
+                        int *handle,
+                        int buf_size)
 
-may have the following values:
-GSF_READONLY open an existing file for read‐only access
-GSF_UPDATE open an existing file for reading and writing
-GSF_CREATE create a new GSF file
-GSF_READONLY_INDEX open an existing file for read only access with an index file
-GSF_UPDATE_INDEX open an existing file for reading and writing with an index file
- GSF_APPEND open an existing file for appending
+__Description:__
 
-handle
-
-a pointer to an integer to be assigned a handle which will be referenced for all future file
-access.
-
-
-Returns:
-This function returns zero if successful, or ‐1 if an error occurred. gsfError is set to indicate the error.
-
-Error Conditions:
-GSF_BAD_ACCESS_MODE
-GSF_FILE_SEEK_ERROR
-GSF_FLUSH_ERROR
-GSF_FOPEN_ERROR
-GSF_READ_ERROR
-GSF_SETVBUF_ERROR
-GSF_TOO_MANY_OPEN_FILES
-GSF_UNRECOGNIZED_FILE
-GSF_OPEN_TEMP_FILE_FAILED
-GSF_CORRUPT_INDEX_FILE_ERROR
-GSFLib Documentation, version 03.06
-
-2‐2
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-GSF_INDEX_FILE_OPEN_ERROR
-GSF_FILE_TELL_ERROR
-GSF_MEMORY_ALLOCATION_FAILED
-2.1.2 Function:  gsfOpenBuffered
-Usage:
-int gsfOpenBuffered(const char *filename,
-const int
-int
-int
-
-mode,
-*handle,
-buf_size)
-
-
-Description:
-This function attempts to open a GSF data file.  If the file exits and is opened read‐only or for update, the
+This function attempts to open a GSF data file.  If the file exits and is opened read-only or for update, the
 GSF header is read to confirm that this is a GSF data file.  If the file is opened for creation, the GSF
 header containing the version number of the software library is written into the header.  This function
 passes an integer handle back to the calling application.  The handle is used for all further access to the
@@ -1305,101 +417,57 @@ accesses.  If the index file does not exist, the gsfOpenBuffered function automa
 GSF file is larger than that recorded in the index file, the index file is updated to correspond to the new
 records in the GSF file.
 
-Inputs:
+__Inputs:__
 
+- filename
+  - a fully qualified path to the GSF file to be opened
+- mode
+  - may have the following values:
+    - GSF_READONLY open an existing file for read-only access
+    - GSF_UPDATE open an existing file for reading and writing
+    - GSF_CREATE create a new GSF file
+    - GSF_READONLY_INDEX open an existing file for read-only access with an index file
+    - GSF_UPDATE_INDEX open an existing file for reading and writing with an index file
+    - GSF_APPEND open an existing file for appending
+- handle
+  - a pointer to an integer to be assigned a handle which will be referenced for all future file access.
+- buf_size
+  - an integer buffer size in bytes.
 
-GSFLib Documentation, version 03.06
+__Returns:__
 
-2‐3
+This function returns zero if successful, or -1 if an error occurred. gsfError is set to indicate the error.
 
-Leidos doc 98‐16(19)
+__Error Conditions:__
 
-30 June 2014
+- GSF_BAD_ACCESS_MODE
+- GSF_FILE_SEEK_ERROR
+- GSF_FLUSH_ERROR
+- GSF_FOPEN_ERROR
+- GSF_READ_ERROR
+- GSF_SETVBUF_ERROR
+- GSF_TOO_MANY_OPEN_FILES
+- GSFLib Documentation, version 03.06
+- GSF_UNRECOGNIZED_FILE
+- GSF_OPEN_TEMP_FILE_FAILED
+- GSF_CORRUPT_INDEX_FILE_ERROR
+- GSF_INDEX_FILE_OPEN_ERROR
+- GSF_FILE_TELL_ERROR
+- GSF_MEMORY_ALLOCATION_FAILED
 
-filename
+### 2.1.3 Function: gsfRead
 
-a fully qualified path to the GSF file to be opened
+__Usage:__
 
-mode
+    int gsfRead(int handle,
+                int desiredRecord,
+                gsfDataID *dataID,
+                gsfRecords *rptr,
+                unsigned char *buf,
+                int max_size)
 
-may have the following values:
-GSF_READONLY open an existing file for read‐only access
-GSF_UPDATE open an existing file for reading and writing
-GSF_CREATE create a new GSF file
-GSF_READONLY_INDEX open an existing file for read‐only access with an index
-file
-GSF_UPDATE_INDEX open an existing file for reading and writing with an index
-file
-GSF_APPEND open an existing file for appending
+__Description:__
 
-handle
-
-a pointer to an integer to be assigned a handle which will be referenced for all future file
-access.
-
-buf_size
-
-an integer buffer size in bytes.
-
-
-Returns:
-This function returns zero if successful, or ‐1 if an error occurred. gsfError is set to indicate the error.
-
-Error Conditions:
-
-GSF_BAD_ACCESS_MODE
-GSF_FILE_SEEK_ERROR
-GSF_FLUSH_ERROR
-GSF_FOPEN_ERROR
-GSF_READ_ERROR
-GSF_SETVBUF_ERROR
-GSF_TOO_MANY_OPEN_FILES
-GSFLib Documentation, version 03.06
-
-2‐4
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-GSF_UNRECOGNIZED_FILE
-GSF_OPEN_TEMP_FILE_FAILED
-GSF_CORRUPT_INDEX_FILE_ERROR
-GSF_INDEX_FILE_OPEN_ERROR
-GSF_FILE_TELL_ERROR
-GSF_MEMORY_ALLOCATION_FAILED
-
-GSFLib Documentation, version 03.06
-
-2‐5
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-2.1.3 Function:  gsfRead
-Usage:
-
-int gsfRead(int
-int
-
-handle,
-desiredRecord,
-
-gsfDataID
-
-*dataID,
-
-gsfRecords
-
-*rptr,
-
-unsigned char *buf,
-int
-
-max_size)
-
-Description:
 gsfRead supports both direct and sequential access. If the file is opened for sequential access, this
 function reads the desired record from the GSF data file specified by the handle.  Setting the
 desiredRecord argument to GSF_NEXT_RECORD reads the next record in the data file.  The
@@ -1419,343 +487,248 @@ containing the scale factors needed is read first, and then the ping record of i
 access applications must set the desiredRecord argument equal to the recordID field in the gsfDataID
 structure.
 
-Inputs:
+__Inputs:__
 
+- handle
+  - the handle to the file as provided by gsfOpen or gsfOpenBuffered
+- desiredRecord
+  - the desired record or GSF_NEXT_RECORD
+- dataID
+  - a pointer to a gsfDataID structure to be populated for the input record.
+- rptr
+  - a pointer to a gsfRecords structure to be populated with the data from the input
+    record in internal form.
+- buf
+  - an optional pointer to caller memory to be populated with a copy of the GSF byte
+    stream for this record.
+- max_size
+  - an optional maximum size to copy into buf
 
-GSFLib Documentation, version 03.06
+__Returns:__
 
-2‐6
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-handle
-
-the handle to the file as provided by gsfOpen or gsfOpenBuffered
-
-desiredRecord
-
-the desired record or GSF_NEXT_RECORD
-
-dataID
-
-a pointer to a gsfDataID structure to be populated for the input record.
-
-rptr
-
-a pointer to a gsfRecords structure to be populated with the data from the input
-record in internal form.
-
-buf
-
-an optional pointer to caller memory to be populated with a copy of the GSF byte
-stream for this record.
-
-max_size
-
-an optional maximum size to copy into buf
-
-
-Returns:
-This function returns the number of bytes read if successful or ‐1 if an error occurred. gsfError is set to
+This function returns the number of bytes read if successful or -1 if an error occurred. gsfError is set to
 indicate the error.
 
-Error Conditions:
+__Error Conditions:__
 
-GSF_ATTITUDE_RECORD_DECODE_FAILED
-GSF_BAD_FILE_HANDLE
-GSF_CHECKSUM_FAILURE
-GSF_COMMENT_RECORD_DECODE_FAILED
-GSF_FILE_SEEK_ERROR
-GSF_FLUSH_ERROR
-GSF_HEADER_RECORD_DECODE_FAILED
-GSF_HISTORY_RECORD_DECODE_FAILED
-GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED
-GSF_INSUFFICIENT_SIZE
-GSF_NAV_ERROR_RECORD_DECODE_FAILED
-GSFLib Documentation, version 03.06
+- GSF_ATTITUDE_RECORD_DECODE_FAILED
+- GSF_BAD_FILE_HANDLE
+- GSF_CHECKSUM_FAILURE
+- GSF_COMMENT_RECORD_DECODE_FAILED
+- GSF_FILE_SEEK_ERROR
+- GSF_FLUSH_ERROR
+- GSF_HEADER_RECORD_DECODE_FAILED
+- GSF_HISTORY_RECORD_DECODE_FAILED
+- GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED
+- GSF_INSUFFICIENT_SIZE
+- GSF_NAV_ERROR_RECORD_DECODE_FAILED
+- GSFLib Documentation, version 03.06
+- GSF_PROCESS_PARAM_RECORD_DECODE_FAILED
+- GSF_READ_ERROR
+- GSF_READ_TO_END_OF_FILE
+- GSF_PARTIAL_RECORD_AT_END_OF_FILE
+- GSF_RECORD_SIZE_ERROR
+- GSF_SENSOR_PARAM_RECORD_DECODE_FAILED
+- GSF_SUMMARY_RECORD_DECODE_FAILED
+- GSF_SVP_RECORD_DECODE_FAILED
+- GSF_UNRECOGNIZED_RECORD_ID
+- GSF_UNRECOGNIZED_SUBRECORD_ID
+- GSF_INVALID_RECORD_NUMBER
+- GSF_RECORD_TYPE_NOT_AVAILABLE
+- GSF_INDEX_FILE_READ_ERROR
+- GSF_QUALITY_FLAGS_DECODE_ERROR
 
-2‐7
+### 2.1.4 Function: gsfWrite
 
-Leidos doc 98‐16(19)
+__Usage:__
 
-30 June 2014
+    int gsfWrite(int handle,
+                 gsfDataID *id,
+                 gsfRecords *rptr)
 
-GSF_PROCESS_PARAM_RECORD_DECODE_FAILED
-GSF_READ_ERROR
-GSF_READ_TO_END_OF_FILE
-GSF_PARTIAL_RECORD_AT_END_OF_FILE
-GSF_RECORD_SIZE_ERROR
-GSF_SENSOR_PARAM_RECORD_DECODE_FAILED
-GSF_SUMMARY_RECORD_DECODE_FAILED
-GSF_SVP_RECORD_DECODE_FAILED
-GSF_UNRECOGNIZED_RECORD_ID
-GSF_UNRECOGNIZED_SUBRECORD_ID
-GSF_INVALID_RECORD_NUMBER
-GSF_RECORD_TYPE_NOT_AVAILABLE
-GSF_INDEX_FILE_READ_ERROR
-GSF_QUALITY_FLAGS_DECODE_ERROR
+__Description:__
 
-2.1.4 Function:  gsfWrite
-Usage:
-int gsfWrite(int
-gsfDataID
-
-handle,
-*id,
-
-gsfRecords *rptr)
-
-Description:
 gsfWrite encodes the data from internal to external form, and then writes the requested record into the
 file specified by handle, where handle is the value returned by either gsfOpen or gsfOpenBuffered.  The
 record is written to the current file pointer for handle.  An optional checksum may be computed and
 encoded with the data if the checksum flag is set in the gsfDataID structure.  If the file is opened for
 sequential access (GSF_CREATE, or GSF_UPDATE) then the recordID field of the gsfDataID structure is
 used to specify the record to be written.
-GSFLib Documentation, version 03.06
-
-2‐8
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 
 When opening the file for direct access (GSF_UPDATE_INDEX), the combination of the recordID and
 the record_number fields of the gsfDataID structure uniquely identify the record to write.  The address
 of the record of interest is read from the index file and the file pointer is moved to this offset before the
 record is encoded and written to disk.
 
-Inputs:
+__Inputs:__
 
-handle
+- handle
+  - the handle for this file as returned by gsfOpen
+- id
+  -  a pointer to a gsfDataID containing the record ID information for the record to write.
+- rptr
+  -  a pointer to a gsfRecords structure from which to get the internal form of the record to be
+     written to the file.
 
-the handle for this file as returned by gsfOpen
+__Returns:__
 
-id
-
-a pointer to a gsfDataID containing the record ID information for the record to write.
-
-rptr
-
-a pointer to a gsfRecords structure from which to get the internal form of the record to be
-written to the file.
-
-
-Returns:
-This function returns the number of bytes written if successful, or ‐1 if an error occurred. gsfError is set
+This function returns the number of bytes written if successful, or -1 if an error occurred. gsfError is set
 to indicate the error.
 
-Error Conditions:
+__Error Conditions:__
 
-GSF_ATTITUDE_RECORD_ENCODE_FAILED
-GSF_BAD_FILE_HANDLE
-GSF_COMMENT_RECORD_ENCODE_FAILED
-GSF_FILE_SEEK_ERROR
-GSF_FLUSH_ERROR
-GSF_HEADER_RECORD_ENCODE_FAILED
-GSF_HISTORY_RECORD_ENCODE_FAILED
-GSF_HV_NAV_ERROR_RECORD_ENCODE_FAILED
-GSFLib Documentation, version 03.06
+- GSF_ATTITUDE_RECORD_ENCODE_FAILED
+- GSF_BAD_FILE_HANDLE
+- GSF_COMMENT_RECORD_ENCODE_FAILED
+- GSF_FILE_SEEK_ERROR
+- GSF_FLUSH_ERROR
+- GSF_HEADER_RECORD_ENCODE_FAILED
+- GSF_HISTORY_RECORD_ENCODE_FAILED
+- GSF_HV_NAV_ERROR_RECORD_ENCODE_FAILED
+- GSF_NAV_ERROR_RECORD_ENCODE_FAILED
+- GSF_PROCESS_PARAM_RECORD_ENCODE_FAILED
+- GSF_SENSOR_PARAM_RECORD_ENCODE_FAILED
+- GSF_SINGLE_BEAM_ENCODE_FAILED
+- GSF_SUMMARY_RECORD_ENCODE_FAILED
+- GSF_SVP_RECORD_ENCODE_FAILED
+- GSF_UNRECOGNIZED_RECORD_ID
+- GSF_UNRECOGNIZED_SENSOR_ID
+- GSF_WRITE_ERROR
+- GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
+- GSF_INVALID_RECORD_NUMBER
+- GSF_RECORD_TYPE_NOT_AVAILABLE
+- GSF_INDEX_FILE_READ_ERROR
 
-2‐9
+### 2.1.5 Function: gsfSeek
 
-Leidos doc 98‐16(19)
+__Usage:__
 
-30 June 2014
+    int gsfSeek(int handle,
+                int option)
 
-GSF_NAV_ERROR_RECORD_ENCODE_FAILED
-GSF_PROCESS_PARAM_RECORD_ENCODE_FAILED
-GSF_SENSOR_PARAM_RECORD_ENCODE_FAILED
-GSF_SINGLE_BEAM_ENCODE_FAILED
-GSF_SUMMARY_RECORD_ENCODE_FAILED
-GSF_SVP_RECORD_ENCODE_FAILED
-GSF_UNRECOGNIZED_RECORD_ID
-GSF_UNRECOGNIZED_SENSOR_ID
-GSF_WRITE_ERROR
-GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
-GSF_INVALID_RECORD_NUMBER
-GSF_RECORD_TYPE_NOT_AVAILABLE
-GSF_INDEX_FILE_READ_ERROR
-2.1.5 Function:  gsfSeek
-Usage:
-int gsfSeek(int handle,
-int option)
+__Description:__
 
-
-Description:
 This function moves the file pointer for a previously opened GSF file.
 
-Inputs:
+__Inputs:__
 
-handle
+- handle
+  - the integer handle returned from gsfOpen or gsfOpenBuffered
+- option
+  - the desired action for moving the file pointer, where:
+    - GSF_REWIND moves the pointer to first record in the file.
+    - GSF_END_OF_FILE moves the pointer to the end of the file.
+    - GSF_PREVIOUS_RECORD backup to the beginning of the record just written or just read.
 
-the integer handle returned from gsfOpen or gsfOpenBuffered
+__Returns:__
 
-GSFLib Documentation, version 03.06
+This function returns zero if successful, or -1 if an error occurred. gsfError is set to indicate the error.
 
-2‐10
+__Error Conditions:__
 
-Leidos doc 98‐16(19)
+- GSF_BAD_FILE_HANDLE
+- GSF_BAD_SEEK_OPTION
+- GSF_FILE_SEEK_ERROR
+- GSF_FLUSH_ERROR
 
-30 June 2014
+### 2.1.6 Function:  gsfClose
 
-option
+__Usage:__
 
-the desired action for moving the file pointer, where:
-GSF_REWIND moves the pointer to first record in the file.
-GSF_END_OF_FILE moves the pointer to the end of the file.
-GSF_PREVIOUS_RECORD backup to the beginning of the record just written or just read.
+    int gsfClose(const int handle)
 
+__Description:__
 
-Returns:
-This function returns zero if successful, or ‐1 if an error occurred. gsfError is set to indicate the error.
-
-Error Conditions:
-
-GSF_BAD_FILE_HANDLE
-
-GSF_BAD_SEEK_OPTION
-
-GSF_FILE_SEEK_ERROR
-GSF_FLUSH_ERROR
-
-2.1.6 Function:  gsfClose
-Usage:
-int gsfClose(const int handle)
-
-
-Description:
 This function closes a GSF file previously opened using gsfOpen or gsfOpenBuffered
 
 Inputs:
+  - handle
+    - the handle of the GSF file to be closed.
 
-handle
+__Returns:__
 
-the handle of the GSF file to be closed.
+This function returns zero if successful, or -1 if an error occurred. gsfError is set to indicate the error.
 
+__Error Conditions:__
 
-GSFLib Documentation, version 03.06
+- GSF_BAD_FILE_HANDLE
+- GSF_FILE_CLOSE_ERROR
 
-2‐11
+## 2.2 Utility Functions
 
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-Returns:
-This function returns zero if successful, or ‐1 if an error occurred. gsfError is set to indicate the error.
-
-Error Conditions:
-
-GSF_BAD_FILE_HANDLE
-
-GSF_FILE_CLOSE_ERROR
-
-
-
-GSFLib Documentation, version 03.06
-
-2‐12
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-2.2 Utility Functions
 Utility functions include those used to copy records, to free memory and to access multibeam
 processing parameters and scale factors.
-2.2.1 Function:  gsfCopyRecords
+
+### 2.2.1 Function:  gsfCopyRecords
+
 Usage:
-int gsfCopyRecords (gsfRecords *target,
-const gsfRecords *source)
 
+    int gsfCopyRecords (gsfRecords *target,
+                        const gsfRecords *source)
 
-Description:
+__Description:__
+
 This function copies all of the data contained in the source gsfRecords data structure to the target
 gsfRecords data structure.  The target must be memset to zero before the first call to gsfCopyRecords.
 This function allocates dynamic memory that is NOT maintained by the library.  The calling application
 must release the memory allocated by maintaining the target data structure as static data, or by using
 gsfFree to release the memory.
 
-Inputs:
+__Inputs:__
 
-target
+- target
+  - a pointer to a gsfRecords data structure allocated by the calling application, into which the
+    source data is to be copied.
+- source
+  - a pointer to a gsfRecords data structure allocated by the calling application, from which data is to
+    be copied.
 
-a pointer to a gsfRecords data structure allocated by the calling application, into which the
-source data is to be copied.
+__Returns:__
 
-source
+This function returns zero if successful, or -1 if an error occurs. gsfError is set to indicate the error.
 
-a pointer to a gsfRecords data structure allocated by the calling application, from which data is to
-be copied.
+__Error Conditions:__
 
+- GSF_MEMORY_ALLOCATION_FAILED
 
-Returns:
-This function returns zero if successful, or ‐1 if an error occurs. gsfError is set to indicate the error.
+### 2.2.2 Function: gsfFree
 
-Error Conditions:
+__Usage:__
 
-GSF_MEMORY_ALLOCATION_FAILED
+    void gsfFree (gsfRecords *rec)
 
-GSFLib Documentation, version 03.06
+__Description:__
 
-2‐13
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-2.2.2 Function:  gsfFree
-Usage:
-void gsfFree (gsfRecords *rec)
-
-
-Description:
 This function frees all dynamically allocated memory from a gsfRecords data structure, and then clears
 all the data elements in the structure.
 
-Inputs:
+__Inputs:__
 
-rec
+- rec
+  - pointer to a gsfRecords data structure
 
-pointer to a gsfRecords data structure
+__Returns:__
 
-
-Returns:
 None
 
-Error Conditions:
-None
-2.2.3 Function:  gsfPutMBParams
-Usage:
-int gsfPutMBParams(const gsfMBParams *p,
-gsfRecords
+__Error Conditions:__
 
-*rec,
+- None
 
-int
+### 2.2.3 Function: gsfPutMBParams
 
-handle,
+__Usage:__
 
-int
-
-numArrays)
+     int gsfPutMBParams(const gsfMBParams *p,
+                        gsfRecords *rec,
+                        int handle,
+                        int numArrays)
 
 
-Description:
+__Description:__
+
 This function moves swath bathymetry sonar processing parameters from internal form to
 "KEYWORD=VALUE" form.  The internal form parameters are read from an gsfMBParams  data structure
-GSFLib Documentation, version 03.06
-
-2‐14
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 maintained by the caller.  The "KEYWORD=VALUE" form parameters are written into the
 gsfProcessingParameters structure of the gsfRecords data structure maintained by the caller.
 Parameters for up to two transmitter array modules and two receiver array modules are supported.  If
@@ -1764,156 +737,105 @@ data structure in addition to the ‘numArrays’ command line argument, the ‘
 ignored.  If ‘number_of_transmitters’ and ‘number_of_receivers’ are equal to 0, then ‘numArrays’ will
 be used to populate both these values in the GSF processing parameters record.
 
-Inputs:
+__Inputs:__
 
-p
+- p
+  - a pointer to the gsfMBParams data structure which contains the parameters in internal
+    form.
+- rec
+  - a pointer to the gsfRecords data structure into which the parameters are to be written in the
+    "KEYWORD=VALUE" form.
+- handle
+  - the integer handle to the file set by gsfOpen or gsfOpenBuffered
+- numArrays
+  - the integer value specifying the number of pairs of arrays that need to have separate
+    parameters tracked.
 
-a pointer to the gsfMBParams data structure which contains the parameters in internal
-form.
+__Returns:__
 
-rec
+This function returns zero if successful, or -1 if an error occurs. gsfError is set to indicate the error.
 
-a pointer to the gsfRecords data structure into which the parameters are to be written in the
-"KEYWORD=VALUE" form.
+__Error Conditions:__
 
-handle
+- GSF_MEMORY_ALLOCATION_FAILED
+- GSF_PARAM_SIZE_FIXED
 
-the integer handle to the file set by gsfOpen or gsfOpenBuffered
+### 2.2.4 Function: gsfGetMBParams
 
-numArrays
+__Usage:__
 
-the integer value specifying the number of pairs of arrays that need to have separate
-parameters tracked.
+    int gsfGetMBParams(const gsfRecords *rec,
+                       gsfMBParams *p,
+                       int *numArrays)
 
+__Description:__
 
-Returns:
-This function returns zero if successful, or ‐1 if an error occurs. gsfError is set to indicate the error.
-
-Error Conditions:
-
-GSF_MEMORY_ALLOCATION_FAILED
-
-GSF_PARAM_SIZE_FIXED
-
-
-
-GSFLib Documentation, version 03.06
-
-2‐15
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-2.2.4 Function:  gsfGetMBParams
-Usage:
-int gsfGetMBParams(const gsfRecords
-
-*rec,
-
-gsfMBParams *p,
-int
-
-*numArrays)
-
-
-Description:
 This function moves swath bathymetry sonar processing parameters from external form to internal
 form.  The external "KEYWORD=VALUE" format parameters are read from a gsfProcessingParameters
 structure of the gsfRecords data structure maintained by the caller.  Any parameter not described in a
-“KEYWORD=VALUE” format will be set to “GSF_UNKNOWN_PARAM_VALUE”.  The internal form
+"KEYWORD=VALUE" format will be set to "GSF_UNKNOWN_PARAM_VALUE".  The internal form
 parameters are written into a gsfMBParams data structure maintained by the caller. Parameters for up
 to two transmitters and two receivers are supported.  The ‘number_of_transmitters’ and
 ‘number_of_receivers’ elements of the gsfMBParams data structure are set by determining the number
 of fields in the parameters for the transmitter(s) and receiver(s), respectively.  The ‘numArrays’
 argument is set from the number of fields for the transmitter(s).
 
-Inputs:
+__Inputs:__
 
-rec
+- rec
+  - a pointer to the gsfRecords data structure from which the parameters in
+    "KEYWORD=VALUE" form are to be read.
+- p
+  - a pointer to the gsfMBParams data structure which will be populated.
+- numArrays
+  - the integer value specifying the number of pairs of arrays which need to have separate
+    parameters tracked.
 
-a pointer to the gsfRecords data structure from which the parameters in
-"KEYWORD=VALUE" form are to be read.
+__Returns:__
 
-p
+This function returns zero if successful, or -1 if an error occurs. gsfError is set to indicate the error.
 
-a pointer to the gsfMBParams data structure which will be populated.
+__Error Conditions:__
 
-numArray
-s
+  - None.
 
-the integer value specifying the number of pairs of arrays which need to have separate
-parameters tracked.
+### 2.2.5 Function: gsfStat
 
-
-Returns:
-This function returns zero if successful, or ‐1 if an error occurs. gsfError is set to indicate the error.
-
-Error Conditions:
-GSFLib Documentation, version 03.06
-
-2‐16
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-None.
-2.2.5 Function:  gsfStat
 Usage:
-int gsfStat(char *filename, long long *sz)
 
+    int gsfStat(char *filename, long long *sz)
 
-Description:
+__Description:__
+
 This function attempts to stat a GSF file.  Supports 64 bit file size.
-Inputs:
-filename
 
-A fully qualified path to the GSF file.
+__Inputs:__
 
-sz
+- filename
+  - A fully qualified path to the GSF file.
+- sz
+  - A pointer to an 8 byte long long for return of a GSF file size from a stat64 call.
 
-A pointer to an 8 byte long long for return of a GSF file size from a stat64 call.
+__Returns:__
 
-Returns:
-This function returns zero if successful, or ‐1 if an error occurs.
-Error Conditions:
+This function returns zero if successful, or -1 if an error occurs.
 
+__Error Conditions:__
 
-GSF_FOPEN_ERROR
+- GSF_FOPEN_ERROR
+- GSF_UNRECOGNIZED_FILE
 
-GSF_UNRECOGNIZED_FILE
+### 2.2.6 Function: gsfLoadScaleFactor
 
-2.2.6 Function:  gsfLoadScaleFactor
+__Usage:__
 
-Usage:
-int gsfLoadScaleFactor(gsfScaleFactors *sf,
-int
+    int gsfLoadScaleFactor(gsfScaleFactors *sf,
+                           int subrecordID,
+                           char c_flag,
+                           double precision,
+                           int offset)
 
-subrecordID,
-
-char
-
-c_flag,
-
-double
-
-precision,
-
-int
-
-offset)
-
-
-Description:
-
-GSFLib Documentation, version 03.06
-
-2‐17
-
-Leidos doc 98‐16(19)
-
-30 June 2014
+__Description:__
 
 gsfLoadScaleFactor is used to load the swath bathymetry ping record scale factor structure.  This
 function allows the calling application to specify the precision and offset values used to scale the data
@@ -1928,19 +850,20 @@ array data type contained in your data, and must be called prior to calling gsfW
 creating a new GSF file.
 
 gsfLoadScaleFactor can be called for each beam array before each call to gsfWrite to achieve the proper
-field resolution for each ping record.  gsfLoadScaleFactor populates the gsfScaleFactors sub‐structure
-contained within the gsfRecords structure.  gsfWrite will encode the optional gsfScaleFactors sub‐record
+field resolution for each ping record.  gsfLoadScaleFactor populates the gsfScaleFactors sub-structure
+contained within the gsfRecords structure.  gsfWrite will encode the optional gsfScaleFactors sub-record
 once at the beginning of the data file and again whenever the scale factor values change.  Once written,
 the offset and precision for each beam array remain in effect for subsequent data records until the scale
 factors are changed.  On encode from internal form to external form, each beam array value is scaled by
 adding the specified offset and multiplying by one over the specified precision, or:
 
-scaled _ value  (beam _ value  offset ) / precision
+    scaled_value = (beam _ value + offset ) / precision
+
 On decode from external form to internal form, the inverse operation is performed, or:
 
-beam _ value  ( scaled _ value / precision)  offset
+    beam_value = ( scaled _ value / precision) - offset
 
-Table 2‐1 describes the storage available for each of the array values, and shows the dynamic range of
+Table 2-1 describes the storage available for each of the array values, and shows the dynamic range of
 the external form value after the offset and multiplier scaling values are applied.  It should be noted that
 some of the beam arrays support more than one option for the field size. When first creating a GSF file,
 the calling application can specify the desired field size via the c_flag argument to the
@@ -1950,469 +873,162 @@ include: GSF_FIELD_SIZE_DEFAULT, GSF_FIELD_SIZE_ONE, GSF_FIELD_SIZE_TWO, and
 GSF_FIELD_SIZE_FOUR.  Once the field size has been set this value cannot be changed without rewriting
 the entire GSF file.
 
-Table 2‐1 GSF Beam Array Field Size Definitions
-GSFLib Documentation, version 03.06
+**Table 2-1** GSF Beam Array Field Size Definitions.
+
+Array Subrecord | Data Representation | Size, bits | Scaled Dynamic Range
+----------------|---------------------|------------|---------------------
+DEPTH | unsigned short (default) | 16 | 0 to 65535 
+ | unsigned int (option) | 32 | 0 to 4294967295
+NOMINAL_DEPTH | unsigned short (default) | 16 | 0 to 65535
+ | unsigned int (option) | 32 | 0 to 4294967295
+ACROSS_TRACK | signed short (default) | 16 | -32768 to 32767
+ | signed int (option) | 32 | -2147483648 to 2147483647
+ALONG_TRACK | signed short (default) | 16 | -32768 to 32767
+ | signed int (option) | 32 | -2147483648 to 2147483647
+TRAVEL_TIME | unsigned short (default) | 16 | 0 to 65535
+ | unsigned int (option) | 32 | 0 to 4294967295
+BEAM_ANGLE | signed short | 16 | -32768 to 32767
+MEAN_CAL_AMPLITUDE | signed byte (default) | 8 | -128 to 127 |
+ | signed short (option) | 16 | -32768 to 32767
+MEAN_REL_AMPLITUDE | unsigned byte (default) | 8 | 0 to 255
+ | unsigned short (option) | 16 | 0 to 65535
+ECHO_WIDTH | unsigned byte (default) | 8 | 0 to 255
+ | unsigned short (option) | 16 | 0 to 65535
+QUALITY_FACTOR | unsigned byte | 8 | 0 to 255
+RECEIVE_HEAVE | signed byte | 8 | -128 to 127
+DEPTH_ERROR | unsigned short | 16 | 0 to 65535
+ACROSS_TRACK_ERROR | unsigned short | 16 | 0 to 65535
+ALONG_TRACK_ERROR | unsigned short | 16 | 0 to 65535
+QUALITY_FLAGS | unsigned byte | 8 | 0 to 255
+BEAM_FLAGS | unsigned byte | 8 | 0 to 255
+SIGNAL_TO_NOISE | signed byte | 8 | -128 to 127
+BEAM_ANGLE_FORWARD | signed short | 16 | -32768 to 32767
+VERTICAL_ERROR | unsigned short | 16 | 0 to 65535
+HORIZONTAL_ERROR | unsigned short | 16 | 0 to 65535
+SECTOR_NUMBER | unsigned byte | 8 | 0 to 255
+DETECTION_INFO | unsigned byte | 8 | 0 to 255
+INCIDENT_BEAM_ADJUSTEMENT | signed byte | 8 | -128 to 127
+SYSTEM_CLEANING | unsigned byte | 8 | 0 to 255
+DOPPLER_CORRECTION | signed byte | 8 | -128 to 127
+
+__Inputs:__
+
+- sf
+  - a pointer to the gsfScaleFactors structure to be loaded
+- subrecordID
+  - the subrecord id for the beam array data
+- c_flag
+  - the compression flag for the beam array.  This is a bit mask that combines the caller
+    specified field size in the higher order four bits with the lower four bits reserved for
+    future use to specify a compression algorithm.  The supported field size values are
+    defined as macros in gsf.h (GSF_FIELD_SIZE_DEFAULT, etc).
+- precision
+  - the precision to which the beam array data are to be stored(a value of 0.1 would
+    indicate decimeter precision for depth)
+-  offset
+  - xsthe "DC" offset to scale the data by.
+
+__Returns:__
+
+This function returns zero if successful, or -1 if an error occurred. gsfError is set to indicate the error.
+
+__Error Conditions:__
+
+- GSF_CANNOT_REPRESENT_PRECISION
+- GSF_TOO_MANY_ARRAY_SUBRECORDS
+
+### 2.2.7 Function:  gsfGetScaleFactor
+
+__Usage:__
+
+    int gsfGetScaleFactor(int handle,
+                          int subrecordID,
+                          unsigned char *c_flag,
+                          double *multiplier,
+                          double *offset)
+
+__Description:__
 
-2‐18
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-Array Subrecord
-
-Data Representation
-
-Size,
-bits
-
-Scaled Dynamic
-Range
-
-DEPTH
-
-unsigned short (default)
-
-16
-
-0 to 65535
-
-unsigned int (option)
-
-32
-
-0 to 4294967295
-
-NOMINAL_DEPTH
-
-unsigned short (default)
-
-16
-
-0 to 65535
-
-unsigned int (option)
-
-32
-
-0 to 4294967295
-
-ACROSS_TRACK
-
-signed short (default)
-
-16
-
-‐32768 to 32767
-
-signed int (option)
-
-32
-
-‐2147483648 to
-2147483647
-
-ALONG_TRACK
-
-signed short (default)
-
-16
-
-‐32768 to 32767
-
-signed int (option)
-
-32
-
-‐2147483648 to
-2147483647
-
-TRAVEL_TIME
-
-unsigned short (default)
-
-16
-
-0 to 65535
-
-unsigned int (option)
-
-32
-
-0 to 4294967295
-
-BEAM_ANGLE
-
-signed short
-
-16
-
-‐32768 to 32767
-
-MEAN_CAL_AMPLITUDE
-
-signed byte (default)
-
-8
-
-‐128 to 127
-
-signed short (option)
-
-16
-
-‐32768 to 32767
-
-MEAN_REL_AMPLITUDE
-
-unsigned byte (default)
-
-8
-
-0 to 255
-
-unsigned short (option)
-
-16
-
-0 to 65535
-
-ECHO_WIDTH
-
-unsigned byte (default)
-
-8
-
-0 to 255
-
-unsigned short (option)
-
-16
-
-0 to 65535
-
-QUALITY_FACTOR
-
-unsigned byte
-
-8
-
-0 to 255
-
-RECEIVE_HEAVE
-
-signed byte
-
-8
-
-‐128 to 127
-
-DEPTH_ERROR
-
-unsigned short
-
-16
-
-0 to 65535
-
-ACROSS_TRACK_ERROR
-
-unsigned short
-
-16
-
-0 to 65535
-
-GSFLib Documentation, version 03.06
-
-2‐19
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-ALONG_TRACK_ERROR
-
-unsigned short
-
-16
-
-0 to 65535
-
-QUALITY_FLAGS
-
-unsigned byte
-
-8
-
-0 to 255
-
-BEAM_FLAGS
-
-unsigned byte
-
-8
-
-0 to 255
-
-SIGNAL_TO_NOISE
-
-signed byte
-
-8
-
-‐128 to 127
-
-BEAM_ANGLE_FORWARD
-
-signed short
-
-16
-
-‐32768 to 32767
-
-VERTICAL_ERROR
-
-unsigned short
-
-16
-
-0 to 65535
-
-HORIZONTAL_ERROR
-
-unsigned short
-
-16
-
-0 to 65535
-
-SECTOR_NUMBER
-
-unsigned byte
-
-8
-
-0 to 255
-
-DETECTION_INFO
-
-unsigned byte
-
-8
-
-0 to 255
-
-INCIDENT_BEAM_ADJUSTEMENT
-
-signed byte
-
-8
-
-‐128 to 127
-
-SYSTEM_CLEANING
-
-unsigned byte
-
-8
-
-0 to 255
-
-DOPPLER_CORRECTION
-
-signed byte
-
-8
-
-‐128 to 127
-
-
-Inputs:
-
-sf
-
-a pointer to the gsfScaleFactors structure to be loaded
-
-subrecordID
-
-the subrecord id for the beam array data
-
-c_flag
-
-the compression flag for the beam array.  This is a bit mask that combines the caller
-specified field size in the higher order four bits with the lower four bits reserved for
-future use to specify a compression algorithm.  The supported field size values are
-defined as macros in gsf.h (GSF_FIELD_SIZE_DEFAULT, etc).
-
-precision
-
-the precision to which the beam array data are to be stored(a value of 0.1 would
-indicate decimeter precision for depth)
-
-offset
-
-the "DC" offset to scale the data by.
-
-
-Returns:
-GSFLib Documentation, version 03.06
-
-2‐20
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-This function returns zero if successful, or ‐1 if an error occurred. gsfError is set to indicate the error.
-
-Error Conditions:
-
-GSF_CANNOT_REPRESENT_PRECISION
-GSF_TOO_MANY_ARRAY_SUBRECORDS
-2.2.7 Function:  gsfGetScaleFactor
-Usage:
-int gsfGetScaleFactor(int
-
-handle,
-
-int
-
-subrecordID,
-
-unsigned char *c_flag,
-double
-
-*multiplier,
-
-double
-
-*offset)
-
-
-Description:
 gsfGetScaleFactor is used to obtain the beam array field size, compression flag, multiplier and DC offset
 values by which each swath bathymetry ping array subrecord is scaled. gsfGetScalesFactor is called once
 for each array subrecord of interest.  At least one swath bathymetry ping record must have been read
 from, or written to, the file specified by handle prior to calling gsfGetScaleFactor.
 
-Inputs:
+__Inputs:__
 
-Handle
+- handle
+  - the integer value set by a call to gsfOpen or gsfOpenBuffered.
+- subrecordID
+  - an integer value containing the subrecord id of the requested scale factors
+- c_flag
+  - the address of an unsigned character to contain the optional beam array field
+    size in the high order four bits, and the optional compression flag in the low
+    order four bits.  If the field size is not specified the default will be used.  The
+    high order four bits (beam_array_field_size) will be set to one of the following
+    values:
+    - GSF_FIELD_SIZE_DEFAULT,
+    - GSF_FIELD_SIZE_ONE,
+    - GSF_FIELD_SIZE_TWO, or
+    - GSF_FIELD_SIZE_FOUR.
+- multiplier
+  - the address of a double to contain the scaling multiplier
+- offset
+  - the address of a double to contain the scaling DC offset.
 
-the integer value set by a call to gsfOpen or gsfOpenBuffered.
+__Returns:__
 
-subrecordID
+This function returns zero if successful, or -1 if an error occurred. gsfError is set to indicate the error.
 
-an integer value containing the subrecord id of the requested scale factors
+__Error Conditions:__
 
-c_flag
+- GSF_BAD_FILE_HANDLE
+- GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
+- GSF_TOO_MANY_ARRAY_SUBRECORDS
 
-the address of an unsigned character to contain the optional beam array field
-size in the high order four bits, and the optional compression flag in the low
-order four bits.  If the field size is not specified the default will be used.  The
-high order four bits (beam_array_field_size) will be set to one of the following
+### 2.2.8 Function: gsfSetDefaultScaleFactor
 
-GSFLib Documentation, version 03.06
+__Usage:__
 
-2‐21
+    int gsfSetDefaultScaleFactor(gsfSwathBathyPing *mb_ping)
 
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-values:  GSF_FIELD_SIZE_DEFAULT, GSF_FIELD_SIZE_ONE,
-GSF_FIELD_SIZE_TWO, or GSF_FIELD_SIZE_FOUR.
-multiplier
-
-the address of a double to contain the scaling multiplier
-
-offset
-
-the address of a double to contain the scaling DC offset.
-
-
-Returns:
-This function returns zero if successful, or ‐1 if an error occurred. gsfError is set to indicate the error.
-
-Error Conditions:
-
-GSF_BAD_FILE_HANDLE
-GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
-GSF_TOO_MANY_ARRAY_SUBRECORDS
-
-2.2.8 Function: gsfSetDefaultScaleFactor
-Usage:
-
-
-int gsfSetDefaultScaleFactor(gsfSwathBathyPing *mb_ping)
-
-Description:
+__Description:__
 
 gsfSetDefaultScaleFactor is a convenience function used to convert files stored in a vendor
-format to the gsf format.  The function estimates reasonable scale factors for each of the arrays in the
+format to the GSF format.  The function estimates reasonable scale factors for each of the arrays in the
 ping record.  The function will estimate based on the default compression size and set the values of the
 ping’s scale factors.  This function requires some overhead as it will perform operations on each beam in
 each array contained in the ping record.
 
-Inputs:
-mb_ping
+__Inputs:__
 
-a pointer to the gsfSwathBathyPing which contains
-the beam arrays and will contain the estimated
+- mb_ping
+  - a pointer to the gsfSwathBathyPing which contains
+    the beam arrays and will contain the estimated
+    scale factors upon returning from the function.
 
-GSFLib Documentation, version 03.06
+__Returns:__
 
-2‐22
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-scale factors upon returning from the function.
-
-Returns:
 The function returns 0 to indicate success.
 
 Error Conditions:
 
+- None.
 
-None.
+### 2.2.9 Function: gsfLoadDepthScaleFactorAutoOffset
 
+__Usage:__
 
-2.2.9 Function:  gsfLoadDepthScaleFactorAutoOffset
-Usage:
-int gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping,
-int
+    int gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping,
+                                          int subrecordID,
+                                          int reset,
+                                          double min_depth,
+                                          double max_depth,
+                                          double *last_corrector,
+                                          char c_flag,
+                                          double precision)
 
-subrecordID,
+__Description:__
 
-int
-
-reset,
-
-double
-
-min_depth,
-
-double
-
-max_depth,
-
-double
-
-*last_corrector,
-
-char
-
-c_flag,
-
-double
-
-precision)
-
-
-Description:
 gsfLoadDepthScaleFactorAutoOffset may be used to load the scale factors for the depth subrecords of
 the swath bathymetry ping record scale factor structure.  The function uses the tide and depth
 correction fields to help establish the offset component of the scale factor such that negative depth
@@ -2420,1042 +1036,826 @@ values may be supported.  Negative depth values may be encountered when surveyin
 datum.  In addition, this function may be used for systems mounted on subsea platforms where high
 depth precision may be supported even in deep water.
 
-Inputs:
-GSFLib Documentation, version 03.06
+__Inputs:__
 
-2‐23
+- ping
+  - a pointer to the gsfSwathBathyPing which contains the depth and tide correction
+    values, and the scale factors data structure.
+- subrecordID
+  - an integer value containing the subrecord ID for the beam array data; this must be
+    either GSF_SWATH_BATHY_SUBRECORD_DEPTH_ARRAY, or
+    GSF_SWATH_BATHY_SUBRECORD_NOMINAL_DEPTH_ARRAY.
+- reset
+  - an integer value that will cause the internal logic to be refreshed when the value
+    is non-zero; the first call to this function should use a non-zero reset, from then
+    on, this value may be passed as zero.
+- min_depth
+  - a double value that should be set to the minimum depth value contained in the
+    depth array specified by subrecordID; this argument exists for completeness, but
+    is currently not used.
+- max_depth
+  - a double value that should be set to the maximum depth value contained in the
+    depth array specified by subrecordID; when a depth threshold is exceeded, the
+    offset used to support "signed depth" is no longer required and will no longer be
+    used.  This approach is necessary to avoid an integer overflow when the array
+    data are scaled.
+- last_corrector
+  - an address of a double value stored as permanent memory; successive calls to this
+    function must pass the same address for this argument.  This function will take
+    care of setting the value at this address, but the caller is responsible for ensuring
+    that the same permanent memory address is used for each call to this function.
+- c_flag
+  - the compression flag for the beam array.  This is a bit mask that combines the
+    (optional) caller specified field size in the higher order four bits with the lower
+    four bits reserved for future use to specify a compression algorithm.  The
+    supported field size values are defined as macros in gsf.h
+    (GSF_FIELD_SIZE_DEFAULT, etc).   See section 2.2.5 on gsfLoadScaleFactor for
+    more information.
+- precision
+  - the precision to which the beam array data are to be stored (a value of 0.1 would
+    indicate decimeter precision for depth).
 
-Leidos doc 98‐16(19)
+__Returns:__
 
-30 June 2014
+This function returns zero if successful, or -1 if an error occurred.  gsfError is set to indicate the error.
 
+__Error Conditions:__
 
-ping
+- GSF_UNRECOGNIZED_ARRAY_SUBRECORD_ID
+- GSF_CANNOT_REPRESENT_PRECISION
+- GSF_TOO_MANY_ARRAY_SUBRECORDS
 
-a pointer to the gsfSwathBathyPing which contains the depth and tide correction
-values, and the scale factors data structure.
+### 2.2.10 Function:  gsfGetPositionDestination
 
-subrecordID
+__Usage:__
 
-an integer value containing the subrecord ID for the beam array data; this must be
-either GSF_SWATH_BATHY_SUBRECORD_DEPTH_ARRAY, or
-GSF_SWATH_BATHY_SUBRECORD_NOMINAL_DEPTH_ARRAY.
+    GSF_POSITION gsfGetPositionDestination(GSF_POSITION gp,
+                                           GSF_POSITION_OFFSETS offsets,
+                                           double heading,
+                                           double dist_step)
 
-reset
+__Description:__
 
-an integer value that will cause the internal logic to be refreshed when the value
-is non‐zero; the first call to this function should use a non‐zero reset, from then
-on, this value may be passed as zero.
-
-min_depth
-
-a double value that should be set to the minimum depth value contained in the
-depth array specified by subrecordID; this argument exists for completeness, but
-is currently not used.
-
-max_depth
-
-a double value that should be set to the maximum depth value contained in the
-depth array specified by subrecordID; when a depth threshold is exceeded, the
-offset used to support “signed depth” is no longer required and will no longer be
-used.  This approach is necessary to avoid an integer overflow when the array
-data are scaled.
-
-last_corrector
-
-an address of a double value stored as permanent memory; successive calls to this
-function must pass the same address for this argument.  This function will take
-care of setting the value at this address, but the caller is responsible for ensuring
-that the same permanent memory address is used for each call to this function.
-
-C_flag
-
-the compression flag for the beam array.  This is a bit mask that combines the
-(optional) caller specified field size in the higher order four bits with the lower
-four bits reserved for future use to specify a compression algorithm.  The
-supported field size values are defined as macros in gsf.h
-(GSF_FIELD_SIZE_DEFAULT, etc).   See section 2.2.5 on gsfLoadScaleFactor for
-more information.
-
-precision
-
-the precision to which the beam array data are to be stored (a value of 0.1 would
-indicate decimeter precision for depth).
-
-
-Returns:
-This function returns zero if successful, or ‐1 if an error occurred.  gsfError is set to indicate the error.
-
-GSFLib Documentation, version 03.06
-
-2‐24
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-Error Conditions:
-
-GSF_UNRECOGNIZED_ARRAY_SUBRECORD_ID
-GSF_CANNOT_REPRESENT_PRECISION
-GSF_TOO_MANY_ARRAY_SUBRECORDS
-2.2.10 Function:  gsfGetPositionDestination
-Usage:
-GSF_POSITION gsfGetPositionDestination(GSF_POSITION gp, GSF_POSITION_OFFSETS
-offsets, double heading, double dist_step)
-
-
-Description:
 This function calculates a destination position using the ‘metric’ function as an iterative process.  The
 number of iterations is calculated by dividing each offset by the ‘dist_step’ input and using the largest
 value.  The offsets are then evenly divided by the number of iterations and applied to calculate the final
 destination position.
-Inputs:
-gp
 
-Reference position (typically ping position, in degrees).
+__Inputs:__
 
-offsets
+- gp
+  - Reference position (typically ping position, in degrees).
+- offsets
+  - XYZ offsets from the reference position (in meters).
+- heading
+  - Platform heading (in degrees).
+- dist_step
+  - Distance increment used in step-wise calculation to destination.
 
-XYZ offsets from the reference position (in meters).
+__Returns:__
 
-heading
-
-Platform heading (in degrees).
-
-dist_step Distance increment used in step‐wise calculation to destination.
-
-Returns:
 This function returns the destination position.
-Error Conditions:
-None.
-2.2.11 Function:  gsfGetPositionOffsets
-Usage:
-GSFLib Documentation, version 03.06
 
-2‐25
+__Error Conditions:__
 
-Leidos doc 98‐16(19)
+- None.
 
-30 June 2014
+### 2.2.11 Function:  gsfGetPositionOffsets
 
-GSF_POSITION_OFFSETS gsfGetPositionOffsets(GSF_POSITION gp_from, GSF_POSITION
-gp_to, double heading, double dist_step)
+__Usage:__
 
+    GSF_POSITION_OFFSETS gsfGetPositionOffsets(GSF_POSITION gp_from,
+                                               GSF_POSITION gp_to,
+                                               double heading,
+                                               double dist_step)
 
-Description:
+__Description:__
+
 This function calculates position offsets from the reference position to the destination position using the
 ‘metric’ function as an iterative process.  The number of iterations is calculated by dividing the distance
 between the positions by the ‘dist_step’ input.  The offsets are calculated by applying the number of
 iterations to the calculation.
-Inputs:
-gp_from
 
-Reference position (in degrees).
+__Inputs:__
 
-gp_to
+- gp_from
+  - Reference position (in degrees).
+- gp_to
+  - Destination position (in degrees).
+- heading
+  - Platform heading (in degrees).
+- dist_step
+  -  Distance increment used in step-wise calculation to destination (typically 5 – 10 meters).
 
-Destination position (in degrees).
+__Returns:__
 
-heading
-
-Platform heading (in degrees).
-
-dist_step Distance increment used in step‐wise calculation to destination (typically 5 – 10 meters).
-Returns:
 This function returns the offsets from the reference position to the destination position.
-Error Conditions:
-None.
 
-2.2.12 Macro: gsfTestPingStatus
-Usage:
+__Error Conditions:__
 
-unsigned short gsfTestPingStatus(ping_flags, usflag)
+- None.
 
+### 2.2.12 Macro: gsfTestPingStatus
 
-Description:
+__Usage:__
+
+    unsigned short gsfTestPingStatus(ping_flags, usflag)
+
+__Description:__
+
 This function returns the value of a single flag within the ping_flags field of the gsfSwathBathymetry
 record
 
-GSFLib Documentation, version 03.06
+__Inputs:__
 
-2‐26
+- ping_flags
+  - The contents of the ping_flags field.
+- usflag
+  - An unsigned short integer with a single bit set to identify the flag being tested.
 
-Leidos doc 98‐16(19)
+__Returns:__
 
-30 June 2014
-
-Inputs:
-
-ping_flags
-
-The contents of the ping_flags field.
-
-usflag
-
-An unsigned short integer with a single bit set to identify the flag being tested.
-
-
-Returns:
 This macro returns TRUE if the bit within ping_flags, which corresponds to the bit set in usflags, is
 set.  Otherwise, the macro returns FALSE.
 
-Error Conditions:
+__Error Conditions:__
+
 None
-2.2.13 Macro: gsfSetPingStatus
-Usage:
 
-unsigned short gsfSetPingStatus(ping_flags, usflag)
+### 2.2.13 Macro: gsfSetPingStatus
 
+__Usage:__
 
-Description:
+    unsigned short gsfSetPingStatus(ping_flags, usflag)
+
+__Description:__
+
 This function sets a bit within the within the ping_flags field of the gsfSwathBathymetry record
 
-Inputs:
+__Inputs:__
 
-ping_flags
+- ping_flags
+  - The original contents of the ping_flags field.
+- usflag
+  - An unsigned short integer with a single bit set to identify the flag to be set.
 
-The original contents of the ping_flags field.
+__Returns:__
 
-usflag
-
-An unsigned short integer with a single bit set to identify the flag to be set.
-
-
-Returns:
 A new copy of the ping_flags field with the corresponding bit set.
-GSFLib Documentation, version 03.06
 
-2‐27
+__Error Conditions:__
 
-Leidos doc 98‐16(19)
+- None
 
-30 June 2014
+### 2.2.14 Macro: gsfClearPingStatus
 
+__Usage:___
 
-Error Conditions:
-None
-2.2.14 Macro: gsfClearPingStatus
-Usage:
+    unsigned short gsfClearPingStatus(ping_flags, usflag)
 
-unsigned short gsfClearPingStatus(ping_flags, usflag)
+__Description:__
 
-
-Description:
 This function clears a bit within the within the ping_flags field of the gsfSwathBathymetry record.
 
-Inputs:
+__Inputs:__
 
-ping_flags
+- ping_flags
+  - The original contents of the ping_flags field.
+- usflag
+  - An unsigned short integer with a single bit set to identify the flag to be cleared.
 
-The original contents of the ping_flags field.
+__Returns:__
 
-usflag
-
-An unsigned short integer with a single bit set to identify the flag to be cleared.
-
-
-Returns:
 A new copy of the ping_flags field with the corresponding bit cleared.
 
-Error Conditions:
+__Error Conditions:__
+
 None
-2.3 Information Functions
+
+## 2.3 Information Functions
+
 Information functions include those that
-
 
-decode error conditions,
+- decode error conditions,
+- return the time associated with a record at a specific location,
+- return the location of the file pointer as a percentage of the total file size,
+- provide the number and types of records within a file,
+- provide information about beam widths of various types of sonar data
+- for sonars with two transducers, determine whether a specific data record is from the starboard or port transducer.
+- provide the name of the sensor
 
-
+### 2.3.1 Function: gsfInterror
 
-return the time associated with a record at a specific location,
+__Usage:__
 
-GSFLib Documentation, version 03.06
+    int gsfIntError(void)
 
-2‐28
+__Description:__
 
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-
-
-return the location of the file pointer as a percentage of the total file size,
-
-
-
-provide the number and types of records within a file,
-
-
-
-provide information about beam widths of various types of sonar data
-
-
-
-for sonars with two transducers, determine whether a specific data record is from the starboard or
-port transducer.
-
-
-
-provide the name of the sensor
-
-2.3.1 Function: gsfInterror
-Usage:
-int gsfIntError(void)
-
-
-Description:
-This function returns the integer code for the most recent error encountered.  Call this function if a ‐1 is
+This function returns the integer code for the most recent error encountered.  Call this function if a -1 is
 returned from one of the GSF functions.
 
-Inputs:
+__Inputs:__
 
-None
+- None
 
-Returns:
+__Returns:__
+
 The current value of gsfError
 
-Error Conditions:
-None
-2.3.2 Function:  gsfPrintError
-Usage:
-void gsfPrintError(FILE * fp)
+__Error Conditions:__
 
+- None
 
-GSFLib Documentation, version 03.06
+### 2.3.2 Function:  gsfPrintError
 
-2‐29
+__Usage:__
 
-Leidos doc 98‐16(19)
+    void gsfPrintError(FILE * fp)
 
-30 June 2014
+__Description:__
 
-Description:
 This function prints a short message describing the most recent error encountered.  Call this function if a
-‐1 is returned from one of the GSF functions.
+-1 is returned from one of the GSF functions.
 
-Inputs:
-fp
+__Inputs:__
 
-a pointer to a FILE to which the message is written.
+- fp
+  - a pointer to a FILE to which the message is written.
 
+__Returns:__
 
-Returns:
 None
 
-Error Conditions:
-None
-2.3.3 Function:  gsfStringError
-Usage:
-char *gsfStringError(void);
+__Error Conditions:__
 
+- None
 
-Description:
+### 2.3.3 Function: gsfStringError
+
+__Usage:__
+
+    char *gsfStringError(void);
+
+__Description:__
+
 This function returns a short message describing the most recent error encountered.  Call this function if
-a ‐1 is returned from one of the gsf functions.
+a -1 is returned from one of the GSF functions.
 
-Inputs:
-None
+__Inputs:__
 
-Returns:
+- None
+
+__Returns:__
+
 Pointer to a string containing the text message.
 
-GSFLib Documentation, version 03.06
+__Error Conditions:__
 
-2‐30
+- None
 
-Leidos doc 98‐16(19)
+### 2.3.4 Function: gsfIndexTime
 
-30 June 2014
+__Usage:__
 
-Error Conditions:
-None
+    int gsfIndexTime(int handle,
+                     int record_type,
+                     int record_number,
+                     time_t *sec,
+                     long *nsec)
 
-2.3.4 Function:  gsfIndexTime
+__Description:__
 
-Usage:
-int gsfIndexTime(int
-
-handle,
-
-int
-
-record_type,
-
-int
-
-record_number,
-
-time_t *sec,
-long
-
-*nsec)
-
-
-Description:
 This function returns the time associated with a specified record number and type.  It also returns the
 record number that was read.
 
-Inputs:
+__Inputs:__
 
-handle
+- handle
+  - GSF file handle assigned by gsfOpen or gsfOpenBuffered
+- record_type
+  - record type to be retrieved
+- record_number
+  - record number to be retrieved   (Setting this argument to -1 will get the time and
+    record number of the last record of type record_type)
+- sec
+  - Seconds since the beginning of the epoch (as defined in the GSF processing parameter
+    record.)
+- nsec
+  - Nanoseconds since the beginning of the second.
 
-GSF file handle assigned by gsfOpen or gsfOpenBuffered
+__Returns:__
 
-record_type
-
-record type to be retrieved
-
-record_number
-
-record number to be retrieved   (Setting this argument to ‐1 will get the time and
-record number of the last record of type record_type)
-
-sec
-
-Seconds since the beginning of the epoch (as defined in the GSF processing parameter
-record.)
-
-nsec
-
-Nanoseconds since the beginning of the second.
-
-
-Returns:
-GSFLib Documentation, version 03.06
-
-2‐31
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-This function returns the record number if successful, or ‐1 if an error occurred.  gsfError is set to
+This function returns the record number if successful, or -1 if an error occurred.  gsfError is set to
 indicate the error.
 
-Error Conditions:
+__Error Conditions:__
 
-GSF_FILE_SEEK_ERROR
-GSF_INDEX_FILE_READ_ERROR
-GSF_RECORD_TYPE_NOT_AVAILABLE
+- GSF_FILE_SEEK_ERROR
+- GSF_INDEX_FILE_READ_ERROR
+- GSF_RECORD_TYPE_NOT_AVAILABLE
 
-2.3.5 Function:  gsfPercent
-Usage:
-int gsfPercent (int handle)
+### 2.3.5 Function: gsfPercent
 
+__Usage:__
 
-Description:
+    int gsfPercent (int handle)
+
+__Description:__
+
 This function returns the location of the file pointer expressed as a percentage of the total file size.  It
 may obtain an indication of how far along a program is in reading a GSF data file.  The file size is
 obtained when the file is opened.  If the file is being updated by another program, the value returned
 will be in error and will reflect the percentage based on the file’s size at the time that calling program
 opened the file.
 
-Inputs:
+__Inputs:__
 
-handle
+- handle
+  - gsf file handle assigned by gsfOpen or gsfOpenBuffered
 
-gsf file handle assigned by gsfOpen or gsfOpenBuffered
+__Returns:__
 
-
-Returns:
-This function returns the current file position as a percentage of the file size, or ‐1 if an error occurred.
+This function returns the current file position as a percentage of the file size, or -1 if an error occurred.
 gsfError is set to indicate the error.
 
-GSFLib Documentation, version 03.06
+__Error Conditions:__
 
-2‐32
+- GSF_BAD_FILE_HANDLE
+- GSF_FILE_TELL_ERROR
 
-Leidos doc 98‐16(19)
+### 2.3.6 Function: gsfGetNumberRecords
 
-30 June 2014
+__Usage:_
 
-
-Error Conditions:
-
-GSF_BAD_FILE_HANDLE
-
-GSF_FILE_TELL_ERROR
-
-2.3.6 Function:  gsfGetNumberRecords
-Usage:
 int gsfGetNumberRecords (int handle,
-int desiredRecord)
+                         int desiredRecord)
 
+__Description:__
 
-Description:
 This function returns the number of records of a given type. The number of records is retrieved from the
 index file, so the file must have been opened for direct access (GSF_READONLY_INDEX, or
 GSF_UPDATE_INDEX).
 
-Inputs:
-handle
+__Inputs:__
 
-the handle to the file as provided by gsfOpen or gsfOpenBuffered
+- handle
+  - the handle to the file as provided by gsfOpen or gsfOpenBuffered
+- desiredRecord
+  - the desired record or GSF_NEXT_RECORD
 
-desiredRecord
+__Returns:__
 
-the desired record or GSF_NEXT_RECORD
-
-
-Returns:
 This function returns the number of records of type desiredRecord contained in the GSF file designated
-by handle, or ‐1 if an error occurred.  gsfError is set to indicate the error.
+by handle, or -1 if an error occurred.  gsfError is set to indicate the error.
 
-Error Conditions:
+__Error Conditions:__
 
-GSF_BAD_FILE_HANDLE
+- GSF_BAD_FILE_HANDLE
+- GSF_BAD_ACCESS_MODE
+- GSF_UNRECOGNIZED_RECORD_ID
 
-GSFLib Documentation, version 03.06
+### 2.3.7 Function: gsfGetSwathBathyBeamWidths
 
-2‐33
+__Usage:__
 
-Leidos doc 98‐16(19)
+    int gsfGetSwathBathyBeamWidths(const gsfRecords *data,
+                                   double *fore_aft,
+                                   double *athwartship)
 
-30 June 2014
+__Description:__
 
-GSF_BAD_ACCESS_MODE
-
-GSF_UNRECOGNIZED_RECORD_ID
-
-
-2.3.7 Function:  gsfGetSwathBathyBeamWidths
-Usage:
-
-int gsfGetSwathBathyBeamWidths(const gsfRecords *data,
-double
-
-*fore_aft,
-
-double
-
-*athwartship)
-
-
-Description:
-This function returns to the caller the fore‐aft and the port‐starboard beam widths in degrees for a
+This function returns to the caller the fore-aft and the port-starboard beam widths in degrees for a
 swath bathymetry multibeam sonar, given a gsfRecords data structure containing a populated
 gsfSwathBathyPing structure.
 
-Inputs:
+__Inputs:__
 
-data
+- data
+  - The address of a gsfRecords data structure maintained by the caller which contains a
+    populated gsfSwathBathyPing substructure.
+- fore_aft
+  - The address of a double allocated by the caller which will be loaded with the sonar's
+    fore/aft beam width in degrees.  A value of GSF_BEAM_WIDTH_UNKNOWN is used
+    when the beam width is not known.
+- athwartship
+  - The address of a double allocated by the caller which will be loaded with the sonar's
+    athwartship beam width in degrees.  A value of GSF_BEAM_WIDTH_UNKNOWN is used
+    when the beam width is not known.
 
-The address of a gsfRecords data structure maintained by the caller which contains a
-populated gsfSwathBathyPing substructure.
+__Returns:__
 
-fore_aft
+This function returns zero if successful, or -1 if an error occurred. gsfError is set to indicate the error.
 
-The address of a double allocated by the caller which will be loaded with the sonar's
-fore/aft beam width in degrees.  A value of GSF_BEAM_WIDTH_UNKNOWN is used
-when the beam width is not known.
+__Error Conditions:__
 
-athwartship
+- None.
 
-The address of a double allocated by the caller which will be loaded with the sonar's
-athwartship beam width in degrees.  A value of GSF_BEAM_WIDTH_UNKNOWN is used
-when the beam width is not known.
+### 2.3.8 Function:  gsfGetSwathBathyArrayMinMax
 
+__Usage:__
 
-Returns:
-This function returns zero if successful, or ‐1 if an error occurred. gsfError is set to indicate the error.
-GSFLib Documentation, version 03.06
+    int gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping,
+                                    int subrecordID,
+                                    double *min_value,
+                                    double *max_value)
 
-2‐34
+__Description:__
 
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-
-Error Conditions:
-None.
-2.3.8 Function:  gsfGetSwathBathyArrayMinMax
-Usage:
-
-int gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping,
-int
-
-subrecordID,
-
-double
-
-*min_value,
-
-double
-
-*max_value)
-
-
-Description:
 This function returns to the caller the minimum and maximum supportable values for each of the swath
 bathymetry arrays.  The minimum and maximum values are determined based on the scale factors and
 the array type.
 
-Inputs:
+__Inputs:__
 
-ping
+- ping
+  - The address of a gsfSwathBathyPing data structure that contains the depth and tide
+    correction values, as well as the scale factors data structure.
+- subrecordID
+  - The subrecord ID for the beam array data.
+- min_value
+  - The address of a double value allocated by the caller into which will be placed the
+    minimum value that may be represented for this array type.
+- max_value
+  - The address of a double value allocated by the caller into which will be placed the
+    maximum value that may be represented for this array type.
 
-The address of a gsfSwathBathyPing data structure that contains the depth and tide
-correction values, as well as the scale factors data structure.
+__Returns:__
 
-subrecordID
+This function returns zero if successful, or -1 if an error occurred. gsfError is set to indicate the error.
 
-The subrecord ID for the beam array data.
+__Error Conditions:__
 
-min_value
+- GSF_UNRECOGNIZED_ARRAY_SUBRECORD_ID
+- GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
 
-The address of a double value allocated by the caller into which will be placed the
-minimum value that may be represented for this array type.
+### 2.3.9 Function:  gsfIsStarboardPing
 
-max_value
+__Usage:__
 
-The address of a double value allocated by the caller into which will be placed the
-maximum value that may be represented for this array type.
+    int gsfIsStarboardPing(const gsfRecords *data)
 
+__Description:__
 
-Returns:
-This function returns zero if successful, or ‐1 if an error occurred. gsfError is set to indicate the error.
-GSFLib Documentation, version 03.06
-
-2‐35
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-
-Error Conditions:
-
-GSF_UNRECOGNIZED_ARRAY_SUBRECORD_ID
-
-GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
-
-2.3.9 Function:  gsfIsStarboardPing
-Usage:
-
-int gsfIsStarboardPing(const gsfRecords *data)
-
-
-Description:
 This function uses the sonar specific portion of a gsfSwathBathymetry ping structure to determine if the
 ping is from the starboard arrays of a multibeam installation with dual transducers.
 
-Inputs:
+__Inputs:__
 
-data
+- data
+  - The address of a gsfRecords data structure maintained by the caller containing a populated
+    gsfSwathBathyPing substructure.
 
-The address of a gsfRecords data structure maintained by the caller containing a populated
-gsfSwathBathyPing substructure.
+__Returns:__
 
-
-Returns:
-This function returns non‐zero if the ping contained in the passed data represents a starboard looking
+This function returns non-zero if the ping contained in the passed data represents a starboard looking
 ping from a dual headed sonar installation.  Otherwise, zero is returned.  If the sonar does not have dual
 transducers, a value of zero will be returned.
 
-Error Conditions:
-None
+__Error Conditions:__
 
-GSFLib Documentation, version 03.06
+- None
 
-2‐36
+### 2.3.10 Function:  gsf_register_progress_callback
 
-Leidos doc 98‐16(19)
+__Usage:__
 
-30 June 2014
+    void gsf_register_progress_callback(GSF_PROGRESS_CALLBACK progressCB)
 
-2.3.10 Function:  gsf_register_progress_callback
-Usage:
+__Description:__
 
-void gsf_register_progress_callback(GSF_PROGRESS_CALLBACK progressCB)
-
-
-Description:
 This function registers a callback function, defined by the user, to be called to report the progress of the
 index file creation.  If no progress callback is registered, status is printed to stdout if the
 DISPLAY_SPINNER macro is defined during compilation of the GSF library.
 
-Inputs:
+__Inputs:__
 
-progressCB
+- progressCB
+  - The name of the progress callback function to call when creating the GSF index file.  The
+    progress callback will accept two integer arguments, and this function will be called whenever
+    the percent complete changes.  This fist argument will be one of the following three values, to
+    represent the state of the progress:
+      - 1 = Reading GSF file
+      - 2 = Creating new index file
+      - 3 = Appending to existing index file
 
-The name of the progress callback function to call when creating the GSF index file.  The
-progress callback will accept two integer arguments, and this function will be called whenever
-the percent complete changes.  This fist argument will be one of the following three values, to
-represent the state of the progress:
-    1 = Reading GSF file
-    2 = Creating new index file
-    3 = Appending to existing index file
-The second argument contains the percent complete of the current state.
+    The second argument contains the percent complete of the current state.
 
+__Returns:__
 
-Returns:
 None
 
-Error Conditions:
-None
+__Error Conditions:__
 
-GSFLib Documentation, version 03.06
+- None
 
-2‐37
+### 2.3.11 Function: gsfGetSonarTextName
 
-Leidos doc 98‐16(19)
+__Usage:__
 
-30 June 2014
+    char *gsfGetSonarTextName(const gsfSwathBathyPing *ping)
 
-2.3.11 Function: gsfGetSonarTextName
-Usage:
+__Description:__
 
-char *gsfGetSonarTextName(const gsfSwathBathyPing *ping)
-
-Description:
 This function returns the name of the sensor based on the sensor id contained in the ping structure.
 
-Inputs:
+__Inputs:__
 
-Ping
+- ping
+  - The address of a gsfSwathBathyPing data structure that contains the sensor_id value, as well
+    as the mode value (mode is used for the Reson SeaBat 9001, 9002, and 9003)
 
-The address of a gsfSwathBathyPing data structure that contains the sensor_id value, as well
-as the mode value (mode is used for the Reson SeaBat 9001, 9002, and 9003)
+__Returns:__
 
+Pointer to a string containing the sensor name, or "Unknown" if the sensor id is not defined.
 
-Returns:
-Pointer to a string containing the sensor name, or “Unknown” if the sensor id is not defined.
+__Error Conditions:__
 
-Error Conditions:
-None
-2.3.12 Function: gsfFileSupportsRecalculateXYZ
-Usage:    int gsfFileSupportsRecalculateXYZ(int handle, int *status)
+- None
 
-Description: This function reads the GSF file referenced by handle and determines if the file contains
+### 2.3.12 Function: gsfFileSupportsRecalculateXYZ
+
+__Usage:__
+
+    int gsfFileSupportsRecalculateXYZ(int handle, int *status)
+
+__Description:__
+
+This function reads the GSF file referenced by handle and determines if the file contains
 sufficient information to support a full recalculation of the platform relative XYZ values from raw
 measurements. This function rewinds the file to the first record and reads through the file looking for
 the information required to support a full swath recalculation from raw measurements and supporting
 navigation, attitude, SVP and installation offset information. On success, the file pointer is reset to the
 beginning of the file before the function returns.
 
-GSFLib Documentation, version 03.06
+__Inputs:__
 
-2‐38
+- handle
+  - GSF file handle assigned by gsfOpen or gsfOpenBuffered
+- status
+  - A pointer to an integer allocated by caller into which the function result is placed. *status is
+    assigned a value of 1 if this file provides sufficient information to support full recalculation of
+    the platform relative XYZ values, otherwise *status is assigned a value of 0.
 
-Leidos doc 98‐16(19)
+__Returns:__
 
-30 June 2014
+This function returns zero if successful or -1 if an error occurred.
 
-Inputs:
+__Error Conditions:__
 
-handle
+- GSF_BAD_FILE_HANDLE
+- GSF_FILE_SEEK_ERROR
+- GSF_FLUSH_ERROR
+- GSF_READ_TO_END_OF_FILE
+- GSF_PARTIAL_RECORD_AT_END_OF_FILE
+- GSF_READ_ERROR
+- GSF_RECORD_SIZE_ERROR
+- GSF_INSUFFICIENT_SIZE
+- GSF_CHECKSUM_FAILURE
+- GSF_UNRECOGNIZED_RECORD_ID
+- GSF_HEADER_RECORD_DECODE_FAILED
+- GSF_SVP_RECORD_DECODE_FAILED
+- GSF_PROCESS_PARAM_RECORD_DECODE_FAILED
+- GSF_SENSOR_PARAM_RECORD_DECODE_FAILED
+- GSF_COMMENT_RECORD_DECODE_FAILED
+- GSF_HISTORY_RECORD_DECODE_FAILED
+- GSF_NAV_ERROR_RECORD_DECODE_FAILED
+- GSF_ATTITUDE_RECORD_DECODE_FAILED
+- GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED
+- GSF_SUMMARY_RECORD_DECODE_FAILED
+- GSF_UNRECOGNIZED_SUBRECORD_ID
+- GSF_INVALID_RECORD_NUMBER
+- GSF_RECORD_TYPE_NOT_AVAILABLE
+- GSF_INDEX_FILE_READ_ERROR
 
-GSF file handle assigned by gsfOpen or gsfOpenBuffered
+### 2.3.13 Function: gsfFileSupportsRecalculateTPU
 
-status
+__Usage:__
 
-A pointer to an integer allocated by caller into which the function result is placed. *status is
-assigned a value of 1 if this file provides sufficient information to support full recalculation of
-the platform relative XYZ values, otherwise *status is assigned a value of 0.
+    int gsfFileSupportsRecalculateTPU(int handle, int *status)
 
+__Description:__
 
-Returns: This function returns zero if successful or ‐1 if an error occurred.
-
-Error Conditions:
-GSF_BAD_FILE_HANDLE
-GSF_FILE_SEEK_ERROR
-GSF_FLUSH_ERROR
-GSF_READ_TO_END_OF_FILE
-GSF_PARTIAL_RECORD_AT_END_OF_FILE
-GSF_READ_ERROR
-GSF_RECORD_SIZE_ERROR
-GSF_INSUFFICIENT_SIZE
-GSF_CHECKSUM_FAILURE
-GSF_UNRECOGNIZED_RECORD_ID
-GSF_HEADER_RECORD_DECODE_FAILED
-GSF_SVP_RECORD_DECODE_FAILED
-GSF_PROCESS_PARAM_RECORD_DECODE_FAILED
-GSF_SENSOR_PARAM_RECORD_DECODE_FAILED
-GSF_COMMENT_RECORD_DECODE_FAILED
-GSF_HISTORY_RECORD_DECODE_FAILED
-GSFLib Documentation, version 03.06
-
-2‐39
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-GSF_NAV_ERROR_RECORD_DECODE_FAILED
-GSF_ATTITUDE_RECORD_DECODE_FAILED
-GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED
-GSF_SUMMARY_RECORD_DECODE_FAILED
-GSF_UNRECOGNIZED_SUBRECORD_ID
-GSF_INVALID_RECORD_NUMBER
-GSF_RECORD_TYPE_NOT_AVAILABLE
-GSF_INDEX_FILE_READ_ERROR
-
-2.3.13 Function: gsfFileSupportsRecalculateTPU
-Usage:    int gsfFileSupportsRecalculateTPU(int handle, int *status)
-
-Description: This function reads the GSF file referenced by handle and determines if the file contains
+This function reads the GSF file referenced by handle and determines if the file contains
 sufficient information to support calculation of the total propagated uncertainty (TPU) values. This
 function rewinds the file to the first record and reads through the file looking for the information
 required to support calculation of vertical and horizontal propagated uncertainty. The total propagated
 uncertainty arrays are the horizontal_error and the vertical_error beam arrays. On success, the file
 pointer is reset to the beginning of the file before the function returns.
 
-Inputs:
+__Inputs:__
 
-Handle
+- handle
+  - GSF file handle assigned by gsfOpen or gsfOpenBuffered
+- status
+  - A pointer to an integer allocated by caller into which the function result is placed. *status is
+    assigned a value of 1 if this file provides sufficient information to support calculation of the
+    total propagated uncertainty array values, otherwise *status is assigned a value of 0.
 
-GSF file handle assigned by gsfOpen or gsfOpenBuffered
+__Returns:__
 
-Status
+This function returns zero if successful or -1 if an error occurred.
 
-A pointer to an integer allocated by caller into which the function result is placed. *status is
-assigned a value of 1 if this file provides sufficient information to support calculation of the
-total propagated uncertainty array values, otherwise *status is assigned a value of 0.
+__Error Conditions:__
 
+- GSF_BAD_FILE_HANDLE
+- GSF_FILE_SEEK_ERROR
+- GSF_FLUSH_ERROR
+- GSF_READ_TO_END_OF_FILE
+- GSF_PARTIAL_RECORD_AT_END_OF_FILE
+- GSF_READ_ERROR
+- GSF_RECORD_SIZE_ERROR
+- GSF_INSUFFICIENT_SIZE
+- GSF_CHECKSUM_FAILURE
+- GSF_UNRECOGNIZED_RECORD_ID
+- GSF_HEADER_RECORD_DECODE_FAILED
+- GSF_SVP_RECORD_DECODE_FAILED
+- GSF_PROCESS_PARAM_RECORD_DECODE_FAILED
+- GSF_SENSOR_PARAM_RECORD_DECODE_FAILED
+- GSF_COMMENT_RECORD_DECODE_FAILED
+- GSF_HISTORY_RECORD_DECODE_FAILED
+- GSF_NAV_ERROR_RECORD_DECODE_FAILED
+- GSF_ATTITUDE_RECORD_DECODE_FAILED
+- GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED
+- GSF_SUMMARY_RECORD_DECODE_FAILED
+- GSF_UNRECOGNIZED_SUBRECORD_ID
+- GSF_INVALID_RECORD_NUMBER
+- GSF_RECORD_TYPE_NOT_AVAILABLE
+- GSF_INDEX_FILE_READ_ERROR
 
-Returns: This function returns zero if successful or ‐1 if an error occurred.
+### 2.3.14 Function: gsfFileSupportsRecalculateNominalDepth
 
-GSFLib Documentation, version 03.06
+__Usage:__
 
-2‐40
+    int gsfFileSupportsRecalculateNominalDepth(int handle, int *status)
 
-Leidos doc 98‐16(19)
+__Description:__
 
-30 June 2014
-
-Error Conditions:
-GSF_BAD_FILE_HANDLE
-GSF_FILE_SEEK_ERROR
-GSF_FLUSH_ERROR
-GSF_READ_TO_END_OF_FILE
-GSF_PARTIAL_RECORD_AT_END_OF_FILE
-GSF_READ_ERROR
-GSF_RECORD_SIZE_ERROR
-GSF_INSUFFICIENT_SIZE
-GSF_CHECKSUM_FAILURE
-GSF_UNRECOGNIZED_RECORD_ID
-GSF_HEADER_RECORD_DECODE_FAILED
-GSF_SVP_RECORD_DECODE_FAILED
-GSF_PROCESS_PARAM_RECORD_DECODE_FAILED
-GSF_SENSOR_PARAM_RECORD_DECODE_FAILED
-GSF_COMMENT_RECORD_DECODE_FAILED
-GSF_HISTORY_RECORD_DECODE_FAILED
-GSF_NAV_ERROR_RECORD_DECODE_FAILED
-GSF_ATTITUDE_RECORD_DECODE_FAILED
-GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED
-GSF_SUMMARY_RECORD_DECODE_FAILED
-GSF_UNRECOGNIZED_SUBRECORD_ID
-GSF_INVALID_RECORD_NUMBER
-GSF_RECORD_TYPE_NOT_AVAILABLE
-GSF_INDEX_FILE_READ_ERROR
-GSFLib Documentation, version 03.06
-
-2‐41
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-
-2.3.14 Function: gsfFileSupportsRecalculateNominalDepth
-Usage:    int gsfFileSupportsRecalculateNominalDepth(int handle, int *status)
-
-Description: This function reads the GSF file referenced by handle and determines if the file contains
+This function reads the GSF file referenced by handle and determines if the file contains
 sufficient information to support calculation of the nominal depth array. This function rewinds the file to
 the first record and reads through the file looking for the information required to support calculation of
 the optional nominal depth array. The nominal depth values represent the depth relative to a sound
 speed of 1500 meters second.  On success, the file pointer is reset to the beginning of the file before the
 function returns.
 
-Inputs:
+__Inputs:__
 
-handle
+- handle
+  - GSF file handle assigned by gsfOpen or gsfOpenBuffered
+- status
+  - A pointer to an integer allocated by caller into which the function result is placed. *status is
+    assigned a value of 1 if this file provides sufficient information to support calculation of the
+    nominal depth array, otherwise *status is assigned a value of 0.
 
-GSF file handle assigned by gsfOpen or gsfOpenBuffered
+__Returns:__
 
-status
+This function returns zero if successful or -1 if an error occurred.
 
-A pointer to an integer allocated by caller into which the function result is placed. *status is
-assigned a value of 1 if this file provides sufficient information to support calculation of the
-nominal depth array, otherwise *status is assigned a value of 0.
+__Error Conditions:__
 
+- GSF_BAD_FILE_HANDLE
+- GSF_FILE_SEEK_ERROR
+- GSF_FLUSH_ERROR
+- GSF_READ_TO_END_OF_FILE
+- GSF_PARTIAL_RECORD_AT_END_OF_FILE
+- GSF_READ_ERROR
+- GSF_RECORD_SIZE_ERROR
+- GSF_INSUFFICIENT_SIZE
+- GSF_CHECKSUM_FAILURE
+- GSF_UNRECOGNIZED_RECORD_ID
+- GSF_HEADER_RECORD_DECODE_FAILED
+- GSF_SVP_RECORD_DECODE_FAILED
+- GSF_PROCESS_PARAM_RECORD_DECODE_FAILED
+- GSF_SENSOR_PARAM_RECORD_DECODE_FAILED
+- GSF_COMMENT_RECORD_DECODE_FAILED
+- GSF_HISTORY_RECORD_DECODE_FAILED
+- GSF_NAV_ERROR_RECORD_DECODE_FAILED
+- GSF_ATTITUDE_RECORD_DECODE_FAILED
+- GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED
+- GSF_SUMMARY_RECORD_DECODE_FAILED
+- GSF_UNRECOGNIZED_SUBRECORD_ID
+- GSF_INVALID_RECORD_NUMBER
+- GSF_RECORD_TYPE_NOT_AVAILABLE
+- GSF_INDEX_FILE_READ_ERROR
 
-Returns: This function returns zero if successful or ‐1 if an error occurred.
+### 2.3.15 Function: gsfFileContainsMBAmplitude
 
-Error Conditions:
-GSF_BAD_FILE_HANDLE
-GSF_FILE_SEEK_ERROR
-GSF_FLUSH_ERROR
-GSF_READ_TO_END_OF_FILE
-GSF_PARTIAL_RECORD_AT_END_OF_FILE
-GSF_READ_ERROR
-GSF_RECORD_SIZE_ERROR
-GSFLib Documentation, version 03.06
+__Usage:__
 
-2‐42
+    int gsfFileContainsMBAmplitude(int handle, int *status)
 
-Leidos doc 98‐16(19)
+__Description:__
 
-30 June 2014
-
-GSF_INSUFFICIENT_SIZE
-GSF_CHECKSUM_FAILURE
-GSF_UNRECOGNIZED_RECORD_ID
-GSF_HEADER_RECORD_DECODE_FAILED
-GSF_SVP_RECORD_DECODE_FAILED
-GSF_PROCESS_PARAM_RECORD_DECODE_FAILED
-GSF_SENSOR_PARAM_RECORD_DECODE_FAILED
-GSF_COMMENT_RECORD_DECODE_FAILED
-GSF_HISTORY_RECORD_DECODE_FAILED
-GSF_NAV_ERROR_RECORD_DECODE_FAILED
-GSF_ATTITUDE_RECORD_DECODE_FAILED
-GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED
-GSF_SUMMARY_RECORD_DECODE_FAILED
-GSF_UNRECOGNIZED_SUBRECORD_ID
-GSF_INVALID_RECORD_NUMBER
-GSF_RECORD_TYPE_NOT_AVAILABLE
-GSF_INDEX_FILE_READ_ERROR
-
-2.3.15 Function: gsfFileContainsMBAmplitude
-Usage:    int gsfFileContainsMBAmplitude(int handle, int *status)
-
-Description: This function reads the GSF file referenced by handle and determines if the file contains the
+This function reads the GSF file referenced by handle and determines if the file contains the
 average per receive beam amplitude data. This function rewinds the file to the first record and reads
 through the file up to and including the first ping record. If amplitude data are contained in the first ping
 record it is assumed that amplitude data are contained with all ping records in this file. On success, the
 file pointer is reset to the beginning of the file before the function returns.
 
-GSFLib Documentation, version 03.06
+__Inputs:__
 
-2‐43
+- handle
+  - GSF file handle assigned by gsfOpen or gsfOpenBuffered
+- status
+  - A pointer to an integer allocated by caller into which the function result is placed. *status is
+    assigned a value of 1 if this file contains the optional per-receive-beam average amplitude
+    beam array, otherwise *status is assigned a value of 0.
 
-Leidos doc 98‐16(19)
+__Returns:__
 
-30 June 2014
+This function returns zero if successful or -1 if an error occurred.
 
-Inputs:
+__Error Conditions:__
 
-handle
+- GSF_BAD_FILE_HANDLE
+- GSF_FILE_SEEK_ERROR
+- GSF_FLUSH_ERROR
+- GSF_READ_TO_END_OF_FILE
+- GSF_PARTIAL_RECORD_AT_END_OF_FILE
+- GSF_READ_ERROR
+- GSF_RECORD_SIZE_ERROR
+- GSF_INSUFFICIENT_SIZE
+- GSF_CHECKSUM_FAILURE
+- GSF_UNRECOGNIZED_RECORD_ID
+- GSF_HEADER_RECORD_DECODE_FAILED
+- GSF_SVP_RECORD_DECODE_FAILED
+- GSF_PROCESS_PARAM_RECORD_DECODE_FAILED
+- GSF_SENSOR_PARAM_RECORD_DECODE_FAILED
+- GSF_COMMENT_RECORD_DECODE_FAILED
+- GSF_HISTORY_RECORD_DECODE_FAILED
+- GSF_NAV_ERROR_RECORD_DECODE_FAILED
+- GSF_ATTITUDE_RECORD_DECODE_FAILED
+- GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED
+- GSF_SUMMARY_RECORD_DECODE_FAILED
+- GSF_UNRECOGNIZED_SUBRECORD_ID
+- GSF_INVALID_RECORD_NUMBER
+- GSF_RECORD_TYPE_NOT_AVAILABLE
+- GSF_INDEX_FILE_READ_ERROR
 
-GSF file handle assigned by gsfOpen or gsfOpenBuffered
+### 2.3.16 Function: gsfFileContainsMBImagery
 
-status
+__Usage:__
 
-A pointer to an integer allocated by caller into which the function result is placed. *status is
-assigned a value of 1 if this file contains the optional per‐receive‐beam average amplitude
-beam array, otherwise *status is assigned a value of 0.
+    int gsfFileContainsMBImagery(int handle, int *status)
 
+__Description:__
 
-Returns: This function returns zero if successful or ‐1 if an error occurred.
-
-Error Conditions:
-GSF_BAD_FILE_HANDLE
-GSF_FILE_SEEK_ERROR
-GSF_FLUSH_ERROR
-GSF_READ_TO_END_OF_FILE
-GSF_PARTIAL_RECORD_AT_END_OF_FILE
-GSF_READ_ERROR
-GSF_RECORD_SIZE_ERROR
-GSF_INSUFFICIENT_SIZE
-GSF_CHECKSUM_FAILURE
-GSF_UNRECOGNIZED_RECORD_ID
-GSF_HEADER_RECORD_DECODE_FAILED
-GSF_SVP_RECORD_DECODE_FAILED
-GSF_PROCESS_PARAM_RECORD_DECODE_FAILED
-GSF_SENSOR_PARAM_RECORD_DECODE_FAILED
-GSF_COMMENT_RECORD_DECODE_FAILED
-GSF_HISTORY_RECORD_DECODE_FAILED
-GSFLib Documentation, version 03.06
-
-2‐44
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-GSF_NAV_ERROR_RECORD_DECODE_FAILED
-GSF_ATTITUDE_RECORD_DECODE_FAILED
-GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED
-GSF_SUMMARY_RECORD_DECODE_FAILED
-GSF_UNRECOGNIZED_SUBRECORD_ID
-GSF_INVALID_RECORD_NUMBER
-GSF_RECORD_TYPE_NOT_AVAILABLE
-GSF_INDEX_FILE_READ_ERROR
-
-2.3.16 Function: gsfFileContainsMBImagery
-Usage:    int gsfFileContainsMBImagery(int handle, int *status)
-
-Description: This function reads the GSF file referenced by handle and determines if the file contains the
-per‐receive‐beam imagery time series data. This function rewinds the file to the first record and reads
+This function reads the GSF file referenced by handle and determines if the file contains the
+per-receive-beam imagery time series data. This function rewinds the file to the first record and reads
 through the file up to and including the first ping record. If MB imagery data are contained in the first
 ping record it is assumed that MB imagery data are contained with all ping records in this file. On
 success, the file pointer is reset to the beginning of the file before the function returns.
 
-Inputs:
+__Inputs:__
 
-handle
+- handle
+  - GSF file handle assigned by gsfOpen or gsfOpenBuffered
+- status
+  - A pointer to an integer allocated by caller into which the function result is placed. *status is
+    assigned a value of 1 if this file contains the optional per-receive-beam imagery time series
+    data, otherwise *status is assigned a value of 0.
 
-GSF file handle assigned by gsfOpen or gsfOpenBuffered
+__Returns:__
 
-status
+This function returns zero if successful or -1 if an error occurred.
 
-A pointer to an integer allocated by caller into which the function result is placed. *status is
-assigned a value of 1 if this file contains the optional per‐receive‐beam imagery time series
-data, otherwise *status is assigned a value of 0.
+__Error Conditions:__
 
+- GSF_BAD_FILE_HANDLE
+- GSF_FILE_SEEK_ERROR
+- GSF_FLUSH_ERROR
+- GSF_READ_TO_END_OF_FILE
+- GSF_PARTIAL_RECORD_AT_END_OF_FILE
+- GSF_READ_ERROR
+- GSF_RECORD_SIZE_ERROR
+- GSF_INSUFFICIENT_SIZE
+- GSF_CHECKSUM_FAILURE
+- GSF_UNRECOGNIZED_RECORD_ID
+- GSF_HEADER_RECORD_DECODE_FAILED
+- GSF_SVP_RECORD_DECODE_FAILED
+- GSF_PROCESS_PARAM_RECORD_DECODE_FAILED
+- GSF_SENSOR_PARAM_RECORD_DECODE_FAILED
+- GSF_COMMENT_RECORD_DECODE_FAILED
+- GSF_HISTORY_RECORD_DECODE_FAILED
+- GSF_NAV_ERROR_RECORD_DECODE_FAILED
+- GSF_ATTITUDE_RECORD_DECODE_FAILED
+- GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED
+- GSF_SUMMARY_RECORD_DECODE_FAILED
+- GSF_UNRECOGNIZED_SUBRECORD_ID
+- GSF_INVALID_RECORD_NUMBER
+- GSF_RECORD_TYPE_NOT_AVAILABLE
+- GSF_INDEX_FILE_READ_ERROR
 
-Returns: This function returns zero if successful or ‐1 if an error occurred.
+### 2.3.17 Function: gsfIsNewSurveyLine
 
+__Usage:__
 
-GSFLib Documentation, version 03.06
+    int gsfIsNewSurveyLine (int handle, const gsfRecords *rec, double
+                            azimuth_change, double *last_heading)
 
-2‐45
+__Description:__
 
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-Error Conditions:
-GSF_BAD_FILE_HANDLE
-GSF_FILE_SEEK_ERROR
-GSF_FLUSH_ERROR
-GSF_READ_TO_END_OF_FILE
-GSF_PARTIAL_RECORD_AT_END_OF_FILE
-GSF_READ_ERROR
-GSF_RECORD_SIZE_ERROR
-GSF_INSUFFICIENT_SIZE
-GSF_CHECKSUM_FAILURE
-GSF_UNRECOGNIZED_RECORD_ID
-GSF_HEADER_RECORD_DECODE_FAILED
-GSF_SVP_RECORD_DECODE_FAILED
-GSF_PROCESS_PARAM_RECORD_DECODE_FAILED
-GSF_SENSOR_PARAM_RECORD_DECODE_FAILED
-GSF_COMMENT_RECORD_DECODE_FAILED
-GSF_HISTORY_RECORD_DECODE_FAILED
-GSF_NAV_ERROR_RECORD_DECODE_FAILED
-GSF_ATTITUDE_RECORD_DECODE_FAILED
-GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED
-GSF_SUMMARY_RECORD_DECODE_FAILED
-GSF_UNRECOGNIZED_SUBRECORD_ID
-GSF_INVALID_RECORD_NUMBER
-GSF_RECORD_TYPE_NOT_AVAILABLE
-GSF_INDEX_FILE_READ_ERROR
-GSFLib Documentation, version 03.06
-
-2‐46
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-
-2.3.17 Function: gsfIsNewSurveyLine
-Usage:    int gsfIsNewSurveyLine (int handle, const gsfRecords *rec, double
-azimuth_change, double *last_heading)
-
-Description: This function provides an approach for calling applications to determine if the last ping read
+This function provides an approach for calling applications to determine if the last ping read
 from a GSF file is from the same survey transect line, or if the last ping is from a newly started survey
 line. The implementation looks for a change in platform heading to determine that the last ping read is
 from a new survey line. External to this function, calling applications can decide on their own if the first
@@ -3463,1006 +1863,276 @@ ping read from a newly opened GSF file should be considered to be from a new sur
 not. This function assumes that the GSF file is read in chronological order from the beginning of the file,
 file access can be either direct or sequential
 
-Inputs:
+__Inputs:__
 
-handle
+- handle
+  - GSF file handle assigned by gsfOpen or gsfOpenBuffered
+- rec
+  - The address of a gsfRecords data structure maintained by the caller which contains a
+    populated gsfSwathBathyPing substructure obtained from recent call to gsfRead.
+- azimuth_change
+  - A trigger value set by the calling application to be used as the threshold for detecting the end
+    heading change associated with the end of a survey line.
+- last_heading
+  - The address of a double allocated by the calling that is set by gsfIsNewSurveyLine when a
+    new line is detected. The application program should allocate this double such that it’s
+    memory persists for all calls to gsfIsNewSurveyLine. The function depends on this value
+    persisting from one call to the next.
 
-GSF file handle assigned by gsfOpen or gsfOpenBuffered
+__Returns:__
 
-rec
-
-The address of a gsfRecords data structure maintained by the caller which contains a
-populated gsfSwathBathyPing substructure obtained from recent call to gsfRead.
-
-azimuth_chang
-e
-
-A trigger value set by the calling application to be used as the threshold for detecting the end
-heading change associated with the end of a survey line.
-
-last_heading
-
-The address of a double allocated by the calling that is set by gsfIsNewSurveyLine when a
-new line is detected. The application program should allocate this double such that it’s
-memory persists for all calls to gsfIsNewSurveyLine. The function depends on this value
-persisting from one call to the next.
-
-
-Returns: This function returns zero when ping is not considered to be from a new survey line and non‐
+This function returns zero when ping is not considered to be from a new survey line and non-
 zero when the ping is considered to be from a new survey line.
 
-Error Conditions:
-None.
-GSFLib Documentation, version 03.06
+__Error Conditions:__
 
-2‐47
+- None.
 
-Leidos doc 98‐16(19)
+### 2.3.18 Function: gsfInitializeMBParams
 
-30 June 2014
+__Usage:__
 
-2.3.18 Function: gsfInitializeMBParams
-Usage:    int gsfInitializeMBParams (gsfMBParams *p)
+    int gsfInitializeMBParams (gsfMBParams *p)
 
-Description: This function provides way to initialize all the sonar processing parameters to “unknown”.
+__Description:__
 
-Inputs:
+This function provides way to initialize all the sonar processing parameters to "unknown".
 
-
-p
-
-pointer to the gsfMBParams data structure which will be populated with “unknown”
+__Inputs:__
 
 
+- p
+  - pointer to the gsfMBParams data structure which will be populated with "unknown"
 
-Returns:
+__Returns:__
+
 None.
 
-Error Conditions:
-None.
-3. ERROR CODE DESCRIPTIONS
-Any GSF function that returns an error code also sets the value of gsfError before returning.  Table 3‐1
+__Error Conditions:__
+
+- None.
+
+# 3. ERROR CODE DESCRIPTIONS
+
+Any GSF function that returns an error code also sets the value of gsfError before returning.  Table 3-1
 lists the reasons for error.  gsfPrintError or gsfStringError can be used to generate a text string of the
 reason for the error.
 
 Note that the current version of GSFlib does provide text string translations for all error code returns;
-however, not all definitions have unique values.  A future release will address this issue.  Table 3‐1
+however, not all definitions have unique values.  A future release will address this issue.  Table 3-1
 presents all the reasons supported by gsfPrintError.  The following table is a complete listing of all error
 return codes.
-GSFLib Documentation, version 03.06
 
-3‐48
+**Table 3-1** GSF Error Codes.
+
+Value of gsfError | Value | Reason for error
+------------------|-------|-----------------
+GSF_ATTITUDE_RECORD_DECODE_FAILED | -50 | "GSF Error decoding attitude record"
+GSF_ATTITUDE_RECORD_ENCODE_FAILED | -49
+GSF_BAD_ACCESS_MODE | -3 | "GSF Error illegal access mode"
+GSF_BAD_FILE_HANDLE | -24 | "GSF Error bad file handle"
+GSF_BAD_SEEK_OPTION | -15 | "GSF Error unrecognized file seek option"
+GSF_CANNOT_REPRESENT_PRECISION | -22 | "GSF Error illegal scale factor multiplier specified"
+GSF_CHECKSUM_FAILURE | -8 | "GSF Error data checksum failure"
+GSF_COMMENT_RECORD_DECODE_FAILED | -30 | "GSF Error decoding comment record"
+GSF_COMMENT_RECORD_ENCODE_FAILED | -30
+GSF_CORRUPT_INDEX_FILE_ERROR | -37 | "GSF Error index file is corrupted, delete index file"
+GSF_FILE_CLOSE_ERROR | -9 | "GSF Error closing GSF file"
+GSF_FILE_SEEK_ERROR | -16 | "GSF Error file seek failed"
+GSF_FILE_TELL_ERROR | -35 | "GSF Error file tell failed"
+GSF_FLUSH_ERROR | -34 | "GSF Error flushing data buffers(s)"
+GSF_FOPEN_ERROR | -1 | "GSF Unable to open requested file"
+GSF_HEADER_RECORD_DECODE_FAILED | -25 | "GSF Error decoding header record"
+GSF_HEADER_RECORD_ENCODE_FAILED | -25
+GSF_HISTORY_RECORD_DECODE_FAILED | -31 | "GSF Error decoding history record"
+GSF_HISTORY_RECORD_ENCODE_FAILED | -31
+GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED | -48 | "GSF Error decoding horizontal/vertical navigation error record"
+GSF_HV_NAV_ERROR_RECORD_ENCODE_FAILED | -47 | "GSF Error encoding horizontal/vertical navigation error record"
+GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER | -21 | "GSF Error illegal scale factor multiplier specified"
+GSF_INDEX_FILE_OPEN_ERROR | -36 | "GSF Error open of index file failed"
+GSF_INDEX_FILE_READ_ERROR | -44 | "GSF Error index file read error"
+GSF_INSUFFICIENT_SIZE | -6 | "GSF Error insufficient size specified"
+GSF_INVALID_NUM_BEAMS | -42 | "GSF Error invalid number of beams"
+GSF_INVALID_RECORD_NUMBER | -43 | "GSF Error invalid record number"
+GSF_MB_PING_RECORD_DECODE_FAILED | -26 | "GSF Error decoding multibeam ping record"
+GSF_MB_PING_RECORD_ENCODE_FAILED | -26
+GSF_MEMORY_ALLOCATION_FAILED | -12 | "GSF Error memory allocation failure"
+GSF_NAV_ERROR_RECORD_DECODE_FAILED | -32 | "GSF Error decoding latitude/longitude navigation error record"
+GSF_NAV_ERROR_RECORD_ENCODE_FAILED | -32
+GSF_NORMAL | 0
+GSF_OPEN_TEMP_FILE_FAILED | -51 | "GSF Failed to open temporary file for index creation"
+GSF_PARAM_SIZE_FIXED | -45 | "GSF Error unable to update existing file with increased record size"
+GSF_PARTIAL_RECORD_AT_END_OF_FILE | -52 | "GSF Error corrupt/partial record at end of the file"
+GSF_PROCESS_PARAM_RECORD_DECODE_FAILED | -28 | "GSF Error decoding processing parameters record"
+GSF_PROCESS_PARAM_RECORD_ENCODE_FAILED | -28  | 
+GSF_READ_ERROR | -4 | "GSF Error reading input data"
+GSF_READ_TO_END_OF_FILE | -23 | "GSF End of file encountered"
+GSF_RECORD_SIZE_ERROR | -7 | "GSF Error record size is out of bounds"
+GSF_RECORD_TYPE_NOT_AVAILABLE | -39 | "GSF Error requested indexed record type not in GSF file"
+GSF_SCALE_INDEX_CALLOC_ERROR | -38 | "GSF Error calloc of scale factor index memory failed"
+GSF_SENSOR_PARAM_RECORD_DECODE_FAILED | -29 | "GSF Error decoding sensor parameters record"
+GSF_SENSOR_PARAM_RECORD_ENCODE_FAILED | -29 | 
+GSF_SETVBUF_ERROR | -33 | "GSF Error setting internal file buffering"
+GSF_SINGLE_BEAM_ENCODE_FAILED | -46 | "GSF Error  single beam encode failure"
+GSF_STREAM_DECODE_FAILURE | -14 | "GSF Error stream decode failure"
+ ***Note: error code is not used | | 
+GSF_SUMMARY_RECORD_DECODE_FAILED | -40 | "GSF Error decoding summary record"
+GSF_SUMMARY_RECORD_ENCODE_FAILED | -41 | "GSF Error encoding summary record"
+GSF_SVP_RECORD_DECODE_FAILED | -27 | "GSF Error decoding SVP record"
+GSF_SVP_RECORD_ENCODE_FAILED | -27
+GSF_TOO_MANY_ARRAY_SUBRECORDS | -10 | "GSF Error too many array subrecords"
+GSF_TOO_MANY_OPEN_FILES | -11 | "GSF Error too many open files"
+GSF_UNRECOGNIZED_ARRAY_SUBRECORD_ID | -19 | "GSF Error unrecognized array subrecord id "
+GSF_UNRECOGNIZED_DATA_RECORD | -18 | "GSF Error unrecognized data record id"
+GSF_UNRECOGNIZED_FILE | -2 | "GSF Error unrecognized file"
+GSF_UNRECOGNIZED_RECORD_ID | -13 | "GSF Error unrecognized record id"
+GSF_UNRECOGNIZED_SENSOR_ID | -17 | "GSF Error unrecognized sensor specific subrecord id"
+GSF_UNRECOGNIZED_SUBRECORD_ID | -20 | "GSF Error unrecognized subrecord id"
+GSF_WRITE_ERROR | -5 | "GSF Error writing output data"
+GSF_QUALITY_FLAGS_DECODE__ERROR | -53 | "GSF error decoding quality flags record" |
+Unrecognized error condition | | "GSF unknown error"
+
+# 4. C-LANGUAGE DEFINITIONS OF STRUCTURES USED BY GSFLIB
 
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-
-Table 3‐1 GSF Error Codes
-Value of gsfError
-
-Value Reason for error
-
-GSF_ATTITUDE_RECORD_DECODE_FAILED
-
-‐50
-
-“GSF Error decoding attitude record”
-
-GSF_ATTITUDE_RECORD_ENCODE_FAILED
-
-‐49
-
-GSF_BAD_ACCESS_MODE
-
-‐3
-
-“GSF Error illegal access mode”
-
-GSF_BAD_FILE_HANDLE
-
-‐24
-
-“GSF Error bad file handle”
-
-GSF_BAD_SEEK_OPTION
-
-‐15
-
-“GSF Error unrecognized file seek option”
-
-GSF_CANNOT_REPRESENT_PRECISION
-
-‐22
-
-“GSF Error illegal scale factor multiplier specified”
-
-GSF_CHECKSUM_FAILURE
-
-‐8
-
-“GSF Error data checksum failure”
-
-GSF_COMMENT_RECORD_DECODE_FAILED
-
-‐30
-
-“GSF Error decoding comment record”
-
-GSF_COMMENT_RECORD_ENCODE_FAILED
-
-‐30
-
-GSF_CORRUPT_INDEX_FILE_ERROR
-
-‐37
-
-“GSF Error index file is corrupted, delete index file”
-
-GSF_FILE_CLOSE_ERROR
-
-‐9
-
-“GSF Error closing gsf file”
-
-GSF_FILE_SEEK_ERROR
-
-‐16
-
-“GSF Error file seek failed”
-
-GSF_FILE_TELL_ERROR
-
-‐35
-
-“GSF Error file tell failed”
-
-GSF_FLUSH_ERROR
-
-‐34
-
-“GSF Error flushing data buffers(s)”
-
-GSF_FOPEN_ERROR
-
-‐1
-
-“GSF Unable to open requested file”
-
-GSF_HEADER_RECORD_DECODE_FAILED
-
-‐25
-
-“GSF Error decoding header record”
-
-GSF_HEADER_RECORD_ENCODE_FAILED
-
-‐25
-
-GSF_HISTORY_RECORD_DECODE_FAILED
-
-‐31
-
-GSF_HISTORY_RECORD_ENCODE_FAILED
-
-‐31
-
-GSF_HV_NAV_ERROR_RECORD_DECODE_FAILED
-
-‐48
-
-“GSF Error decoding horizontal/vertical navigation
-error record”
-
-GSF_HV_NAV_ERROR_RECORD_ENCODE_FAILED
-
-‐47
-
-“GSF Error encoding horizontal/vertical navigation
-error record”
-
-“GSF Error decoding history record”
-
-GSFLib Documentation, version 03.06
-
-3‐49
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER
-
-‐21
-
-“GSF Error illegal scale factor multiplier specified”
-
-GSF_INDEX_FILE_OPEN_ERROR
-
-‐36
-
-“GSF Error open of index file failed”
-
-GSF_INDEX_FILE_READ_ERROR
-
-‐44
-
-“GSF Error index file read error”
-
-GSF_INSUFFICIENT_SIZE
-
-‐6
-
-“GSF Error insufficient size specified”
-
-GSF_INVALID_NUM_BEAMS
-
-‐42
-
-“GSF Error invalid number of beams”
-
-GSF_INVALID_RECORD_NUMBER
-
-‐43
-
-“GSF Error invalid record number”
-
-GSF_MB_PING_RECORD_DECODE_FAILED
-
-‐26
-
-“GSF Error decoding multibeam ping record”
-
-GSF_MB_PING_RECORD_ENCODE_FAILED
-
-‐26
-
-GSF_MEMORY_ALLOCATION_FAILED
-
-‐12
-
-“GSF Error memory allocation failure”
-
-GSF_NAV_ERROR_RECORD_DECODE_FAILED
-
-‐32
-
-“GSF Error decoding latitude/longitude navigation
-error record”
-
-GSF_NAV_ERROR_RECORD_ENCODE_FAILED
-
-‐32
-
-GSF_NORMAL
-
-0
-
-GSF_OPEN_TEMP_FILE_FAILED
-
-‐51
-
-"GSF Failed to open temporary file for index
-creation"
-
-GSF_PARAM_SIZE_FIXED
-
-‐45
-
-“GSF Error unable to update existing file with
-increased record size”
-
-GSF_PARTIAL_RECORD_AT_END_OF_FILE
-
-‐52
-
-“GSF Error corrupt/partial record at end of the file”
-
-GSF_PROCESS_PARAM_RECORD_DECODE_FAILED
-
-‐28
-
-“GSF Error decoding processing parameters record”
-
-GSF_PROCESS_PARAM_RECORD_ENCODE_FAILED
-
-‐28
-
-GSF_READ_ERROR
-
-‐4
-
-“GSF Error reading input data”
-
-GSF_READ_TO_END_OF_FILE
-
-‐23
-
-“GSF End of file encountered”
-
-GSF_RECORD_SIZE_ERROR
-
-‐7
-
-“GSF Error record size is out of bounds”
-
-GSF_RECORD_TYPE_NOT_AVAILABLE
-
-‐39
-
-“GSF Error requested indexed record type not in gsf
-file”
-
-GSF_SCALE_INDEX_CALLOC_ERROR
-
-‐38
-
-“GSF Error calloc of scale factor index memory
-failed”
-
-GSFLib Documentation, version 03.06
-
-3‐50
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-GSF_SENSOR_PARAM_RECORD_DECODE_FAILED
-
-‐29
-
-GSF_SENSOR_PARAM_RECORD_ENCODE_FAILED
-
-‐29
-
-GSF_SETVBUF_ERROR
-
-‐33
-
-“GSF Error setting internal file buffering”
-
-GSF_SINGLE_BEAM_ENCODE_FAILED
-
-‐46
-
-“GSF Error  single beam encode failure”
-
-GSF_STREAM_DECODE_FAILURE
-
-‐14
-
-“GSF Error stream decode failure”
-
-GSF_SUMMARY_RECORD_DECODE_FAILED
-
-‐40
-
-“GSF Error decoding summary record”
-
-GSF_SUMMARY_RECORD_ENCODE_FAILED
-
-‐41
-
-“GSF Error encoding summary record”
-
-GSF_SVP_RECORD_DECODE_FAILED
-
-‐27
-
-“GSF Error decoding SVP record”
-
-GSF_SVP_RECORD_ENCODE_FAILED
-
-‐27
-
-GSF_TOO_MANY_ARRAY_SUBRECORDS
-
-‐10
-
-“GSF Error too many array subrecords”
-
-GSF_TOO_MANY_OPEN_FILES
-
-‐11
-
-“GSF Error too many open files”
-
-GSF_UNRECOGNIZED_ARRAY_SUBRECORD_ID
-
-‐19
-
-“GSF Error unrecognized array subrecord id ”
-
-GSF_UNRECOGNIZED_DATA_RECORD
-
-‐18
-
-“GSF Error unrecognized data record id”
-
-GSF_UNRECOGNIZED_FILE
-
-‐2
-
-“GSF Error unrecognized file”
-
-GSF_UNRECOGNIZED_RECORD_ID
-
-‐13
-
-“GSF Error unrecognized record id”
-
-GSF_UNRECOGNIZED_SENSOR_ID
-
-‐17
-
-“GSF Error unrecognized sensor specific subrecord
-id”
-
-GSF_UNRECOGNIZED_SUBRECORD_ID
-
-‐20
-
-“GSF Error unrecognized subrecord id”
-
-GSF_WRITE_ERROR
-
-‐5
-
-“GSF Error writing output data”
-
-GSF_QUALITY_FLAGS_DECODE__ERROR
-
-‐53
-
-"GSF error decoding quality flags record"
-
-“GSF Error decoding sensor parameters record”
-
-***Note: error code is not used
-
-Unrecognized error condition
-
-“GSF unknown error”
-
-GSFLib Documentation, version 03.06
-
-3‐51
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-4. C‐LANGUAGE DEFINITIONS OF STRUCTURES USED BY GSFLIB
 GSFlib is built upon several complex data structures that are passed to applications using the library to
 access data.  This section describes these complex data structures.
-4.1 Definition of GSF Data Records
+
+## 4.1 Definition of GSF Data Records
+
 Eleven data records define GSF data.  Subsequent sections define each of these records.  The gsfRecords
 structure allows all records to be addressed as a unit.
 
-typedef struct t_gsfRecords
-{
-gsfHeader
+    typedef struct t_gsfRecords
+    {
+        gsfHeader header;
+        gsfSwathBathySummary summary;
+        gsfSwathBathyPing mb_ping;
+        gsfSingleBeamPing sb_ping;
+        gsfSVP svp;
+        gsfProcessingParameters process_parameters;
+        gsfSensorParameters sensor_parameters;
+        gsfComment comment;
+        gsfHistory history;
+        gsfNavigationError nav_error;
+        gsfHVNavigationError hv_nav_error;
+        gsfAttitude attitude;
+    } gsfRecords;
 
-header;
+### 4.1.1 Header Record
 
-gsfSwathBathySummary
-
-summary;
-
-gsfSwathBathyPing
-
-mb_ping;
-
-gsfSingleBeamPing
-
-sb_ping;
-
-gsfSVP
-
-svp;
-
-gsfProcessingParameters process_parameters;
-gsfSensorParameters
-
-sensor_parameters;
-
-gsfComment
-
-comment;
-
-gsfHistory
-
-history;
-
-gsfNavigationError
-
-nav_error;
-
-gsfHVNavigationError
-
-hv_nav_error;
-
-gsfAttitude
-
-attitude;
-
-} gsfRecords;
-
-4.1.1 Header Record
 A header record is required to be the first record of every GSF data file.
 
-#define GSF_VERSION_SIZE 12
-typedef struct t_gsfHeader
+    #define GSF_VERSION_SIZE 12
+    typedef struct t_gsfHeader
+    {
+        char version[GSF_VERSION_SIZE];
+    }
+    gsfHeader;
+
+### 4.1.2 Swath Bathymetry Ping Record
+
+    typedef struct t_gsfSwathBathyPing
+    {
+        struct timespec ping_time;  /* seconds and nanoseconds */
+        double latitude;  /* in degrees, north is positive */
+        double longitude;  /* in degrees, west is positive */
+        double height;  /* height above ellipsoid */
+        double sep;  /* ellipsoid to chart datum */
+        short number_beams; /* in this ping */
+        short center_beam; /* offset into array (0 = portmost outer) */
+        unsigned short ping_flags;  /* flags to mark status of this ping */
+        short reserved;  /* for future use */
+        double tide_corrector;  /* in meters */
+        double gps_tide_corrector;  /* in meters
+        double depth_corrector;  /* in meters */
+        double heading;  /* in degrees */
+        double pitch;  /* in degrees */
+        double roll;  /* in degrees */
+        double heave;  /* in meters
+        double course;  /* in degrees */
+        double speed;  /* in knots */
+        gsfScaleFactors scaleFactors;  /* The array scale factors for this data */
+        double *depth;  /* depth array (meters) */
+        double *nominal_depth;  /* Array of depth relative to 1500 m/s */
+        double *across_track;  /* across track array (meters) */
+        double *along_track;  /* along track array (meters) */
+        double *travel_time;  /* roundtrip travel time array (seconds) */
+        double *beam_angle;  /* beam angle array degrees from vertical */
+        double *mc_amplitude;  /* mean, calibrated beam amplitude array (dB re 1V/micro pascal at 1 meter) */
+        double *mr_amplitude;  /* mean, relative beam amplitude array (dB re 1V/micro pascal at 1 meter) */
+        double *echo_width; /* echo width array (seconds) */
+        double *quality_factor;  /* quality factor array (dimensionless) */
+        double *receive_heave;  /* Array of heave data (meters) */
+        double *depth_error;  /* Array of estimated vertical error (meters)*/
+        double *across_track_error;  /* Array of estimated across track error (meters) */
+        double *along_track_error;  /* Array of estimated along track error (meters) */
+        unsigned char *quality_flags;  /* Two bit beam detection flags provided by Reson sonar */
+        unsigned char *beam_flags;  /* Array of beam status flags */
+        double *signal_to_noise;  /* signal to noise ratio (dB) */
+        double *beam_angle_forward;  /* beam angle forward array (degrees counterclockwise from stbd.) */
+        double *vertical_error;  /* Array of estimated vertical error (meters, at 95% confidence) */
+        double *horizontal_error; /* Array of estimated horizontal error (meters, at 95% confidence) */
+        unsigned short *sector_number;  /* Array of values that specify the transit sector for this beam */
+        unsigned short *detection_info;  /* Array of values that specify the method of bottom detection */
+        double *incident_beam_adj;  /* Array of values that specify incident beam angle adjustment from beam_angle */
+        unsigned short *system_cleaning;  /* Array of values that specify data cleaning information from the sensor system */
+        double *doppler_corr;  /* Array of values used to correct the travel times for Doppler when transmission is FM */
+        double *sonar_vert_uncert;  /* vertical uncertainty from sonar */
+        int sensor_id;  /* a definition which specifies the sensor*/
+        gsfSensorSpecific sensor_data;  /* union of known sensor specific data */
+        gsfBRBIntensity *brb_inten;  /* Structure containing bathymetric receive beam time series intensities */
+        double *sonar_vert_uncert;  /* Vertical uncertainty provided by the sonar. */
+    } gsfSwathBathyPing;
+
+#### 4.1.2.1 Scale Factor Subrecord
+
+    typedef struct t_gsfScaleInfo
+    {
+        unsigned char compressionFlag;  /* Specifies bytes of storage in high order nibble and type of compression in low order nibble */
+        double multiplier;  /* the scale factor (millionths)for the array */
+        double offset;  /* dc offset to scale data by */
+    } gsfScaleInfo;
+
+    typedef struct t_gsfScaleFactors
+    {
+        int numArraySubrecords;  /* number of scaling factors we actually have */
+        gsfScaleInfo scaleTable[GSF_MAX_PING_ARRAY_SUBRECORDS];
+    } gsfScaleFactors;
+
+#### 4.1.2.2 Multibeam Sensor-specific Subrecords
+
+    /* Define the typeIII specific data structure */
+    typedef struct t_gsfTypeIIISpecific
+    {
+        unsigned short leftmost_beam;  /* 0 - leftmost possible beam */
+        unsigned short rightmost_beam;
+        unsigned short total_beams;
+        unsigned short nav_mode;
+        unsigned short ping_number;
+        unsigned short mission_number;
+    }
+    t_gsfTypeIIISpecific;
+
+    /* The gsfCmpSassSpecific data structure is intended to replace the gsfTypeIII Specific
+     * data structure in a future release. All new coding should use the gsfCmpSassSpecific
+     * data structure.
+     */
+
+    /* Define the CMP (Compressed) SASS specific data structure (from sass.h) */
+     * typedef struct t_gsfCmpSassSpecific
 
-GSFLib Documentation, version 03.06
-
-4‐1
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-{
-char
-
-version[GSF_VERSION_SIZE];
-
-}
-gsfHeader;
-
-4.1.2 Swath Bathymetry Ping Record
-typedef struct t_gsfSwathBathyPing
-{
-struct timespec
-
-ping_time;
-
-/* seconds and nanoseconds */
-
-double
-
-latitude;
-
-/* in degrees, north is positive */
-
-double
-
-longitude;
-
-/* in degrees, west is positive */
-
-double
-
-height;
-
-/* height above ellipsoid */
-
-double
-
-sep;
-
-/* ellipsoid to chart datum */
-
-short
-
-number_beams;
-
-/* in this ping */
-
-short
-
-center_beam;
-
-/* offset into array (0 = portmost outer) */
-
-unsigned short
-
-ping_flags;
-
-/* flags to mark status of this ping */
-
-short
-
-reserved;
-
-/* for future use */
-
-double
-
-tide_corrector;
-
-/* in meters */
-
-double
-
-gps_tide_corrector;
-
-/* in meters
-
-double
-
-depth_corrector;
-
-/* in meters */
-
-double
-
-heading;
-
-/* in degrees */
-
-double
-
-pitch;
-
-/* in degrees */
-
-double
-
-roll;
-
-/* in degrees */
-
-double
-
-heave;
-
-/* in meters
-
-double
-
-course;
-
-/* in degrees */
-
-double
-
-speed;
-
-/* in knots */
-
-gsfScaleFactors
-
-scaleFactors;
-
-/* The array scale factors for this data */
-
-double
-
-*depth;
-
-/* depth array (meters) */
-
-double
-
-*nominal_depth;
-
-/* Array of depth relative to 1500 m/s */
-
-double
-
-*across_track;
-
-/* across track array (meters) */
-
-*/
-
-*/
-
-GSFLib Documentation, version 03.06
-
-4‐2
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-double
-
-*along_track;
-
-/* along track array (meters) */
-
-double
-
-*travel_time;
-
-/* roundtrip travel time array (seconds) */
-
-double
-
-*beam_angle;
-
-/* beam angle array degrees from vertical */
-
-double
-
-*mc_amplitude;
-
-/* mean, calibrated beam amplitude array (dB
-re 1V/micro pascal at 1 meter) */
-
-double
-
-*mr_amplitude;
-
-/* mean, relative beam amplitude array (dB
-re 1V/micro pascal at 1 meter) */
-
-double
-
-*echo_width;
-
-/* echo width array (seconds) */
-
-double
-
-*quality_factor;
-
-/* quality factor array (dimensionless) */
-
-double
-
-*receive_heave;
-
-/* Array of heave data (meters) */
-
-double
-
-*depth_error;
-
-/* Array of estimated vertical error
-(meters)*/
-
-double
-
-*across_track_error;
-
-/* Array of estimated across track error
-(meters) */
-
-double
-
-*along_track_error;
-
-/* Array of estimated along track error
-(meters) */
-
-unsigned char
-
-*quality_flags;
-
-/* Two bit beam detection flags provided by
-Reson sonar */
-
-unsigned char
-
-*beam_flags;
-
-/* Array of beam status flags */
-
-double
-
-*signal_to_noise;
-
-/* signal to noise ratio (dB) */
-
-double
-
-*beam_angle_forward;
-
-/* beam angle forward array (degrees
-counterclockwise from stbd.) */
-
-double
-
-*vertical_error;
-
-/* Array of estimated vertical error
-(meters, at 95% confidence) */
-
-double
-
-*horizontal_error;
-
-/* Array of estimated horizontal error
-(meters, at 95% confidence */
-
-unsigned short
-
-*sector_number;
-
-/* Array of values that specify the transit
-sector for this beam */
-
-unsigned short
-
-*detection_info;
-
-/* Array of values that specify the method
-of bottom detection */
-
-double
-
-*incident_beam_adj;
-
-/* Array of values that specify incident
-beam angle adjustment from beam_angle */
-
-unsigned short
-
-*system_cleaning;
-
-/* Array of values that specify data
-cleaning information from the sensor
-system */
-
-GSFLib Documentation, version 03.06
-
-4‐3
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-double
-
-*doppler_corr;
-
-/* Array of values used to correct the
-travel times for Doppler when
-transmission is FM */
-
-double
-
-*sonar_vert_uncert;
-
-int
-
-sensor_id;
-
-/* vertical uncertainty from sonar */
-/* a definition which specifies the sensor*/
-
-gsfSensorSpecific sensor_data;
-
-/* union of known sensor specific data */
-
-gsfBRBIntensity
-
-*brb_inten;
-
-/* Structure containing bathymetric receive
-beam time series intensities */
-
-double
-
-*sonar_vert_uncert;
-
-/* Vertical uncertainty provided by the
-sonar. */
-
-}
-gsfSwathBathyPing;
-
-4.1.2.1 Scale Factor Subrecord
-typedef struct t_gsfScaleInfo
-{
-unsigned char
-
-compressionFlag; /* Specifies bytes of storage in high order nibble
-and type of compression in low order nibble */
-
-double
-
-multiplier;
-
-/* the scale factor (millionths)for the array */
-
-double
-
-offset;
-
-/* dc offset to scale data by */
-
-} gsfScaleInfo;
-
-typedef struct t_gsfScaleFactors
-{
-int
-
-numArraySubrecords; /* number of scaling factors we actually have */
-
-gsfScaleInfo scaleTable[GSF_MAX_PING_ARRAY_SUBRECORDS];
-} gsfScaleFactors;
-
-4.1.2.2 Multibeam Sensor‐specific Subrecords
-/* Define the typeIII specific data structure */
-typedef struct t_gsfTypeIIISpecific
-{
-unsigned short
-
-leftmost_beam;
-
-/* 0 - leftmost possible beam */
-
-GSFLib Documentation, version 03.06
-
-4‐4
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-unsigned short
-
-rightmost_beam;
-
-unsigned short
-
-total_beams;
-
-unsigned short
-
-nav_mode;
-
-unsigned short
-
-ping_number;
-
-unsigned short
-
-mission_number;
-
-}
-t_gsfTypeIIISpecific;
-
-/* The gsfCmpSassSpecific data structure is intended to replace the gsfTypeIII Specific
-* data structure in a future release. All new coding should use the gsfCmpSassSpecific
-* data structure.
-*/
-
-/* Define the CMP (Compressed) SASS specific data structure (from sass.h) */
-typedef struct t_gsfCmpSassSpecific
 {
 /************************************************************************************
 *
-*
-
-Mapping from Compressed SASS (BOSDAT) to GSF record
-
+* Mapping from Compressed SASS (BOSDAT) to GSF record
 *
 *
+* from     to    comment
+* ===========================================================================
 *
-
-from
-
-to
-
-comment
-
-===========================================================================
-
-*
-*
-
-lntens
-
-ping.heave
-
-mapped only when year is post 1991 or
-
-*
-
-user has elected to force mapping.
-
-*
-
-lfreq
-
-not-mapped
-
+* lntens   ping.heave  mapped only when year is post 1991 or
+*                      user has elected to force mapping.
+* lfreq    not-mapped
 *
 
 ldraft
@@ -4482,14 +2152,6 @@ at <= 1000 ... FATHOMS
 *
 
 at <= 2500 ... METERS
-
-GSFLib Documentation, version 03.06
-
-4‐5
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 *
 
@@ -4615,121 +2277,41 @@ EclipseTime; /* In 10ths of seconds */
 }
 t_gsfSeaBeamSpecific;
 
-GSFLib Documentation, version 03.06
-
-4‐6
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 typedef struct t_gsfSBAmpSpecific
 {
-unsigned char
-
-hour;
-
-unsigned char
-
-minute;
-
-unsigned char
-
-second;
-
-unsigned char
-
-hundredths;
-
-unsigned int
-
-block_number;
-
-short
-
-avg_gate_depth;
-
+unsigned char hour;
+unsigned char minute;
+unsigned char second;
+unsigned char hundredths;
+unsigned int block_number;
+short avg_gate_depth;
 }
 t_gsfSBAmpSpecific;
 
 /* Define the Seamap specific data structure */
 typedef struct t_gsfSeamapSpecific
 {
-double
-
-portTransmitter[2];
-
-double
-
-stbdTransmitter[2];
-
-double
-
-portGain;
-
-double
-
-stbdGain;
-
-double
-
-portPulseLength;
-
-double
-
-stbdPulseLength;
-
-double
-
-pressureDepth;
-
-double
-
-altitude;
-
-double
-
-temperature;
-
+double portTransmitter[2];
+double stbdTransmitter[2];
+double portGain;
+double stbdGain;
+double portPulseLength;
+double stbdPulseLength;
+double pressureDepth;
+double altitude;
+double temperature;
 }
 t_gsfSeamapSpecific;
 
 /* Define the EM950/EM1000 specific data structure */
 typedef struct t_gsfEM950Specific
 {
-
-GSFLib Documentation, version 03.06
-
-4‐7
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-int
-
-ping_number;
-
-int
-
-mode;
-
-int
-
-ping_quality;
-
-double
-
-ship_pitch;
-
-double
-
-transducer_pitch;
-
-double
-
-surface_velocity;
-
+int ping_number;
+int mode;
+int ping_quality;
+double ship_pitch;
+double transducer_pitch;
+double surface_velocity;
 }
 t_gsfEM950Specific;
 
@@ -4785,14 +2367,6 @@ mode;
 int
 
 valid_beams;
-
-GSFLib Documentation, version 03.06
-
-4‐8
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 int
 
@@ -4923,14 +2497,6 @@ cross_over_angle;
 
 /* degrees */
 
-GSFLib Documentation, version 03.06
-
-4‐9
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 int
 
 ssv_source;
@@ -5057,14 +2623,6 @@ offset_multiplier;
 
 /* transducer depth offset multiplier */
 
-GSFLib Documentation, version 03.06
-
-4‐10
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 /* The gsfEM3RunTime data structure is updated with each run-time parameter datagram*/
 gsfEM3RunTime run_time[2];
 
@@ -5139,14 +2697,6 @@ transmit_power;
 int
 
 receive_gain;
-
-GSFLib Documentation, version 03.06
-
-4‐11
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 double
 
@@ -5275,14 +2825,6 @@ double
 
 depth_filt_min; /* depth filter, minimum value, meters (future use) */
 
-GSFLib Documentation, version 03.06
-
-4‐12
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 double
 
 depth_filt_max; /* depth filter, maximum value, meters (future use) */
@@ -5393,14 +2935,6 @@ spare[2];
 
 }
 
-GSFLib Documentation, version 03.06
-
-4‐13
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 t_gsfSeaBeam2112Specific;
 
 /* Macro definitions for the SeaBeam2112Specific mode field */
@@ -5486,14 +3020,6 @@ t_gsfElacMkIISpecific;
 
 /* set if using 12kHz frequecy - 36kHz if not
 set */
-
-GSFLib Documentation, version 03.06
-
-4‐14
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 #define GSF_MKII_SOURCE_MODE
 
@@ -5594,12 +3120,6 @@ tx_pulse_width;
 
 /* Transmit pulse length in seconds. From
 
-GSFLib Documentation, version 03.06
-
-4‐15
-
-Leidos doc 98‐16(19)
-
 30 June 2014
 
 record 7000 */
@@ -5688,14 +3208,6 @@ projector_id;
 /* projector selection, from
 record 7000 */
 
-GSFLib Documentation, version 03.06
-
-4‐16
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 double
 
 projector_steer_angl_vert;
@@ -5778,14 +3290,6 @@ receive_flags;
 4-7: Dynamic focusing method
 8-11: Doppler compensation method
 12-15: Match filtering method
-
-GSFLib Documentation, version 03.06
-
-4‐17
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 16-19: TVG method
 20-23: Multi-Ping Mode
@@ -5880,14 +3384,6 @@ t_gsfReson7100Specific;
 #define GSF_7100_ROLL_STAB
 
 0x0001 /* set if roll stabilized */
-
-GSFLib Documentation, version 03.06
-
-4‐18
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 /* Define the Reson 8100 specific data structure */
 typedef struct t_gsfReson8100Specific
@@ -6044,14 +3540,6 @@ filter
 
 */
 
-GSFLib Documentation, version 03.06
-
-4‐19
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 int
 
 temperature;
@@ -6154,14 +3642,6 @@ packet) */
 typedef struct t_gsfSBEchotracSpecific
 {
 
-GSFLib Documentation, version 03.06
-
-4‐20
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 int
 
 navigation_error;
@@ -6248,14 +3728,6 @@ char
 
 classification; /* Classification ((U)nclass, (C)onfidential,
 (S)ecret, (P)roprietary/Unclass,
-
-GSFLib Documentation, version 03.06
-
-4‐21
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 (Q)Proprietary/Class) */
 char
@@ -6344,14 +3816,6 @@ t_gsfSBNavisoundSpecific;
 /* Define the GeoSwath sensor specific data structure */
 typedef struct t_gsfGeoSwathPlusSpecific
 {
-
-GSFLib Documentation, version 03.06
-
-4‐22
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 int
 
@@ -6511,14 +3975,6 @@ spare[32];
 }
 t_gsfGeoSwathPlusSpecific;
 
-GSFLib Documentation, version 03.06
-
-4‐23
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 #define GSF_GEOSWATH_PLUS_PORT_PING 0
 #define GSF_GEOSWATH_PLUS_STBD_PING 1
 
@@ -6620,14 +4076,6 @@ transmission
 /* transmitter tilt angle in degrees */
 
 }
-
-GSFLib Documentation, version 03.06
-
-4‐24
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 t_gsfEM4TxSector;
 
@@ -6735,17 +4183,7 @@ mode */
 
 0x07
 
-/* Mask off bits 2,1,0 to determine just
-
-GSFLib Documentation, version 03.06
-
-4‐25
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-the mode */
+/* Mask off bits 2,1,0 to determine just the mode */
 /* Exact definition of bits 5,4,3 not
 clear from document rev J. */
 #define GSF_EM_MODE_DS_OFF
@@ -6839,14 +4277,6 @@ mode;
 
 information, see mode bit mask
 definitions */
-
-GSFLib Documentation, version 03.06
-
-4‐26
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 unsigned char
 
@@ -6993,14 +4423,6 @@ filter_id_2;
 /* two lowest order bits define the
 penetration filter setting: off, weak,
 
-GSFLib Documentation, version 03.06
-
-4‐27
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 medium, or strong */
 unsigned char
 
@@ -7095,14 +4517,6 @@ t_gsfEMPUStatus;
 
 /* Define sensor specific data structures for the Kongsberg 710/302/122 */
 typedef struct t_gsfEM4Specific
-
-GSFLib Documentation, version 03.06
-
-4‐28
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 {
 /* values from the XYZ datagram and raw range datagram */
@@ -7201,14 +4615,6 @@ pu_status;
 }
 t_gsfEM4Specific;
 
-GSFLib Documentation, version 03.06
-
-4‐29
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 /* Define sensor specific data structures for the Kongsberg 3000, etc which use raw
 range and beam angle */
 typedef struct t_gsfEM3RawSpecific
@@ -7301,14 +4707,6 @@ spare_2[16];
 t_gsfEMRunTime
 
 run_time;
-
-GSFLib Documentation, version 03.06
-
-4‐30
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 /* Values from the PU status datagram */
 t_gsfEMPUStatus
@@ -7414,14 +4812,6 @@ active */
 altimeter;
 
 /* altimeter status: 0 = passive, 1 =
-
-GSFLib Documentation, version 03.06
-
-4‐31
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 unsigned int
 
@@ -7534,14 +4924,6 @@ intensity data (1=true) */
 
 /* this tells whether the GSF will have
 
-GSFLib Documentation, version 03.06
-
-4‐32
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 double
 ping_latency;
 actual ping in seconds */
@@ -7651,14 +5033,6 @@ mode;
 
 /* 1 to 8; shallow, deep, type of beam
 
-GSFLib Documentation, version 03.06
-
-4‐33
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 spacing */
 unsigned char
 
@@ -7761,14 +5135,6 @@ unsigned int
 tx_misc_info;
 
 /* reserved for future use */
-
-GSFLib Documentation, version 03.06
-
-4‐34
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 float
 
@@ -7878,14 +5244,6 @@ t_gsfR2SonicSpecific;
 
 /* Define a union of the known sensor specific ping subrecords */
 
-GSFLib Documentation, version 03.06
-
-4‐35
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 typedef union t_gsfSensorSpecific
 {
 t_gsfSeaBeamSpecific
@@ -7977,14 +5335,6 @@ t_gsfEM4Specific
 
 gsfEM4Specific;
 
-GSFLib Documentation, version 03.06
-
-4‐36
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 t_gsfKlein5410BssSpecific gsfKlein5410BssSpecific;
 t_gsfDeltaTSpecific
 
@@ -8025,7 +5375,7 @@ gsfSBPDDSpecific;
 
 } gsfSensorSpecific;
 
-Table 4‐1 Sensor ID allocation to Sensor Specific Subrecord Data Structure
+Table 4-1 Sensor ID allocation to Sensor Specific Subrecord Data Structure
 Sensor ID
 
 Sensor Specific Subrecord Structure
@@ -8077,14 +5427,6 @@ gsfSASSSpecific
 GSF_SWATH_BATHY_SUBRECORD_CMP_SASS_SPECIFIC
 
 gsfCmpSassSpecific
-
-GSFLib Documentation, version 03.06
-
-4‐37
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 GSF_SWATH_BATHY_SUBRECORD_SB_AMP_SPECIFIC
 
@@ -8152,15 +5494,6 @@ gsfEM3RawSpecific
 
 GSF_SWATH_BATHY_SUBRECORD_EM1002_RAW_SPECIFIC
 GSF_SWATH_BATHY_SUBRECORD_EM2000_RAW_SPECIFIC
-
-GSFLib Documentation, version 03.06
-
-4‐38
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 GSF_SWATH_BATHY_SUBRECORD_EM3000_RAW_SPECIFIC
 GSF_SWATH_BATHY_SUBRECORD_EM120_RAW_SPECIFIC
 GSF_SWATH_BATHY_SUBRECORD_EM3002_RAW_SPECIFIC
@@ -8219,14 +5552,6 @@ spare[8];
 
 typedef struct t_gsfBRBIntensity
 {
-
-GSFLib Documentation, version 03.06
-
-4‐39
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 unsigned char
 
@@ -8320,14 +5645,6 @@ spare[4];
 reserved for future expansion */
 
 } t_gsfEM3ImagerySpecific;
-
-GSFLib Documentation, version 03.06
-
-4‐40
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 typedef struct t_gsfReson7100ImagerySpecific
 {
@@ -8423,14 +5740,6 @@ tvg_cross_over;
 
 */
 
-GSFLib Documentation, version 03.06
-
-4‐41
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 short
 
 offset;
@@ -8512,14 +5821,6 @@ ping_number;
 
 /* Sequential ping counter relative to power
 up or reboot */
-
-GSFLib Documentation, version 03.06
-
-4‐42
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 float
 
@@ -8661,14 +5962,6 @@ spare[32];
 
 }
 
-GSFLib Documentation, version 03.06
-
-4‐43
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 t_gsfR2SonicImagerySpecific;
 
 typedef union t_gsfSensorImagery
@@ -8709,7 +6002,7 @@ gsfR2SonicImagerySpecific
 
 } gsfSensorImagery;
 
-4.1.3 Single‐beam Bathymetry Record
+4.1.3 Single-beam Bathymetry Record
 /* Define a single beam record structure */
 typedef struct t_gsfSingleBeamPing
 {
@@ -8740,14 +6033,6 @@ double
 depth_corrector;
 
 /* in meters, draft corrector for sensor */
-
-GSFLib Documentation, version 03.06
-
-4‐44
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 double
 
@@ -8800,7 +6085,7 @@ Note that while GSF maintains both read and write support for the Single-Beam re
 users are actively discouraged from using this record. The preferred means of saving single beam
 data is to use the gsfSwathBathyPing record definition, with the number_beams field set to one.
 
-4.1.3.1 Single‐beam Sensor‐specific Subrecords
+4.1.3.1 Single-beam Sensor-specific Subrecords
 /* Define the Echotrac Single-Beam sensor specific data structure. */
 typedef struct t_gsfEchotracSpecific
 {
@@ -8824,14 +6109,6 @@ t_gsfEchotracSpecific;
 /* Define the MGD77 Single-Beam sensor specific data structure. */
 typedef struct t_gsfMGD77Specific
 {
-
-GSFLib Documentation, version 03.06
-
-4‐45
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 unsigned short
 
@@ -8936,14 +6213,6 @@ carto_code;
 
 Cartographic code */
 
-GSFLib Documentation, version 03.06
-
-4‐46
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 }
 t_gsfNOSHDBSpecific;
 
@@ -9030,14 +6299,6 @@ char
 */
 
 }
-
-GSFLib Documentation, version 03.06
-
-4‐47
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 gsfProcessingParameters;
 
@@ -9151,14 +6412,6 @@ position_z_offset;
 /* meters
 
 */
-
-GSFLib Documentation, version 03.06
-
-4‐48
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 double
 
@@ -9346,14 +6599,6 @@ rx_transducer_roll_offset[GSF_MAX_OFFSETS];
 
 /* degrees */
 
-GSFLib Documentation, version 03.06
-
-4‐49
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 double
 
 rx_transducer_heading_offset[GSF_MAX_OFFSETS]; /* degrees */
@@ -9424,14 +6669,6 @@ int heave_removed_from_gps_tc;
 /* = GSF_TRUE if heave removed from
 gps_tide_corrector */
 
-GSFLib Documentation, version 03.06
-
-4‐50
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 /* These parameters specify known offsets that have NOT been corrected.
 * If each of these values are zero, then all known offsets have been
 * corrected for.
@@ -9474,14 +6711,6 @@ struct timespec comment_time;
 int
 
 comment_length;
-
-GSFLib Documentation, version 03.06
-
-4‐51
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 char
 
@@ -9548,14 +6777,6 @@ longitude_error;
 /* 90% CE in meters */
 
 }
-
-GSFLib Documentation, version 03.06
-
-4‐52
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 gsfNavigationError;
 
@@ -9635,15 +6856,7 @@ max_depth;
 }
 gsfSwathBathySummary;
 
-GSFLib Documentation, version 03.06
-
-4‐53
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
-4.1.11 Attitude Record
+### 4.1.11 Attitude Record
 
 typedef struct t_gsfAttitude
 {
@@ -9720,17 +6933,9 @@ record_number;
 
 }
 
-GSFLib Documentation, version 03.06
-
-4‐54
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 gsfDataID;
 
-4.2.2 Time Structure
+### 4.2.2 Time Structure
 
 struct timespec
 {
@@ -9744,7 +6949,7 @@ tv_nsec;
 
 };
 
-4.2.3 Null values used to represent missing data
+### 4.2.3 Null values used to represent missing data
 
 /* Define null values to be used for missing data */
 #define GSF_NULL_LATITUDE
@@ -9807,14 +7012,6 @@ tv_nsec;
 #define GSF_NULL_SEP
 
 9999.99
-
-GSFLib Documentation, version 03.06
-
-4‐55
-
-Leidos doc 98‐16(19)
-
-30 June 2014
 
 #define GSF_NULL_SEP_UNCERTAINTY
 
@@ -9886,7 +7083,7 @@ The
 4.2.4 Positioning System Type Codes
 /* Define a set of macros that may be used to set the position type field */
 
-#define GSF_POS_TYPE_UNKN “UNKN”
+#define GSF_POS_TYPE_UNKN "UNKN"
 
 /* Unknown positioning system type
 
@@ -9894,7 +7091,7 @@ The
 
 #define GSF_POS_TYPE_GPSU
 
-“GPSU”
+"GPSU"
 
 /* GPS Position, unknown positioning service
 
@@ -9902,7 +7099,7 @@ The
 
 #define GSF_POS_TYPE_PPSD
 
-“PPSD”
+"PPSD"
 
 /* Precise positioning service – differential
 
@@ -9910,23 +7107,15 @@ The
 
 #define GSF_POS_TYPE_PPSK
 
-“PPSK”
+"PPSK"
 
 /* Precise positioning service – kinematic
 
 */
 
-GSFLib Documentation, version 03.06
-
-4‐56
-
-Leidos doc 98‐16(19)
-
-30 June 2014
-
 #define GSF_POS_TYPE_PPSS
 
-“PPSS”
+"PPSS"
 
 /* Precise positioning service – standalone
 
@@ -9934,7 +7123,7 @@ Leidos doc 98‐16(19)
 
 #define GSF_POS_TYPE_PPSG
 
-“PPSG”
+"PPSG"
 
 /* Precise positioning service - gypsy
 
@@ -9942,13 +7131,13 @@ Leidos doc 98‐16(19)
 
 #define GSF_POS_TYPE_SPSD
 
-“SPSD”
+"SPSD"
 
 /* Standard positioning service – differential */
 
 #define GSF_POS_TYPE_SPSK
 
-“SPSK”
+"SPSK"
 
 /* Standard positioning service – kinematic
 
@@ -9956,7 +7145,7 @@ Leidos doc 98‐16(19)
 
 #define GSF_POS_TYPE_SPSS
 
-“SPSS”
+"SPSS"
 
 /* Standard positioning service – standalone
 
@@ -9964,7 +7153,7 @@ Leidos doc 98‐16(19)
 
 #define GSF_POS_TYPE_SPSG
 
-“SPSG”
+"SPSG"
 
 /* Standard positioning service - gypsy
 
@@ -9972,13 +7161,13 @@ Leidos doc 98‐16(19)
 
 #define GSF_POS_TYPE_GPPP
 
-“GPPP”
+"GPPP"
 
 /* Post Processing - Precise Point Positioning */
 
 #define GPS_POS_TYPE_GPPK
 
-“GPPK”
+"GPPK"
 
 /* Post Processing - Post Processed Kinematic
 
@@ -10019,24 +7208,13 @@ absolute velocity aiding */
 
 #define GSF_POS_TYPE_PIWA "PIWA"
 
-/* Post-processed Inertial measurements with
-water-relative velocity aiding */
+/* Post-processed Inertial measurements with water-relative velocity aiding */
 
 #define GSF_POS_TYPE_PLBL "PLBL"
 
-/* Post-processed One or more long-baseline
-acoustic navigation lines of position */
+/* Post-processed One or more long-baseline acoustic navigation lines of position */
 
 #define GSF_POS_TYPE_PSBL "PSBL"
 
-/* Post-processed ultra-short baseline
-acoustic navigation */
-
-GSFLib Documentation, version 03.06
-
-4‐57
-
-Leidos doc 98‐16(19)
-
-30 June 2014
+/* Post-processed ultra-short baseline acoustic navigation */
 
