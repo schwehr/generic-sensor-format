@@ -380,16 +380,9 @@ The first is a polar coordinate system with the vessel at the center of a sphere
 soundings are located by measuring the range from the vessel to the bottom and the beam
 angle.  The pitch angle is also required and is usually constant for a given ping.
 
-Figure text:
-- Pitch Angle
-- Depth
-- Range Beam Angle
-- Acrosstrack
-- Alongtrack
-- Cartesian Coordinates
-- Polar Coordinates
+![Coordinate Systems](figures/figure-3-1.png "Coordinate Systems")
 
-Figure 3-1  Coordinate systems for beam location
+**Figure 3-1** Coordinate systems for beam location.
 
 GSF also supports a Cartesian system in which individual soundings are located by describing
 their depth, acrosstrack and alongtrack offsets.  Alongtrack offsets may be expressed for
