@@ -783,7 +783,7 @@ Added support for Klein 5410 Bathymetric Sidescan.
 GSF‐v03.01
 
 Added support for the Reson 7125 and EM2000.  Added fields
-for height, separation, and gps tide corrector to the
+for height, separation, and GPS tide corrector to the
 gsfSwathBathyPing record.  Added new processing parameter
 record values: vessel_type, full_raw_data,
 msb_applied_to_attitude, heave_removed_from gps_tc. Added
@@ -5729,7 +5729,7 @@ projector_beam_focal_pt;
 unsigned int
 
 projector_beam_weighting_window_type; /* 0-Rectangular,
-1-Chebychhev,
+1-Chebyshev,
 from record 7000 */
 
 unsigned int
@@ -5757,7 +5757,7 @@ from record 7000 */
 
 unsigned int
 
-receiving_beam_weighting_window_type; /* 0-Chebychev, 1-Kaiser,
+receiving_beam_weighting_window_type; /* 0-Chebyshev, 1-Kaiser,
 from record 7000 */
 
 unsigned int
@@ -7265,7 +7265,7 @@ double
 
 vehicle_depth;
 
-/* vechicle depth in 0.01 m */
+/* vehicle depth in 0.01 m */
 
 double
 

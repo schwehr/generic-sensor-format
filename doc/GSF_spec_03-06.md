@@ -957,7 +957,7 @@ must be divided by the multiplier and the offset subtracted from the result.
 
 Figure text:
 
-- Scale Factor Subecord Structure
+- Scale Factor Subrecord Structure
 - 100 (Subrecord Identifier)
 - Number of Scale Factors
 - Scale Factor Array
@@ -1487,7 +1487,7 @@ Navigation Error Record Size: 20
 
 ### 4.3.13 HV - Navigation error record
 
-This record supercedes that specified by the Navigation Error Record.  This record contains
+This record supersedes that specified by the Navigation Error Record.  This record contains
 estimates of the horizontal and vertical position error inherent in a given data record, along
 with the time that the error estimates are valid.  The record ID containing the position
 whose error is being estimated is also included so that a file containing different types of
@@ -1822,7 +1822,7 @@ SURFACE_VELOCITY | Surface sound velocity at transducer used to calculate beam a
 TRANSDUCER_DEPTH | Depth of transducer (transmit depth) in centimeters. (from 0x44) | I | 4
 VALID_DETECTIONS | Number of beams with a valid detection for this ping. | I | 2
 SAMPLING_FREQUENCY | Sampling rate (f) in 0.01 Hz. | I | 8
-VECHICLE_DEPTH | From 0x66 datagram, non-zero when sonar head is mounted on a sub-sea platform in 0.001 meters. | I | 4
+VEHICLE_DEPTH | From 0x66 datagram, non-zero when sonar head is mounted on a sub-sea platform in 0.001 meters. | I | 4
 DEPTH_DIFFERENCE | Difference between sonar heads in a EM3000D or EM3002D | I | 2
 OFFSET_MULTIPLIER | Transducer depth offset multiplier | I | 1
 SPARE_1 | I | 16
@@ -1995,11 +1995,11 @@ PROJECTOR_STEER_ANGL_HORZ | Projector beam steering angle horizontal in degrees,
 PROJECTOR_BEAM_WDTH_VERT | Projector beam width vertical in degrees, from record 7000 | I | 2
 PROJECTOR_BEAM_WDTH_HORZ | Projector beam width horizontal in degrees, from record 7000 | I | 2
 PROJECTOR_BEAM_FOCAL_PT | Projector beam focal point in meters, from record 7000 | I | 4
-PROJECTOR_BEAM_WEIGHTING_WINDOW_TYPE | 0-Rectangular, 1-Chebychhev, from record 7000 | U | 4
+PROJECTOR_BEAM_WEIGHTING_WINDOW_TYPE | 0-Rectangular, 1-Chebyshev, from record 7000 | U | 4
 PROJECTOR_BEAM_WEIGHTING_WINDOW_PARAM | four byte projector weighting parameter, no definition or units available, from record 7000 | U | 4
 TRANSMIT_FLAGS | 0-3: Pitch stabilization method 4-6: Yaw stabilization method 8-31: Reserved | U | 4
 HYDROPHONE_ID | hydrophone selection, from record 7000 | U | 4
-RECEIVING_BEAM_WEIGHTING_WINDOW_TYPE | 0-Chebychev, 1-Kaiser, from record 7000 | U | 4
+RECEIVING_BEAM_WEIGHTING_WINDOW_TYPE | 0-Chebyshev, 1-Kaiser, from record 7000 | U | 4
 RECEIVING_BEAM_WEIGHTING_WINDOW_PARAM | four byte receiver weighting parameter, no definition or units available, from record 7000 | U | 4
 RECEIVE_FLAGS | 0-3: Roll stabilization method 4-7: Dynamic focusing method 8-11: Doppler compensation method 12-15: Match filtering method 16-19: TVG method 20-23: Multi-Ping Mode 24-31: Reserved | U | 4
 RECEIVE_BEAM_WIDTH | angle in degrees, from record 7000 | I | 2
@@ -2054,7 +2054,7 @@ TRANSDUCER_DEPTH | Depth of transducer (transmit depth) in 0.00005 meters. | I |
 VALID_DETECTIONS | Number of beams with a valid detection for this ping. | I | 2
 SAMPLING_FREQUENCY | Sampling rate (f) in 4.0e-9 Hz. | I | 8
 DOPPLER_CORRECTION_SCALE | Scale factor value to be applied to Doppler correction field prior to applying correction | I | 4
-VECHICLE_DEPTH | From 0x66 datagram, non-zero when sonar head is mounted on a sub-sea platform in 0.001 meters. | I | 4
+VEHICLE_DEPTH | From 0x66 datagram, non-zero when sonar head is mounted on a sub-sea platform in 0.001 meters. | I | 4
 SPARE_1 | I | 16
 TRANSMIT_SECTORS (Number Sectors) | The number of transmit sectors for this ping (L) | I | 2
 | Number Sector entries of: | Array of structures with transmit sector information, cycle repeats for each sector. | | 
@@ -2104,7 +2104,7 @@ PU_CPU_LOAD | Percent CPU load in the processor unit | I | 1
 SENSOR_STATUS | Bit mask containing status of sensor inputs | U | 2
 ACHIVED_PORT_COVERAGE | Achieved coverage to port in degrees | I | 1
 ACHIEVED_STDB_COVERAGE | Achieved coverage to starboard in degrees | I | 1
-YAW_STABILIZATION | Yaw stabilization in degress | I | 2
+YAW_STABILIZATION | Yaw stabilization in degrees | I | 2
 SPARE | | | 16
  | | | 
 | Klein 5410 Bathymetric Sidescan | Subrecord containing fields peculiar to Klein 5410 sidescan/bathymetry sonar systems. | | 86 
@@ -2294,7 +2294,7 @@ TYPE_CODE | Depth type code | I | 2 | CARTO_CODE | Cartographic code | I | 2
 ## Appendix B.3   Bathymetric Receive Beam Imagery Sensor-specific Subrecord Definitions
 
 The sensor-specific subrecords are defined for use within Bathymetric Receive Beam Intensity
-Ping subecords, and Wide Receive Beam Intensity subrecords.  This specification does not
+Ping subrecords, and Wide Receive Beam Intensity subrecords.  This specification does not
 provide detailed information about the data items within these subrecords.  Usage of these data
 requires a detailed knowledge of the sensor being used.
 
@@ -2427,7 +2427,7 @@ Observed, verified | 1 | 1
 
 
 An example of ping flags is shown in Table C-2.  In this example, bits 14 and 15 are set.  This
-indicates that observerd, verified tides have been applied to this ping.  If only bit 14 were set, it
+indicates that observed, verified tides have been applied to this ping.  If only bit 14 were set, it
 would mean that predicted tides have been applied.  If only bit 15 were set, it would mean that
 observed, preliminary tides have been applied.
 TABLE  C-2.  EXAMPLE PING FLAG, OBSERVED, VERIFIED TIDES APPLIED
@@ -2599,7 +2599,7 @@ PD_DEPTH_EXAMINED_MASK | This is not a rejection flag. It is set by hdcs subset 
 
 HDCS Flags | Description | Beam Hex Code | Bitmask | Comment
 -----------|-----------|-----------|-----------|-----------
-PD_DEPTH_REJECTED_BY_SWATHED_MASK | Indicates that the sounding has been rejected in the swath editor. Soundings which are rejected in this manner are not visible in older versions of hdcs, but are visible in th newer PC based software. | 05 | 0000 0101 | Manually edited (i.e., MVE).
+PD_DEPTH_REJECTED_BY_SWATHED_MASK | Indicates that the sounding has been rejected in the swath editor. Soundings which are rejected in this manner are not visible in older versions of hdcs, but are visible in the newer PC based software. | 05 | 0000 0101 | Manually edited (i.e., MVE).
 PD_DEPTH_QUALITY_0_MASK | Indicates that the bit 0 of the 2-bit sounding quality flag is set. | No flag to be applied to GSF file upon export from HDCS. | | 
 PD_DEPTH_QUALITY_1_MASK | Indicates that the bit 1 of the 2-bit sounding quality flag is set. | No flag to be applied to GSF file upon export from HDCS. | | 
 PD_DEPTH_DECIMATED_MASK | Indicates that the sounding is flagged as decimated. |  | No flag to be applied to GSF file upon export from HDCS. | | 
@@ -2621,7 +2621,7 @@ GSF Beam Flags | Comment | CARIS Flag | Comment
 0100 0010 | Spare bit Field | N/A | 
 0000 0001 | Selected sounding, it has been identified as a designated sounding | PD_DEPTH_DESIGNATED_MASK | Indicates that the user has explicitly selected this sounding as a designated sounding.
 0000 0001 | Null Invalidated - No detection was made by the sonar | PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by hdcs.
-0000 0101 | Manually edited (i.e., MVE). | PD_DEPTH_REJECTED_BY_SWATHED_MASK | Indicates that the sounding has been rejected in the swath editor. Soundings which are rejected in this manner are not visible in older versions of hdcs, but are visible in th newer PC based software.
+0000 0101 | Manually edited (i.e., MVE). | PD_DEPTH_REJECTED_BY_SWATHED_MASK | Indicates that the sounding has been rejected in the swath editor. Soundings which are rejected in this manner are not visible in older versions of hdcs, but are visible in the newer PC based software.
 0000 1001 | Filter edited | PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by hdcs.
 0010 0001 | Does NOT meet Class2 | PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by hdcs.
 0100 0001 | Resolution Invalidated - Exceeds maximum footprint | PD_DEPTH_REJECTED_MASK | Indicates that the sounding has been rejected. The reason may or may not be indicated by the other bits. This bit is inherited from the Observed Depths file but can be changed by hdcs.
