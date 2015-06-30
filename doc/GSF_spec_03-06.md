@@ -1843,7 +1843,7 @@ RESERVED | Reserved for future use | I | 4
 **SEABEAM 2112** | Subrecord containing fields peculiar to SEABEAM 2112 sonars. | | 14
 MODE | Sonar mode of operation | I | 1
 SURFACE_SOUND_VELOCITY | Surface sound velocity in hundredths of meters/second | I | 2
-SSSV_SOURCE | Source of surface sound velocity | I | 1
+SSV_SOURCE | Source of surface sound velocity | I | 1
 PING_GAIN | Ping gain | I | 1
 PULSE_WIDTH | Ping pulse width | I | 1
 TRANSMITTER_ATTENUATION | Transmitter attenuation | I | 1

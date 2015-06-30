@@ -847,7 +847,7 @@ typedef struct t_gsfEMRunTime
     double           rx_bandwidth;                  /* Hz. */
     double           rx_fixed_gain;                 /* dB. */
     double           tvg_cross_over_angle;          /* Degrees. */
-    unsigned char    ssv_source;                    /* One byte bit mask defining SSSV source -> 0=sensor, 1=manual, 2=profile. */
+    unsigned char    ssv_source;                    /* One byte bit mask defining SSV source -> 0=sensor, 1=manual, 2=profile. */
     int              max_port_swath_width;          /* Total swath width to port side in meters. */
     unsigned char    beam_spacing;                  /* One byte bit mask -> 0=beamwidth, 1=equiangle, 2=equidistant, 3=intermediate. */
     int              max_port_coverage;             /* Coverage to port side in degrees. */
