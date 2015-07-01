@@ -1437,8 +1437,8 @@ NUM_MEASUREMENTS | Number of attitude measurements in this record (N). | I | 2
 ATTITUDE_TIME | Array of attitude measurement times, offset from the base time | I | N*2
 PITCH | Array of pitch measurements | I | N*2
 ROLL | Array of roll measurements | I | N*2
-HEAVE | Array of heave measurements | T | N*2
-HEADING | Array of heading measurements | T | N*2
+HEAVE | Array of heave measurements | I | N*2
+HEADING | Array of heading measurements | U | N*2
 
 ## Appendix A.1 Record Identifier Definition
 
