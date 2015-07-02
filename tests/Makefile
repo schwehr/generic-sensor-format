@@ -41,8 +41,29 @@ CPPFLAGS += -isystem $(GMOCK_DIR)/include
 CPPFLAGS +=  -I../src
 CPPFLAGS += -I$(GTEST_DIR) -I$(GMOCK_DIR)
 
-CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += -std=c++11
+
+CXXFLAGS_DBG += -g -Wall -Wextra 
+# CXXFLAGS_DBG += -pthread
+
+SAN +=
+SAN := -g -O1
+# SAN += -faddress-sanitizer
+SAN += -fsanitize=address
+# SAN += -fsanitize=memory
+# SAN += -fsanitize-memory-track-origins
+SAN += -fno-optimize-sibling-calls
+SAN += -fno-omit-frame-pointer
+
+ifdef SANITIZE
+  # CC:=clang
+  # LD:=clang
+  # CC := gcc-5
+  # CXX := gcc-5
+  # LD := gcc-5 ${SAN}
+  CXXFLAGS += ${SAN}
+endif
+
 
 
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
@@ -56,11 +77,11 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 GMOCK_SRCS_ = $(GMOCK_DIR)/src/*.cc $(GMOCK_HEADERS)
 
 
-gtest_main.o : $(GTEST_SRCS_)
+gtest_main.o: $(GTEST_SRCS_)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c \
 	    $(GTEST_DIR)/src/gtest_main.cc
 
-gtest.a : gtest-all.o
+gtest.a: gtest-all.o
 	$(AR) $(ARFLAGS) $@ $^
 
 gtest_main.a : gtest-all.o gtest_main.o
@@ -85,19 +106,21 @@ gmock.a : gmock-all.o gtest-all.o
 gmock_main.a : gmock-all.o gtest-all.o gmock_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
-
 libgsftest.a: gsf_test_util.o
 	ar rv $@ $?
 	ranlib $@
 
+LIBGSF := ../src/gsf.o ../src/gsf_dec.o ../src/gsf_enc.o ../src/gsf_geo.o
+LIBGSF += ../src/gsf_indx.o ../src/gsf_info.o
+
 gsf_test_util.o: gsf_test_util.cc gsf_test_util.h
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-read_gsf_2_9_test: read_gsf_2_9_test.o gtest_main.a libgsftest.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../src/libgsf.a
+read_gsf_2_9_test: read_gsf_2_9_test.o gsf_test_util.o gtest-all.o gtest_main.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ ${LIBGSF} -lpthread
 
-read_gsf_3_6_test: read_gsf_3_6_test.o gtest_main.a libgsftest.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../src/libgsf.a
+read_gsf_3_6_test: read_gsf_3_6_test.o gsf_test_util.o gtest-all.o gtest_main.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ ${LIBGSF} -lpthread
 
-write_test: write_test.o gtest_main.a libgsftest.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../src/libgsf.a
+write_test: write_test.o gsf_test_util.o gtest-all.o gtest_main.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ ${LIBGSF} -lpthread

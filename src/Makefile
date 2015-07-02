@@ -16,17 +16,34 @@ WARN := -Wall
 WARN += -Wextra
 # WARN += -Werror
 
-DEBUG := -g3 -DDEBUG=1
-DEBUG += -O0
+DBG := -g3 -DDEBUG=1
+DBG += -O0
 
 OPT := -O3
 OPT += -funroll-loops -fexpensive-optimizations -ffast-math
 OPT += -DNDEBUG
 
+# asan and msan
+SAN := -g -O1
+# SAN += -faddress-sanitizer
+SAN += -fsanitize=address
+# SAN += -fsanitize=memory
+# SAN += -fsanitize-memory-track-origins
+SAN += -fno-optimize-sibling-calls
+SAN += -fno-omit-frame-pointer
+
+ifdef DEBUG
+  CFLAGS += ${DBG}
+endif
 ifdef OPTIMIZE
   CFLAGS += ${OPT}
-else
-  CFLAGS += ${DEBUG}
+endif
+ifdef SANITIZE
+  # CC:=clang
+  # LD:=clang
+  # CC := gcc-5
+  # LD := gcc-5
+  CFLAGS += ${SAN}
 endif
 
 CFLAGS += ${WARN}
