@@ -1210,7 +1210,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                     if (ping->number_beams > subrecord_size*4)
                     {
                         gsfError = GSF_QUALITY_FLAGS_DECODE_ERROR;
-                        return -1;
+                        return (-1);
                     }
                 }
                 ret = DecodeQualityFlagsArray(&ft->rec.mb_ping.quality_flags, p, ping->number_beams, subrecord_size, handle);
