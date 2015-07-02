@@ -879,7 +879,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
             /* The test on valid IDs is limited to array sub records as these are effected by the field_size, whereas
              * the sensor specific subrecords are not dependent on the field size parameter.
              */
-            if ( (next_id > 0) && (next_id <= GSF_MAX_PING_ARRAY_SUBRECORDS) &&
+            if ((next_id > 0) && (next_id <= GSF_MAX_PING_ARRAY_SUBRECORDS) &&
                 ((next_size == ping->number_beams) || (next_size == 2 * ping->number_beams) || (next_size == 4 * ping->number_beams)))
             {
                 bytes_per_value = sr_size / (int) ping->number_beams;
