@@ -1838,7 +1838,7 @@ temp_file_name(int type, char *d_name, char *f_name)
 
 #if defined(OS2) || defined(WIN32) || defined(WIN64)
 
-    if ( (getenv ("TEMP") == NULL) && (getenv ("GSFTMPDIR") == NULL) )
+    if ((getenv ("TEMP") == NULL) && (getenv ("GSFTMPDIR") == NULL))
         strcpy (d_name, ".\\");
     else if (getenv ("GSFTMPDIR") != NULL)
         strcpy (d_name, getenv ("GSFTMPDIR"));
@@ -1849,7 +1849,7 @@ temp_file_name(int type, char *d_name, char *f_name)
 
 #else
 
-    if ( (getenv ("TEMP") == NULL) && (getenv ("GSFTMPDIR") == NULL) )
+    if ((getenv ("TEMP") == NULL) && (getenv ("GSFTMPDIR") == NULL))
         strcpy (d_name, "/tmp");
     else if (getenv ("GSFTMPDIR") != NULL)
         strcpy (d_name, getenv ("GSFTMPDIR"));

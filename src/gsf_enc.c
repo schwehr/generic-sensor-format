@@ -7139,7 +7139,7 @@ EncodeBRBIntensity(unsigned char *sptr, gsfBRBIntensity *idata, int num_beams, i
     {
         /* Unsupported number of bits per sample, return an error. */
         gsfError = GSF_MB_PING_RECORD_ENCODE_FAILED;
-        return -1;
+        return (-1);
     }
 
     /* Save the current pointer, and leave room for the four byte subrecord identifier. */
@@ -7228,7 +7228,7 @@ EncodeBRBIntensity(unsigned char *sptr, gsfBRBIntensity *idata, int num_beams, i
         {
             /* The GSF_MAX_RECORD_SIZE would be exceeded. Return an error. */
             gsfError = GSF_RECORD_SIZE_ERROR;
-            return -1;
+            return (-1);
         }
 
         stemp = htons ((gsfuShort) idata->time_series[i].sample_count);
@@ -8338,6 +8338,6 @@ int gsfSetDefaultScaleFactor(gsfSwathBathyPing *mb_ping)
 
     }
 
-    return 0;
+    return (0);
 }
 
