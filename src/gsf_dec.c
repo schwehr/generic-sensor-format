@@ -863,8 +863,9 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
         count = 0;
         while (((record_size - bytes - sr_size) > 4) && (count <= 3))
         {
-
-            int test_sizes[3] = {1, 2, 4};
+            /* TODO(schwehr): Is the -1 a reasoable way to fix this overflow? */
+            /* schwehr/generic-sensor-format#40 */
+            int test_sizes[4] = {1, 2, 4, -1};
             int test_fs;
 
             memcpy(&ltemp, (p + sr_size), 4);
