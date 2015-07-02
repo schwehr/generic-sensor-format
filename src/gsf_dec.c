@@ -460,7 +460,7 @@ gsfDecodeSinglebeam(gsfSingleBeamPing * ping, unsigned char *sptr, UNUSED GSF_FI
 {
     gsfuLong        ltemp;
     int             subrecord_size;
-    int             subrecord_id;
+    int             subrecord_id = GSF_SWATH_BATHY_SUBRECORD_UNKNOWN;
     gsfsShort       signed_short;
     gsfsLong        signed_int;
     gsfuShort       stemp;
@@ -555,8 +555,8 @@ gsfDecodeSinglebeam(gsfSingleBeamPing * ping, unsigned char *sptr, UNUSED GSF_FI
         subrecord_id = (ltemp & 0xFF000000) >> 24;
         subrecord_size = ltemp & 0x00FFFFFF;
 
-       switch (subrecord_id)
-       {
+        switch (subrecord_id)
+        {
           case (GSF_SINGLE_BEAM_SUBRECORD_ECHOTRAC_SPECIFIC):
              p += DecodeEchotracSpecific(&ping->sensor_data, p);
              ping->sensor_id = GSF_SINGLE_BEAM_SUBRECORD_ECHOTRAC_SPECIFIC;
@@ -591,12 +591,15 @@ gsfDecodeSinglebeam(gsfSingleBeamPing * ping, unsigned char *sptr, UNUSED GSF_FI
             gsfError = GSF_UNRECOGNIZED_SUBRECORD_ID;
             if ((((p - sptr) + subrecord_size) == record_size) ||
                 ((record_size - ((p - sptr) + subrecord_size)) > 0))
-              p+=subrecord_size;
+            {
+                /* TODO(schwehr): Why is this okay and not a return -1? */
+                p+=subrecord_size;
+            }
             else
               return (-1);
             break;
-       }
-       bytes = p - sptr;
+        }
+        bytes = p - sptr;
     }
 
     /* Extract subrecord id if the subrecord size is 0. */
@@ -646,7 +649,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
 {
     gsfuLong        ltemp;
     int             subrecord_size;
-    int             subrecord_id;
+    int             subrecord_id = GSF_SWATH_BATHY_SUBRECORD_UNKNOWN;
     gsfsShort       signed_short;
     gsfsLong        signed_int;
     gsfuShort       stemp;

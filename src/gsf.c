@@ -223,7 +223,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
   char           *access_mode;
   int             fileTableIndex;
   size_t          length;
-  int             headerSize;
+  int             headerSize = 0;
   int             ret;
   gsfDataID       id;
   long long       stsize;
@@ -558,7 +558,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
     char           *access_mode;
     int             fileTableIndex;
     size_t          length;
-    int             headerSize;
+    int             headerSize = 0;
     int             ret;
     long long       stsize;
     gsfDataID       id;
