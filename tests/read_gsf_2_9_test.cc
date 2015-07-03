@@ -29,7 +29,8 @@ namespace {
 
 TEST(GsfRead2_9Test, CountPackets) {
   int handle;
-  ASSERT_EQ(0, gsfOpen("../data/6_184_1440.mb121", GSF_READONLY, &handle));
+  ASSERT_EQ(
+      0, gsfOpen("../data/surveys/6_184_1440.mb121", GSF_READONLY, &handle));
   ASSERT_GE(handle, 0);
 
   gsfDataID data_id;
@@ -49,7 +50,8 @@ TEST(GsfRead2_9Test, CountPackets) {
 
 TEST(GsfReadTest, ReadVersion2_9) {
   int handle;
-  ASSERT_EQ(0, gsfOpen("../data/6_184_1440.mb121", GSF_READONLY, &handle));
+  ASSERT_EQ(
+      0, gsfOpen("../data/surveys/6_184_1440.mb121", GSF_READONLY, &handle));
   ASSERT_GE(handle, 0);
 
   gsfDataID data_id;
