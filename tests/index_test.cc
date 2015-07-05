@@ -12,7 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Tests for writing out the basic record types.
+// Tests for writing index files.
+//
+// Currently, these tests only work on little endian machines (e.g. x86_64).
+//
+// TODO(schwehr): Make the test work on both endians.
 
 #include <cstdio>
 #include <sys/stat.h>

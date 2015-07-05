@@ -23,10 +23,6 @@
 using ::testing::ElementsAre;
 using ::testing::ElementsAreArray;
 using std::string;
-// using std::vector;
-
-// TODO(schwehr): Remove iostream.
-#include <iostream>
 
 namespace generic_sensor_format {
 namespace test {
