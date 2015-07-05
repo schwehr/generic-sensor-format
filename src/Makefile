@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# CC := gcc-5
+
 WARN := -Wall
 WARN += -Wextra
 # WARN += -Werror
@@ -20,7 +22,9 @@ DBG := -g3 -DDEBUG=1
 DBG += -O0
 
 OPT := -O3
-OPT += -funroll-loops -fexpensive-optimizations -ffast-math
+OPT += -funroll-loops
+OPT += -fexpensive-optimizations
+OPT += -ffast-math
 OPT += -DNDEBUG
 
 # asan and msan
@@ -32,12 +36,16 @@ SAN += -fsanitize=address
 SAN += -fno-optimize-sibling-calls
 SAN += -fno-omit-frame-pointer
 
+CFLAGS := ${WARN}
+
 ifdef DEBUG
   CFLAGS += ${DBG}
 endif
+
 ifdef OPTIMIZE
   CFLAGS += ${OPT}
 endif
+
 ifdef SANITIZE
   # CC:=clang
   # LD:=clang
@@ -46,7 +54,6 @@ ifdef SANITIZE
   CFLAGS += ${SAN}
 endif
 
-CFLAGS += ${WARN}
 
 SRCS := $(wildcard *.c)
 OBJS := ${SRCS:.c=.o}
