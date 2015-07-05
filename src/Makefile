@@ -18,8 +18,9 @@ WARN := -Wall
 WARN += -Wextra
 # WARN += -Werror
 
-DEBUG := -g3 -DDEBUG=1
-DEBUG += -O0
+DBG := -g3
+# DBG += -DDEBUG
+DBG += -O0
 
 OPT := -O3
 OPT += -funroll-loops
@@ -32,7 +33,7 @@ CFLAGS := ${WARN}
 ifdef OPTIMIZE
   CFLAGS += ${OPT}
 else
-  CFLAGS += ${DEBUG}
+  CFLAGS += ${DBG}
 endif
 
 

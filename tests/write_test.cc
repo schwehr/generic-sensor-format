@@ -13,8 +13,12 @@
 // limitations under the License.
 
 // Tests for writing out the basic record types.
+//
+// TODO(schwehr): Does this have to free what was read?
 
 #include <sys/stat.h>
+
+#include <memory>
 #include <string>
 
 #include "gsf.h"
@@ -22,13 +26,25 @@
 #include "gsf_test_util.h"
 #include "gtest/gtest.h"
 
+// #include <iostream>  // TODO(schwehr): Remove.
+// using namespace std;  // TODO(schwehr): Remove.
+
+using std::unique_ptr;
+
 namespace generic_sensor_format {
 namespace test {
 namespace {
 
+// TODO(schwehr): Switch to make_unique when C++14 is available on Travis-CI.
+template <typename T, typename... Args>
+std::unique_ptr<T> MakeUnique(Args&&... args)
+{
+    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
+
 TEST(GsfWriteSimple, HeaderOnly) {
   int handle;
-  char filename[] = "sample-header-only.gsf";
+  char filename[] = "header-only.gsf";
   ASSERT_EQ(0, gsfOpen(filename, GSF_CREATE, &handle));
   ASSERT_EQ(0, gsfClose(handle));
   struct stat buf;
@@ -76,37 +92,37 @@ void ValidateWriteComment(const char *filename,
 }
 
 TEST(GsfWriteSimple, CommentEmpty) {
-  char filename[] = "sample-comment-empty.gsf";
+  char filename[] = "comment-empty.gsf";
   char comment[] = "";
   ValidateWriteComment(filename, false, 20, comment, 44);
 }
 
 TEST(GsfWriteSimple, CommentEmptyChecksum) {
-  char filename[] = "sample-comment-empty-checksum.gsf";
+  char filename[] = "comment-empty-checksum.gsf";
   char comment[] = "";
   ValidateWriteComment(filename, true, 24, comment, 48);
 }
 
 TEST(GsfWriteSimple, CommentUpTo5) {
-  char filename1[] = "sample-comment-1.gsf";
+  char filename1[] = "comment-1.gsf";
   char comment1[] = "a";
   ValidateWriteComment(filename1, false, 24, comment1, 48);
-  char filename2[] = "sample-comment-2.gsf";
+  char filename2[] = "comment-2.gsf";
   char comment2[] = "ab";
   ValidateWriteComment(filename2, false, 24, comment2, 48);
-  char filename3[] = "sample-comment-3.gsf";
+  char filename3[] = "comment-3.gsf";
   char comment3[] = "abc";
   ValidateWriteComment(filename3, false, 24, comment3, 48);
-  char filename4[] = "sample-comment-4.gsf";
+  char filename4[] = "comment-4.gsf";
   char comment4[] = "abcd";
   ValidateWriteComment(filename4, false, 24, comment4, 48);
-  char filename5[] = "sample-comment-5.gsf";
+  char filename5[] = "comment-5.gsf";
   char comment5[] = "abcde";
   ValidateWriteComment(filename5, false, 28, comment5, 52);
 }
 
 TEST(GsfWriteSimple, CommentLarge) {
-  char filename[] = "sample-comment-large.gsf";
+  char filename[] = "comment-large.gsf";
   char comment[] =
     "ab"
     "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
@@ -166,20 +182,156 @@ void ValidateWriteHistory(const char *filename,
 
 TEST(GsfWriteSimple, History) {
   ValidateWriteHistory(
-      "sample-history-empty.gsf", false, 28, "", "", "", "", 52);
+      "history-empty.gsf", false, 28, "", "", "", "", 52);
   ValidateWriteHistory(
-      "sample-history-empty-checksum.gsf", true, 32, "", "", "", "", 56);
+      "history-empty-checksum.gsf", true, 32, "", "", "", "", 56);
   ValidateWriteHistory(
-      "sample-history-1.gsf", false, 32, "a", "b", "c", "d", 56);
+      "history-1.gsf", false, 32, "a", "b", "c", "d", 56);
   ValidateWriteHistory(
-      "sample-history-longer.gsf", false, 40, "ab", "cde", "fghi", "jklm", 64);
+      "history-longer.gsf", false, 40, "ab", "cde", "fghi", "jklm", 64);
 }
 
 // TODO(schwehr): GSF_RECORD_NAVIGATION_ERROR
 // TODO(schwehr): GSF_RECORD_SWATH_BATHY_SUMMARY
 // TODO(schwehr): GSF_RECORD_SINGLE_BEAM_PING
 // TODO(schwehr): GSF_RECORD_HV_NAVIGATION_ERROR
-// TODO(schwehr): GSF_RECORD_ATTITUDE
+
+void ValidateWriteAttitude(const char *filename,
+                           bool checksum,
+                           int expected_write_size,
+                           const gsfAttitude &attitude,
+                           int expected_file_size) {
+  ASSERT_NE(nullptr, filename);
+  ASSERT_GE(expected_write_size, 20);
+  ASSERT_GE(expected_file_size, 44);
+
+  int handle;
+  ASSERT_EQ(0, gsfOpen(filename, GSF_CREATE, &handle));
+
+  gsfDataID data_id = {checksum, 0, GSF_RECORD_ATTITUDE, 0};
+  gsfRecords record;
+  record.attitude = attitude;
+  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
+  ASSERT_EQ(0, gsfClose(handle));
+
+  struct stat buf;
+  ASSERT_EQ(0, stat(filename, &buf));
+  ASSERT_EQ(expected_file_size, buf.st_size);
+
+  ASSERT_EQ(0, gsfOpen(filename, GSF_READONLY, &handle));
+  ASSERT_GE(handle, 0);
+  gsfRecords read_record;
+  const int num_bytes
+      = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  ASSERT_EQ(expected_write_size, num_bytes);
+  ASSERT_EQ(GSF_RECORD_ATTITUDE, data_id.recordID);
+  VerifyAttitude(record.attitude, read_record.attitude);
+}
+
+unique_ptr<gsfAttitude> WriteAttitudeAndReturnRead(
+    const char *filename,
+    const gsfAttitude &attitude,
+    int *file_size,
+    int *num_bytes) {
+  // TODO(schwehr): Add error handling.
+  int handle;
+  if (0 != gsfOpen(filename, GSF_CREATE, &handle)) {
+    return nullptr;
+  }
+
+  gsfDataID data_id = {false, 0, GSF_RECORD_ATTITUDE, 0};
+  gsfRecords record;
+  record.attitude = attitude;
+  if (gsfWrite(handle, &data_id, &record) < 20) {
+    // Do not check return since we are already in trouble.
+    gsfClose(handle);
+    return nullptr;
+  }
+  if (0 != gsfClose(handle)) {
+    return nullptr;
+  }
+
+  struct stat buf;
+  if (0 != stat(filename, &buf)) {
+    return nullptr;
+  }
+  *file_size = buf.st_size;
+
+  if (0 != gsfOpen(filename, GSF_READONLY, &handle)) {
+    return nullptr;
+  }
+
+  gsfRecords read_record;
+  *num_bytes
+      = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  if (*num_bytes < 24) {
+    return nullptr;
+  }
+
+  return MakeUnique<gsfAttitude>(read_record.attitude);
+}
+
+TEST(GsfWriteSimple, AttitudeEmpty) {
+  const struct timespec times[] = {{3, 4}};
+  const gsfAttitude attitude
+      = GsfAttitude(0, times, nullptr, nullptr, nullptr, nullptr);
+  ValidateWriteAttitude("attitude-empty.gsf", false, 20, attitude, 44);
+}
+
+TEST(GsfWriteSimple, AttitudeLength1) {
+  const struct timespec times0[] = {{5, 6}};
+  const double data0[] = {0.0};
+  const gsfAttitude attitude0
+      = GsfAttitude(1, times0, data0, data0, data0, data0);
+  ValidateWriteAttitude(
+      "attitude-length1-0.gsf", false, 28, attitude0, 52);
+
+  // Small positive values.
+  const struct timespec times1[] = {{7, 8}};
+  const double pitch1[] = {1.2};
+  const double roll1[] = {2.2};
+  const double heave1[] = {3.3};
+  const double heading1[] = {4.4};
+  const gsfAttitude attitude1
+      = GsfAttitude(1, times1, pitch1, roll1, heave1, heading1);
+  ValidateWriteAttitude(
+      "attitude-length1-1-checksum.gsf", true, 32, attitude1, 56);
+
+  const struct timespec times2[] = {{9, 10}};
+  const double data2[] = {-2.3};
+  // Heading is stored as a uint16 with value * 100.
+  const double heading2[] = {4.5};
+  const gsfAttitude attitude2
+      = GsfAttitude(1, times2, data2, data2, data2, heading2);
+  ValidateWriteAttitude(
+      "attitude-length1-2neg.gsf", false, 28, attitude2, 52);
+}
+
+TEST(GsfWriteSimple, AttitudeRounding) {
+  const struct timespec times[] = {{11, 12}};
+  const double pitch[] = {-1.002};
+  const double roll[] = {-2.0052};
+  const double heave[] = {3.0045};
+  const double heading[] = {4.0052};
+  const gsfAttitude src
+      = GsfAttitude(1, times, pitch, roll, heave, heading);
+  int file_size;
+  int num_bytes;
+  const unique_ptr<gsfAttitude> dst
+      = WriteAttitudeAndReturnRead("attitude-round.gsf",
+                                   src, &file_size, &num_bytes);
+  ASSERT_NE(nullptr, dst);
+  ASSERT_EQ(52, file_size);
+  ASSERT_EQ(28, num_bytes);
+
+  const double pitch2[] = {-1.00};
+  const double roll2[] = {-2.01};
+  const double heave2[] = {3.00};
+  const double heading2[] = {4.01};
+  const gsfAttitude expected
+    = GsfAttitude(1, times, pitch2, roll2, heave2, heading2);
+  VerifyAttitude(expected, *dst);
+}
 
 }  // namespace
 }  // namespace test
