@@ -131,7 +131,7 @@ void gsf_register_progress_callback (GSF_PROGRESS_CALLBACK progressCB)
  *      Type      Description
  *      ----      -----------
  *      char[16]  Text header containing "INDEX-GSF-"<"version">
- *      int       The size of the GSF file when the index file was created.
+ *      uint64    The size of the GSF file when the index file was created.
  *      int       Endian indicator (0x00010203 or 0x03020100 depending
  *                upon sex of machine, if 0x03020100 then the index
  *                data must be byte swapped).
@@ -140,7 +140,7 @@ void gsf_register_progress_callback (GSF_PROGRESS_CALLBACK progressCB)
  *
  *
  *      int       Record ID of first record type.
- *      int       Address within the index file of the beginning of
+ *      int64     Address within the index file of the beginning of
  *                the index for the first record type.
  *      int       Number of index records for the first record type.
  *      .
@@ -148,7 +148,7 @@ void gsf_register_progress_callback (GSF_PROGRESS_CALLBACK progressCB)
  *      .
  *      .
  *      int       Record ID of last record type.
- *      int       Address within the index file of the beginning of
+ *      int64     Address within the index file of the beginning of
  *                the index for the last record type.
  *      int       Number of index records for the last record type.
  *
@@ -156,9 +156,9 @@ void gsf_register_progress_callback (GSF_PROGRESS_CALLBACK progressCB)
  *  Following the header is the index data.  The format for each index record
  *  is :
  *
- *      time_t    Posix.4 proposed time seconds.
+ *      int       Posix.4 proposed time seconds.
  *      int       Posix.4 proposed time nanoseconds.
- *      int       Address of the associated record within the GSF file for the
+ *      int64     Address of the associated record within the GSF file for the
  *                specified record type.
  *      .
  *      .
@@ -192,7 +192,7 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
     int              j;
     int              maj_indx_num = 0, min_indx_num = 0;
     int              l_temp;
-    long long        u_temp;
+    long long        u_temp;  /* TODO(schwehr): The u_ is misleading. */
     char             ndx_file[1024];
     GSF_INDEX_HEADER index_header;
 
@@ -258,7 +258,7 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
         return (-1);
     }
 
-    /* Next four bytes contain the size of the GSF file when the index file was created. */
+    /* Next eight bytes contain the size of the GSF file when the index file was created. */
     if (maj_indx_num > 1)
     {
         fread(&u_temp, 8, 1, ft->index_data.fp);
@@ -330,7 +330,6 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
     }
 
     /* If we get here, then the index file that exists is ready to use. */
-
 
     /* Read the number of record types in the index file. */
     fread(&index_header.number_record_types, 4, 1, ft->index_data.fp);
