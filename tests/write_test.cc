@@ -14,9 +14,6 @@
 
 // Tests for writing out the basic record types.
 
-#include <iostream>
-using namespace std;
-
 #include <sys/stat.h>
 #include <string>
 
