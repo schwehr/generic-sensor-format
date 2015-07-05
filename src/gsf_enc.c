@@ -374,7 +374,7 @@ EncodeMGD77Specific(unsigned char *sptr, gsfSBSensorSpecific * sdata)
     memcpy(p, &stemp, 2);
     p += 2;
 
-    /* Next four byte integer contains the the two way travel time. */
+    /* Next four byte integer contains the two way travel time. */
     dtemp = sdata->gsfMGD77Specific.travel_time * 10000;
     if (dtemp < 0.0)
     {
@@ -414,7 +414,7 @@ EncodeBDBSpecific(unsigned char *sptr, gsfSBSensorSpecific * sdata)
     unsigned char  *p = sptr;
     gsfuLong        ltemp;
 
-    /* Next four byte integer contains the the document number. */
+    /* Next four byte integer contains the document number. */
     ltemp = htonl((gsfuLong) (sdata->gsfBDBSpecific.doc_no));
     memcpy(p, &ltemp, 4);
     p += 4;
@@ -6371,7 +6371,7 @@ EncodeSBMGD77Specific(unsigned char *sptr, t_gsfSBMGD77Specific * sdata)
     memcpy(p, &stemp, 2);
     p += 2;
 
-    /* Next four byte integer contains the the two way travel time. */
+    /* Next four byte integer contains the two way travel time. */
     dtemp = sdata->travel_time * 10000;
     if (dtemp < 0.0)
     {
@@ -6415,7 +6415,7 @@ EncodeSBBDBSpecific(unsigned char *sptr, t_gsfSBBDBSpecific * sdata)
     unsigned char  *p = sptr;
     gsfuLong        ltemp;
 
-    /* Next four byte integer contains the the document number. */
+    /* Next four byte integer contains the document number. */
     ltemp = htonl((gsfuLong) (sdata->doc_no));
     memcpy(p, &ltemp, 4);
     p += 4;
