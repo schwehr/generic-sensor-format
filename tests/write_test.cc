@@ -16,7 +16,6 @@
 //
 // TODO(schwehr): Does this have to free what was read?
 
-
 #include <sys/stat.h>
 
 #include <memory>

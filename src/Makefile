@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# CC := gcc-5
+
 WARN := -Wall
 WARN += -Wextra
 # WARN += -Werror
@@ -21,8 +23,12 @@ DBG := -g3
 DBG += -O0
 
 OPT := -O3
-OPT += -funroll-loops -fexpensive-optimizations -ffast-math
+OPT += -funroll-loops
+OPT += -fexpensive-optimizations
+OPT += -ffast-math
 OPT += -DNDEBUG
+
+CFLAGS := ${WARN}
 
 ifdef OPTIMIZE
   CFLAGS += ${OPT}
@@ -30,7 +36,6 @@ else
   CFLAGS += ${DBG}
 endif
 
-CFLAGS += ${WARN}
 
 SRCS := $(wildcard *.c)
 OBJS := ${SRCS:.c=.o}

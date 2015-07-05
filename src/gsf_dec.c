@@ -460,7 +460,7 @@ gsfDecodeSinglebeam(gsfSingleBeamPing * ping, unsigned char *sptr, UNUSED GSF_FI
 {
     gsfuLong        ltemp;
     int             subrecord_size;
-    int             subrecord_id;
+    int             subrecord_id = GSF_SWATH_BATHY_SUBRECORD_UNKNOWN;
     gsfsShort       signed_short;
     gsfsLong        signed_int;
     gsfuShort       stemp;
@@ -555,8 +555,8 @@ gsfDecodeSinglebeam(gsfSingleBeamPing * ping, unsigned char *sptr, UNUSED GSF_FI
         subrecord_id = (ltemp & 0xFF000000) >> 24;
         subrecord_size = ltemp & 0x00FFFFFF;
 
-       switch (subrecord_id)
-       {
+        switch (subrecord_id)
+        {
           case (GSF_SINGLE_BEAM_SUBRECORD_ECHOTRAC_SPECIFIC):
              p += DecodeEchotracSpecific(&ping->sensor_data, p);
              ping->sensor_id = GSF_SINGLE_BEAM_SUBRECORD_ECHOTRAC_SPECIFIC;
@@ -591,12 +591,15 @@ gsfDecodeSinglebeam(gsfSingleBeamPing * ping, unsigned char *sptr, UNUSED GSF_FI
             gsfError = GSF_UNRECOGNIZED_SUBRECORD_ID;
             if ((((p - sptr) + subrecord_size) == record_size) ||
                 ((record_size - ((p - sptr) + subrecord_size)) > 0))
-              p+=subrecord_size;
+            {
+                /* TODO(schwehr): Why is this okay and not a return -1? */
+                p+=subrecord_size;
+            }
             else
               return (-1);
             break;
-       }
-       bytes = p - sptr;
+        }
+        bytes = p - sptr;
     }
 
     /* Extract subrecord id if the subrecord size is 0. */
@@ -646,7 +649,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
 {
     gsfuLong        ltemp;
     int             subrecord_size;
-    int             subrecord_id;
+    int             subrecord_id = GSF_SWATH_BATHY_SUBRECORD_UNKNOWN;
     gsfsShort       signed_short;
     gsfsLong        signed_int;
     gsfuShort       stemp;
@@ -863,8 +866,9 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
         count = 0;
         while (((record_size - bytes - sr_size) > 4) && (count <= 3))
         {
-
-            int test_sizes[3] = {1, 2, 4};
+            /* TODO(schwehr): Is the -1 a reasoable way to fix this overflow? */
+            /* schwehr/generic-sensor-format#40 */
+            int test_sizes[4] = {1, 2, 4, -1};
             int test_fs;
 
             memcpy(&ltemp, (p + sr_size), 4);
@@ -875,7 +879,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
             /* The test on valid IDs is limited to array sub records as these are effected by the field_size, whereas
              * the sensor specific subrecords are not dependent on the field size parameter.
              */
-            if ( (next_id > 0) && (next_id <= GSF_MAX_PING_ARRAY_SUBRECORDS) &&
+            if ((next_id > 0) && (next_id <= GSF_MAX_PING_ARRAY_SUBRECORDS) &&
                 ((next_size == ping->number_beams) || (next_size == 2 * ping->number_beams) || (next_size == 4 * ping->number_beams)))
             {
                 bytes_per_value = sr_size / (int) ping->number_beams;
@@ -1206,7 +1210,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                     if (ping->number_beams > subrecord_size*4)
                     {
                         gsfError = GSF_QUALITY_FLAGS_DECODE_ERROR;
-                        return -1;
+                        return (-1);
                     }
                 }
                 ret = DecodeQualityFlagsArray(&ft->rec.mb_ping.quality_flags, p, ping->number_beams, subrecord_size, handle);

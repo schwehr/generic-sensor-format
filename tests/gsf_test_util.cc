@@ -81,7 +81,6 @@ string RecordTypeStr(unsigned int record_id) {
     return "GSF_RECORD_HV_NAVIGATION_ERROR";
   case GSF_RECORD_ATTITUDE:
     return "GSF_RECORD_ATTITUDE";
-
   }
   return "UNKNOWN";
 }
