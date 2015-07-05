@@ -46,7 +46,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-/* Rely on the network type definitions of (u_short, and u_int) */
+/* Rely on the network type definitions of (u_short, and u_int). */
 #if !defined WIN32 && !defined WIN64
 #include <netinet/in.h>
 #else
@@ -59,7 +59,14 @@
 #include "gsf_ft.h"
 #include "gsf_indx.h"
 
-/* Macros required for this module */
+#if defined(__GNUC__) && __GNUC__ >= 4
+#  define UNUSED __attribute((__unused__))
+#else
+#  define UNUSED
+#endif
+
+
+/* Macros required for this module. */
 /* TODO(schwehr): Do this properly. */
 #ifndef __APPLE__
 #undef fseek
@@ -67,7 +74,7 @@
 #if (defined _WIN32) && (defined _MSC_VER)
 #define fseek(x, y, z) _fseeki64((x), (y), (z))
 #define ftell(x)   _ftelli64((x))
-#else  /* Linux, MingW, MacOS */
+#else  /* Linux, MingW, MacOS. */
 #undef fopen
 #define fopen(x, y)  fopen64((x), (y))
 #define fseek(x, y, z) fseeko64((x), (y), (z))
@@ -75,15 +82,15 @@
 #endif
 #endif
 
-#define GSF_FILL_SIZE 8                   /* gsf packaging with no checksum */
-#define GSF_FILL_SIZE_CHECKSUM 12         /* gsf packaging with checksum */
-#define GSF_STREAM_BUF_SIZE 8192          /* gsf default stream buffer size */
-#define GSF_UNKNOWN_PARAM_TEXT "UNKNWN"   /* Flag value for unknown parameter value */
+#define GSF_FILL_SIZE 8                   /* GSF packaging with no checksum. */
+#define GSF_FILL_SIZE_CHECKSUM 12         /* GSF packaging with checksum. */
+#define GSF_STREAM_BUF_SIZE 8192          /* GSF default stream buffer size. */
+#define GSF_UNKNOWN_PARAM_TEXT "UNKNWN"   /* Flag value for unknown parameter value. */
 
-#define GSF_MAX_PARAM    999999          /* used in gsfPutMBParams() to prevent bad values */
+#define GSF_MAX_PARAM    999999          /* Used in gsfPutMBParams() to prevent bad values. */
 #define GSF_MIN_PARAM   -999999
 
-/* JSB 07/15/99 Added these macros to support new gsfGetSwathBathyArrayMinMax function */
+/* Support gsfGetSwathBathyArrayMinMax function. */
 #define GSF_U_CHAR_MIN            (0.0)
 #define GSF_U_CHAR_MAX          (255.0)
 #define GSF_S_CHAR_MIN         (-128.0)
@@ -97,15 +104,15 @@
 #define GSF_S_INT_MIN   (-2147483648.0)
 #define GSF_S_INT_MAX    (2147483647.0)
 
-/* Static Global data for this module */
+/* Static Global data for this module. */
 static unsigned char streamBuff[GSF_MAX_RECORD_SIZE];
 static int      numOpenFiles;
 static GSF_FILE_TABLE gsfFileTable[GSF_MAX_OPEN_FILES];
 
-/* Global external data defined in this module */
-int             gsfError;       /* used to report most recent error */
+/* Global external data defined in this module. */
+int             gsfError;       /* Used to report most recent error. */
 
-/* Static functions used, but not exported from this source file */
+/* Static functions used, but not exported from this source file. */
 static gsfuLong gsfChecksum(unsigned char *buff, unsigned int num_bytes);
 static int      gsfSeekRecord(int handle, gsfDataID *id);
 static int      gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *rptr, unsigned char *buf, int max_size);
@@ -143,7 +150,7 @@ gsfStat (const char *filename, long long *sz)
     if (sz == NULL)
     {
         gsfError = GSF_FOPEN_ERROR;
-        return -1;
+        return (-1);
     }
 
 #if (defined __WINDOWS__) || (defined __MINGW32__)
@@ -168,7 +175,7 @@ gsfStat (const char *filename, long long *sz)
         gsfError = GSF_UNRECOGNIZED_FILE;
     }
 
-    return rc;
+    return (rc);
 }
 
 
@@ -216,18 +223,18 @@ gsfOpen(const char *filename, const int mode, int *handle)
   char           *access_mode;
   int             fileTableIndex;
   size_t          length;
-  int             headerSize;
+  int             headerSize = 0;
   int             ret;
   gsfDataID       id;
   long long       stsize;
   FILE           *fp;
 
-  /* Clear the gsfError value each time a new file is opened */
+  /* Clear the gsfError value each time a new file is opened. */
   gsfError = 0;
-  /* Make sure we don't inadvertently send a valid handle back */
+  /* Make sure we don't inadvertently send a valid handle back. */
   *handle = 0;
 
-  /* get the desired file access mode */
+  /* Get the desired file access mode. */
   switch (mode)
   {
     case GSF_CREATE:
@@ -256,21 +263,21 @@ gsfOpen(const char *filename, const int mode, int *handle)
 
     default:
       gsfError = GSF_BAD_ACCESS_MODE;
-      return(-1);
+      return (-1);
   }
 
-  /* check the number of files currently opened */
+  /* Check the number of files currently opened. */
   if (numOpenFiles >= GSF_MAX_OPEN_FILES)
   {
     gsfError = GSF_TOO_MANY_OPEN_FILES;
-    return(-1);
+    return (-1);
   }
 
-  /* Try to open this file */
+  /* Try to open this file. */
   if ((fp = fopen(filename, access_mode)) == (FILE *) NULL)
   {
     gsfError = GSF_FOPEN_ERROR;
-    return(-1);
+    return (-1);
   }
 
   /* The file was successfully opened, load the gsf file table structure by
@@ -297,7 +304,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
     }
   }
 
-  /* If no filename match was found then use the first available slot */
+  /* If no filename match was found then use the first available slot. */
   if (fileTableIndex == GSF_MAX_OPEN_FILES)
   {
     for (fileTableIndex=0; fileTableIndex<GSF_MAX_OPEN_FILES; fileTableIndex++)
@@ -319,22 +326,22 @@ gsfOpen(const char *filename, const int mode, int *handle)
   gsfFileTable[fileTableIndex].occupied = 1;
   *handle = fileTableIndex + 1;
 
-  /* Set the desired buffer size */
+  /* Set the desired buffer size. */
   if (setvbuf(fp, NULL, _IOFBF, GSF_STREAM_BUF_SIZE))
   {
     gsfError = GSF_SETVBUF_ERROR;
     gsfClose ((int) *handle);
     *handle = 0;
-    return(-1);
+    return (-1);
   }
 
-  /* Use stat to get the size of this file. File size is used by gsfPercent */
+  /* Use stat to get the size of this file. File size is used by gsfPercent. */
   if (gsfStat (filename, &stsize))
   {
     gsfError = GSF_READ_ERROR;
     gsfClose ((int) *handle);
     *handle = 0;
-    return(-1);
+    return (-1);
   }
   gsfFileTable[fileTableIndex].file_size = stsize;
 
@@ -347,7 +354,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
   {
     gsfFileTable[fileTableIndex].scales_read = 1;
 
-    /* write the gsf file header to the file */
+    /* Write the gsf file header to the file. */
     id.checksumFlag = 0;
     id.reserved = 0;
     id.recordID = GSF_RECORD_HEADER;
@@ -363,7 +370,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
       gsfError = GSF_FLUSH_ERROR;
       gsfClose ((int) *handle);
       *handle = 0;
-      return(-1);
+      return (-1);
     }
   }
   else
@@ -378,17 +385,17 @@ gsfOpen(const char *filename, const int mode, int *handle)
         gsfError = GSF_FILE_SEEK_ERROR;
         gsfClose ((int) *handle);
         *handle = 0;
-        return(-1);
+        return (-1);
       }
     }
-    /* Read the GSF header */
+    /* Read the GSF header. */
     headerSize = gsfRead(*handle, GSF_NEXT_RECORD, &id, &gsfFileTable[fileTableIndex].rec, NULL, 0);
     if (headerSize < 0)
     {
       gsfError = GSF_HEADER_RECORD_DECODE_FAILED;
       gsfClose (*handle);
       *handle = 0;
-      return(-1);
+      return (-1);
     }
 
     if (!strstr(gsfFileTable[fileTableIndex].rec.header.version, "GSF-"))
@@ -396,9 +403,9 @@ gsfOpen(const char *filename, const int mode, int *handle)
       gsfError = GSF_UNRECOGNIZED_FILE;
       gsfClose (*handle);
       *handle = 0;
-      return(-1);
+      return (-1);
     }
-    /* If the mode is append seek back to the end of the file */
+    /* If the mode is append seek back to the end of the file. */
     if (mode == GSF_APPEND)
     {
       if (fseek(gsfFileTable[fileTableIndex].fp, 0, SEEK_END))
@@ -406,12 +413,12 @@ gsfOpen(const char *filename, const int mode, int *handle)
         gsfError = GSF_FILE_SEEK_ERROR;
         gsfClose ((int) *handle);
         *handle = 0;
-        return(-1);
+        return (-1);
       }
     }
   }
 
-  /* Save the GSF version ID into the file table */
+  /* Save the GSF version ID into the file table. */
   ret = sscanf (gsfFileTable[fileTableIndex].rec.header.version, "GSF-v%d.%d",
                 &gsfFileTable[fileTableIndex].major_version_number,
                 &gsfFileTable[fileTableIndex].minor_version_number);
@@ -420,7 +427,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
     gsfError = GSF_UNRECOGNIZED_FILE;
     gsfClose ((int) *handle);
     *handle = 0;
-    return(-1);
+    return (-1);
   }
 
   /* Set the update flag if needed. This is used to force a call to fflush
@@ -447,7 +454,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
       gsfError = GSF_INDEX_FILE_OPEN_ERROR;
       gsfClose ((int) *handle);
       *handle = 0;
-      return(-1);
+      return (-1);
     }
 
     /* Move the file pointer back to the first record past the gsf file header. This
@@ -458,7 +465,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
       gsfError = GSF_FILE_SEEK_ERROR;
       gsfClose ((int) *handle);
       *handle = 0;
-      return(-1);
+      return (-1);
     }
   }
   else
@@ -466,7 +473,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
     gsfFileTable[fileTableIndex].direct_access = 0;
   }
 
-  /* Save the file acess mode */
+  /* Save the file access mode. */
   switch (mode)
   {
     case GSF_CREATE:
@@ -497,7 +504,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
       gsfError = GSF_BAD_ACCESS_MODE;
       gsfClose ((int) *handle);
       *handle = 0;
-      return(-1);
+      return (-1);
   }
 
   return (0);
@@ -551,18 +558,18 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
     char           *access_mode;
     int             fileTableIndex;
     size_t          length;
-    int             headerSize;
+    int             headerSize = 0;
     int             ret;
     long long       stsize;
     gsfDataID       id;
     FILE           *fp;
 
-    /* Clear the gsfError value each time a new file is opened */
+    /* Clear the gsfError value each time a new file is opened. */
     gsfError = 0;
-    /* Make sure we don't inadvertently send a valid handle back */
+    /* Make sure we don't inadvertently send a valid handle back. */
     *handle = 0;
 
-    /* get the desired file access mode */
+    /* Get the desired file access mode. */
     switch (mode)
     {
         case GSF_CREATE:
@@ -594,14 +601,14 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
             return (-1);
     }
 
-    /* check the number of files currently opened */
+    /* Check the number of files currently opened. */
     if (numOpenFiles >= GSF_MAX_OPEN_FILES)
     {
         gsfError = GSF_TOO_MANY_OPEN_FILES;
         return (-1);
     }
 
-    /* Try to open this file */
+    /* Try to open this file. */
     if ((fp = fopen(filename, access_mode)) == (FILE *) NULL)
     {
         gsfError = GSF_FOPEN_ERROR;
@@ -632,14 +639,15 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
         }
     }
 
-    /* If no filename match was found then use the first available slot */
+    /* If no filename match was found then use the first available slot. */
     if (fileTableIndex == GSF_MAX_OPEN_FILES)
     {
         for (fileTableIndex=0; fileTableIndex<GSF_MAX_OPEN_FILES; fileTableIndex++)
         {
             if (gsfFileTable[fileTableIndex].occupied == 0)
             {
-                strncpy (gsfFileTable[fileTableIndex].file_name, filename, sizeof(gsfFileTable[fileTableIndex].file_name));
+                strncpy (gsfFileTable[fileTableIndex].file_name, filename, sizeof(gsfFileTable[fileTableIndex].file_name) - 1);
+                gsfFileTable[fileTableIndex].file_name[sizeof(gsfFileTable[fileTableIndex].file_name) - 1] = '\0';
                 /* This is the first open for this file, so clear the
                  * pointers to dynamic memory.
                  */
@@ -654,7 +662,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
     gsfFileTable[fileTableIndex].occupied = 1;
     *handle = fileTableIndex + 1;
 
-    /* Set the desired buffer size */
+    /* Set the desired buffer size. */
     if (setvbuf(fp, NULL, _IOFBF, buf_size))
     {
         gsfClose ((int) *handle);
@@ -663,13 +671,13 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
         return (-1);
     }
 
-    /* Use stat to get the size of this file. File size is used by gsfPercent */
+    /* Use stat to get the size of this file. File size is used by gsfPercent. */
     if (gsfStat (filename, &stsize))
     {
         gsfError = GSF_READ_ERROR;
         gsfClose (*handle);
         *handle = 0;
-        return(-1);
+        return (-1);
     }
     gsfFileTable[fileTableIndex].file_size = stsize;
 
@@ -682,7 +690,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
     {
         gsfFileTable[fileTableIndex].scales_read = 1;
 
-        /* write the gsf file header to the file */
+        /* Write the gsf file header to the file. */
         id.checksumFlag = 0;
         id.reserved = 0;
         id.recordID = GSF_RECORD_HEADER;
@@ -698,7 +706,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
             gsfError = GSF_FLUSH_ERROR;
             gsfClose (*handle);
             *handle = 0;
-            return(-1);
+            return (-1);
         }
     }
     else
@@ -716,7 +724,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
                 return (-1);
             }
         }
-        /* Read the GSF header */
+        /* Read the GSF header. */
         headerSize = gsfRead(*handle, GSF_NEXT_RECORD, &id, &gsfFileTable[fileTableIndex].rec, NULL, 0);
 
         if (headerSize < 0)
@@ -734,7 +742,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
             *handle = 0;
             return (-1);
         }
-        /* If the mode is append seek back to the end of the file */
+        /* If the mode is append seek back to the end of the file. */
         if (mode == GSF_APPEND)
         {
             if (fseek(gsfFileTable[fileTableIndex].fp, 0, SEEK_END))
@@ -747,7 +755,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
         }
     }
 
-    /* Save the GSF version ID into the file table */
+    /* Save the GSF version ID into the file table. */
     ret = sscanf (gsfFileTable[fileTableIndex].rec.header.version, "GSF-v%d.%d",
         &gsfFileTable[fileTableIndex].major_version_number,
         &gsfFileTable[fileTableIndex].minor_version_number);
@@ -802,7 +810,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
         gsfFileTable[fileTableIndex].direct_access = 0;
     }
 
-    /* Save the file acess mode */
+    /* Save the file access mode. */
     switch (mode)
     {
         case GSF_CREATE:
@@ -897,14 +905,14 @@ gsfClose(const int handle)
     gsfFileTable[handle-1].scales_read = 0;
     gsfFileTable[handle-1].access_mode = 0;
 
-    /* clear the contents of the index data table */
+    /* Clear the contents of the index data table. */
     if (gsfFileTable[handle-1].index_data.scale_factor_addr)
     {
         free(gsfFileTable[handle-1].index_data.scale_factor_addr);
     }
     memset (&gsfFileTable[handle-1].index_data, 0, sizeof(gsfFileTable[handle-1].index_data));
 
-    /* Clear the necessary fields of the gsfRecords data structure */
+    /* Clear the necessary fields of the gsfRecords data structure. */
     memset(&gsfFileTable[handle-1].rec.header, 0, sizeof(gsfHeader));
 
     return (0);
@@ -947,13 +955,13 @@ gsfSeek(int handle, int option)
     switch (option)
     {
         case GSF_REWIND:
-            /* If the last operation was a write then we need to fflush */
+            /* If the last operation was a write then we need to fflush. */
             if (gsfFileTable[handle - 1].read_write_flag == LAST_OP_WRITE)
             {
                 if (fflush (gsfFileTable[handle - 1].fp))
                 {
                     gsfError = GSF_FLUSH_ERROR;
-                    return(-1);
+                    return (-1);
                 }
             }
             gsfFileTable[handle - 1].read_write_flag = LAST_OP_FLUSH;
@@ -966,13 +974,13 @@ gsfSeek(int handle, int option)
             break;
 
         case GSF_END_OF_FILE:
-            /* If the last operation was a write then we need to fflush */
+            /* If the last operation was a write then we need to fflush. */
             if (gsfFileTable[handle - 1].read_write_flag == LAST_OP_WRITE)
             {
                 if (fflush (gsfFileTable[handle - 1].fp))
                 {
                     gsfError = GSF_FLUSH_ERROR;
-                    return(-1);
+                    return (-1);
                 }
             }
             gsfFileTable[handle - 1].read_write_flag = LAST_OP_FLUSH;
@@ -1070,7 +1078,7 @@ gsfRead(int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *rptr, unsi
     int             ret;
     gsfDataID       tmpID;
 
-    /* Clear gsfError before each read */
+    /* Clear gsfError before each read. */
     gsfError = 0;
 
     if ((handle < 1) || (handle > GSF_MAX_OPEN_FILES))
@@ -1093,7 +1101,7 @@ gsfRead(int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *rptr, unsi
         ret = gsfSeekRecord(handle, &tmpID);
         if (ret < 0)
         {
-            /* gsfError is set in gsfSeekRecord */
+            /* gsfError is set in gsfSeekRecord. */
             return (-1);
         }
     }
@@ -1177,7 +1185,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
      */
     while (readNext)
     {
-        /* Get the current record pointer */
+        /* Get the current record pointer. */
         if ((gsfFileTable[handle - 1].previous_record = ftell(gsfFileTable[handle - 1].fp)) == -1)
         {
             gsfError = GSF_FILE_SEEK_ERROR;
@@ -1193,24 +1201,28 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             if (fflush (gsfFileTable[handle - 1].fp))
             {
                 gsfError = GSF_FLUSH_ERROR;
-                return(-1);
+                return (-1);
             }
         }
         gsfFileTable[handle - 1].read_write_flag = LAST_OP_READ;
 
-        /* read the data size, and gsf ID fields */
+        /* Read the data size, and gsf ID fields. */
         readStat = fread((void *) tmpBuff, GSF_LONG_SIZE, (size_t) 2, gsfFileTable[handle - 1].fp);
         if (readStat != 2)
         {
             if (feof(gsfFileTable[handle - 1].fp))
             {
-                /* if error reading file and we're at the end of the file,
-                 * reset file pointer
+                /* If error reading file and we're at the end of the file,
+                 * reset file pointer.
                  */
-                fseek (gsfFileTable[handle - 1].fp,
-                       gsfFileTable[handle - 1].previous_record,
-                       SEEK_SET);
-                /* if anything was read, that's a different error code than nothing read */
+                if (0 != fseek (gsfFileTable[handle - 1].fp,
+                                gsfFileTable[handle - 1].previous_record,
+                                SEEK_SET)) {
+                    /* TODO(schwehr): When, if ever, can this happen? */
+                    gsfError = GSF_READ_ERROR;
+                    return (-1);
+                }
+                /* If anything was read, that's a different error code than nothing read. */
                 if (readStat == 0)
                     gsfError = GSF_READ_TO_END_OF_FILE;
                 else
@@ -1221,13 +1233,13 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             return (-1);
         }
 
-        /* convert from gsf to host byte order, gsf byte order = network byte order */
+        /* Convert from gsf to host byte order, gsf byte order = network byte order. */
         dataSize = (gsfuLong) ntohl(tmpBuff[0]);
         readSize = dataSize;
         did = (gsfuLong) ntohl(tmpBuff[1]);
 
-        /* convert the did value into a gsfDataID struct
-         * First the check sum value
+        /* Convert the did value into a gsfDataID struct.
+         * First the check sum value:
          *
          * 1098 7654 3210 9876 5432 1098 7654 3210
          * 1000 0000 0000 0000 0000 0000 0000 0000
@@ -1235,7 +1247,8 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
          */
         thisID.checksumFlag = (did & 0x80000000);
 
-        /* Now the reserved field
+        /* Now the reserved field:
+         *
          * 1098 7654 3210 9876 5432 1098 7654 3210
          * 0111 1111 1100 0000 0000 0000 0000 0000
          *    7  F    C    0    0    0    0    0
@@ -1243,7 +1256,8 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
         temp = did & 0x7FC00000;
         thisID.reserved = (temp >> 22);
 
-        /* Now the combination of registry number and data type number
+        /* Now the combination of registry number and data type number:
+         *
          * 1098 7654 3210 9876 5432 1098 7654 3210
          * 0000 0000 0011 1111 1111 1111 1111 1111
          *    0  0    3    F    F    F    F    F
@@ -1251,7 +1265,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
         temp = did;
         thisID.recordID = (temp & 0x003FFFFF);
 
-        /* if there is a checksum read it, we'll read four additional bytes */
+        /* If there is a checksum read it, we'll read four additional bytes. */
         if (thisID.checksumFlag)
         {
             readSize = dataSize + 4;
@@ -1268,12 +1282,12 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
         if ((readSize <= 8) || (readSize > GSF_MAX_RECORD_SIZE))
         {
 
-            /* may have an incomplete record here */
+            /* May have an incomplete record here. */
             gsfError = GSF_RECORD_SIZE_ERROR;
             return (-1);
         }
 
-        /* No point in reading the "size" bytes for data if the ID is not recognized */
+        /* No point in reading the "size" bytes for data if the ID is not recognized. */
         switch (thisID.recordID)
         {
             case (GSF_RECORD_HEADER):
@@ -1296,13 +1310,13 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
         }
 
         /* If the caller passed GSF_NEXT_RECORD, as the desiredRecord, they
-         * want the next record
+         * want the next record.
          */
         assert(desiredRecord >= 0);
         if ((desiredRecord == GSF_NEXT_RECORD) || (thisID.recordID == (unsigned int)desiredRecord))
         {
             readNext = 0;
-            /* Set the caller's ID structure with those items we've read */
+            /* Set the caller's ID structure with those items we've read. */
             dataID->checksumFlag = thisID.checksumFlag;
             dataID->reserved = thisID.reserved;
             dataID->recordID = thisID.recordID;
@@ -1313,13 +1327,17 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
                 if (feof(gsfFileTable[handle - 1].fp))
                 {
 
-                    /* if error reading file and we're at the end of the file,
-                     * reset file pointer
+                    /* If error reading file and we're at the end of the file,
+                     * reset file pointer.
                      */
-                    fseek (gsfFileTable[handle - 1].fp,
-                          gsfFileTable[handle - 1].previous_record,
-                          SEEK_SET);
-                    /* if anything was read, that's a different error code than nothing read */
+                    if (0 != fseek (gsfFileTable[handle - 1].fp,
+                                    gsfFileTable[handle - 1].previous_record,
+                                    SEEK_SET)) {
+                        /* TODO(schwehr): When, if ever, can this happen? */
+                        gsfError = GSF_READ_ERROR;
+                        return (-1);
+                    }
+                    /* If anything was read, that's a different error code than nothing read. */
                     if (readStat == 0)
                         gsfError = GSF_READ_TO_END_OF_FILE;
                     else
@@ -1331,7 +1349,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             }
         }
 
-        /* This record is not the requested record, advance the file pointer */
+        /* This record is not the requested record, advance the file pointer. */
         else if (thisID.recordID != (unsigned int)desiredRecord)
         {
             readStat = fseek(gsfFileTable[handle - 1].fp, readSize, SEEK_CUR);
@@ -1347,17 +1365,17 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
      * If the caller's buffer isn't null, move this data into their buffer.
      * Don't move the 4 byte checksum into the buffer.
      */
-    if ((buf) && (dataSize <= max_size))
+    if ((buf) && (dataSize <= (gsfuLong)max_size))
     {
         memcpy(buf, dptr, dataSize);
     }
-    else if ((buf) && (dataSize > max_size))
+    else if ((buf) && (dataSize > (gsfuLong)max_size))
     {
         gsfError = GSF_INSUFFICIENT_SIZE;
         return (-1);
     }
 
-    /* We have the record of interest, verify the checksum if required */
+    /* We have the record of interest, verify the checksum if required. */
     if (thisID.checksumFlag)
     {
         memcpy(&tmpBuff[0], streamBuff, GSF_LONG_SIZE);
@@ -1397,7 +1415,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             ret = gsfDecodeSwathBathymetryPing(&rptr->mb_ping, dptr, &gsfFileTable[handle - 1], handle, dataSize);
             if (ret < 0)
             {
-                /* gsfError is set within gsfDecodeSwathBathymetryPing */
+                /* gsfError is set within gsfDecodeSwathBathymetryPing. */
                 return (-1);
             }
             break;
@@ -1460,7 +1478,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             ret = gsfDecodeSinglebeam(&rptr->sb_ping, dptr, &gsfFileTable[handle - 1], handle, dataSize);
             if (ret < 0)
             {
-                /* gsfError is set within gsfDecodeSinglebeam */
+                /* gsfError is set within gsfDecodeSinglebeam. */
                 return (-1);
             }
             break;
@@ -1534,7 +1552,7 @@ gsfSeekRecord(int handle, gsfDataID *id)
     gsfRecords      scalesRecord;
     INDEX_REC       index_rec;
 
-    /* Clear gsfError before each seek */
+    /* Clear gsfError before each seek. */
     gsfError = 0;
 
     if ((handle < 1) || (handle > GSF_MAX_OPEN_FILES))
@@ -1543,14 +1561,14 @@ gsfSeekRecord(int handle, gsfDataID *id)
         return (-1);
     }
 
-    /* Make sure we have a valid recordID */
+    /* Make sure we have a valid recordID. */
     if ((id->recordID < 1) || (id->recordID >= NUM_REC_TYPES))
     {
         gsfError = GSF_UNRECOGNIZED_RECORD_ID;
         return (-1);
     }
 
-    /* Make sure we have a valid record_number */
+    /* Make sure we have a valid record_number. */
     if ((id->record_number < -1) ||
         (id->record_number == 0) ||
         (id->record_number > gsfFileTable[handle - 1].index_data.number_of_records[id->recordID]))
@@ -1559,7 +1577,7 @@ gsfSeekRecord(int handle, gsfDataID *id)
         return (-1);
     }
 
-    /* Check the record_types to see if the requested type is available */
+    /* Check the record_types to see if the requested type is available. */
     if (gsfFileTable[handle - 1].index_data.record_type[id->recordID] == -1)
     {
         /* The record type is not available. */
@@ -1593,7 +1611,7 @@ gsfSeekRecord(int handle, gsfDataID *id)
     if (ret != 1)
     {
         gsfError = GSF_INDEX_FILE_READ_ERROR;
-        return(-1);
+        return (-1);
     }
     if (gsfFileTable[handle - 1].index_data.swap)
     {
@@ -1608,7 +1626,7 @@ gsfSeekRecord(int handle, gsfDataID *id)
      */
     if (id->recordID == GSF_RECORD_SWATH_BATHYMETRY_PING)
     {
-        /* Clear the scale index */
+        /* Clear the scale index. */
         scale_index = -1;
         for (i = 1; i < gsfFileTable[handle - 1].index_data.number_of_records[0]; i++)
         {
@@ -1652,8 +1670,8 @@ gsfSeekRecord(int handle, gsfDataID *id)
             ret = gsfUnpackStream (handle, GSF_NEXT_RECORD, id, &scalesRecord, NULL, 0);
             if (ret < 0)
             {
-                /* gsfError will have been set in gsfUnpackStream */
-                return(-1);
+                /* gsfError will have been set in gsfUnpackStream. */
+                return (-1);
             }
             memcpy(&gsfFileTable[handle - 1].rec, &scalesRecord, sizeof(gsfFileTable[handle - 1].rec));
 
@@ -1664,7 +1682,7 @@ gsfSeekRecord(int handle, gsfDataID *id)
         }
     }
 
-    /* Seek to this offset in the gsf file */
+    /* Seek to this offset in the gsf file. */
     if (fseek(gsfFileTable[handle - 1].fp, index_rec.addr, SEEK_SET))
     {
         gsfError = GSF_FILE_SEEK_ERROR;
@@ -1738,7 +1756,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
     int             pad;
     long long       ret;
 
-    /* Clear gsfError before each write */
+    /* Clear gsfError before each write. */
     gsfError = 0;
 
     if ((handle < 1) || (handle > GSF_MAX_OPEN_FILES))
@@ -1747,15 +1765,15 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
         return (-1);
     }
 
-    /* See if we need to make room for the optional checksum */
+    /* See if we need to make room for the optional checksum. */
     if (id->checksumFlag)
     {
-        /* four byte size, four byte id, and four byte checksum */
+        /* Four byte size, four byte id, and four byte checksum. */
         ucptr = streamBuff + GSF_FILL_SIZE_CHECKSUM;
     }
     else
     {
-        /* four byte size and four byte id */
+        /* Four byte size and four byte id. */
         ucptr = streamBuff + GSF_FILL_SIZE;
     }
 
@@ -1786,7 +1804,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             ret = gsfEncodeSwathBathymetryPing(ucptr, &rptr->mb_ping, &gsfFileTable[handle - 1], handle);
             if (ret < 0)
             {
-                /* gsfError is set within gsfEncodeSwathBathymetryPing */
+                /* gsfError is set within gsfEncodeSwathBathymetryPing. */
                 return (-1);
             }
             break;
@@ -1854,7 +1872,6 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             }
             break;
 
-        /* jsb 09/29/98 Added support for new navigation errors record */
         case (GSF_RECORD_HV_NAVIGATION_ERROR):
             ret = gsfEncodeHVNavigationError(ucptr, &rptr->hv_nav_error);
             if (ret < 0)
@@ -1878,15 +1895,12 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             return (-1);
     }
 
-    /* GSF specification requires all records to be a whole multiple of 4 bytes */
+    /* GSF specification requires all records to be a whole multiple of 4 bytes. */
     dataSize = (gsfuLong) ret;
     pad = dataSize % 4;
     if (pad)
     {
-        /* A bug was fixed here in version 1.03, if this file was
-         * created with a version of GSF prior to 1.03 we need to support it the
-         * old way.
-         */
+        /* If this file wascreated with a GSF < v1.03 we need to support it the old way. */
         if ((gsfFileTable[handle - 1].major_version_number == 1) &&
             (gsfFileTable[handle - 1].minor_version_number <= 2))
         {
@@ -1900,36 +1914,36 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
         }
     }
 
-    /* load the data identifier for this gsf record, first the checksum flag */
+    /* Load the data identifier for this gsf record, first the checksum flag. */
     if (id->checksumFlag)
     {
-        /* set the checksum bit */
+        /* Set the checksum bit. */
         tmpBuff[1] |= 0x80000000;
 
-        /* compute the checksum */
+        /* Compute the checksum. */
         tmpBuff[2] = gsfChecksum(ucptr, dataSize);
     }
 
-    /* now the reserved field */
+    /* Now the reserved field. */
     temp = (gsfuLong) id->reserved;
     tmpBuff[1] |= (temp << 22);
 
-    /* now the recordID, goes in bits 00-21 */
+    /* Now the recordID, goes in bits 00-21. */
     tmpBuff[1] |= (gsfuLong) id->recordID;
 
-    /* load the size of the data for this gsf record */
+    /* Load the size of the data for this gsf record. */
     tmpBuff[0] = dataSize;
 
-    /* Now load the gsf packaging words into gsf byte order */
+    /* Now load the gsf packaging words into gsf byte order. */
     for (i = 0; i < 3; i++)
     {
         gsfBuff[i] = htonl(tmpBuff[i]);
     }
 
-    /* Set the buffer pointer back to the first byte */
+    /* Set the buffer pointer back to the first byte. */
     ucptr = streamBuff;
 
-    /* Add the gsf packaging words to the gsf stream */
+    /* Add the gsf packaging words to the gsf stream. */
     if (id->checksumFlag)
     {
         memcpy(ucptr, gsfBuff, GSF_FILL_SIZE_CHECKSUM);
@@ -1941,7 +1955,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
         dataSize += GSF_FILL_SIZE;
     }
 
-    /* Save the current record pointer */
+    /* Save the current record pointer. */
     if ((gsfFileTable[handle - 1].previous_record = ftell(gsfFileTable[handle - 1].fp)) == -1)
     {
         gsfError = GSF_FILE_SEEK_ERROR;
@@ -1957,7 +1971,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
         if (fflush (gsfFileTable[handle - 1].fp))
         {
             gsfError = GSF_FLUSH_ERROR;
-            return(-1);
+            return (-1);
         }
         gsfFileTable[handle - 1].bufferedBytes = 0;
     }
@@ -1973,7 +1987,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
         if (fflush(gsfFileTable[handle-1].fp))
         {
             gsfError = GSF_FLUSH_ERROR;
-            return(-1);
+            return (-1);
         }
         gsfFileTable[handle-1].bufferedBytes = 0;
     }
@@ -1986,12 +2000,12 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
         ret = gsfSeekRecord(handle, id);
         if (ret < 0)
         {
-            /* gsfError is set in gsfSeekRecord */
+            /* gsfError is set in gsfSeekRecord. */
             return (-1);
         }
     }
 
-    /* Now write the data to the disk */
+    /* Now write the data to the disk. */
     writeStat = fwrite(ucptr, (size_t) 1, (size_t) dataSize, gsfFileTable[handle - 1].fp);
     if (writeStat != dataSize)
     {
@@ -2001,7 +2015,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
 
     gsfFileTable[handle - 1].last_record_type = id->recordID;
 
-    /* return the number of bytes written */
+    /* Return the number of bytes written. */
     return (dataSize);
 }
 
@@ -2038,7 +2052,7 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
     unsigned int    itemp;
     double          mult;
 
-    /* If we're adding a new subrecord, bump counter and check bounds */
+    /* If we're adding a new subrecord, bump counter and check bounds. */
     if (sf->scaleTable[subrecordID - 1].multiplier == 0.0)
     {
         if ((sf->numArraySubrecords + 1) > GSF_MAX_PING_ARRAY_SUBRECORDS)
@@ -2048,7 +2062,7 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
             return (-1);
         }
 
-        /* Compute the multiplier as one over the requested precision */
+        /* Compute the multiplier as one over the requested precision. */
         mult = 1.0 / precision;
 
         /* In order to assure the same multiplier is used throughout, truncate
@@ -2058,19 +2072,19 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
          */
         itemp = (int) (mult + 0.001);
 
-        /* QC test on the integer value as this is the number that will get encoded on the GSF byte stream */
-        if ((itemp < MIN_GSF_SF_MULT_VALUE) || (itemp > MAX_GSF_SF_MULT_VALUE))
+        /* QC test on the integer value as this is the number that will get encoded on the GSF byte stream. */
+        if (itemp < MIN_GSF_SF_MULT_VALUE)
         {
             gsfError = GSF_CANNOT_REPRESENT_PRECISION;
             return (-1);
         }
 
-        /* New scale factor has passed QC tests, it is now safe to bump the counter */
+        /* New scale factor has passed QC tests, it is now safe to bump the counter. */
         sf->numArraySubrecords++;
     }
     else
     {
-        /* Compute the multiplier as one over the requested precision */
+        /* Compute the multiplier as one over the requested precision. */
         mult = 1.0 / precision;
 
         /* In order to assure the same multiplier is used throughout, truncate
@@ -2080,8 +2094,8 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
          */
         itemp = (int) (mult + 0.001);
 
-        /* QC test on the integer value as this is the number that will get encoded on the GSF byte stream */
-        if ((itemp < MIN_GSF_SF_MULT_VALUE) || (itemp > MAX_GSF_SF_MULT_VALUE))
+        /* QC test on the integer value as this is the number that will get encoded on the GSF byte stream. */
+        if (itemp < MIN_GSF_SF_MULT_VALUE)
         {
             gsfError = GSF_CANNOT_REPRESENT_PRECISION;
             return (-1);
@@ -2111,7 +2125,7 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
  * Inputs :
  *  handle = the integer value set by a call to gsfOpen.
  *  subrecordID = an integer value containing the subrecord id of the requested scale factors
- *  c_flag = the address of an unsigned character to contain the the compression flag
+ *  c_flag = the address of an unsigned character to contain the compression flag
  *  multiplier = the address of a double to contain the scaling multiplier
  *  offset = the address of a double to contain the scaling DC offset.
  *
@@ -2131,7 +2145,7 @@ gsfGetScaleFactor(int handle, unsigned int subrecordID, unsigned char *c_flag, d
     if ((subrecordID < 1) || (subrecordID > GSF_MAX_PING_ARRAY_SUBRECORDS))
     {
         gsfError = GSF_TOO_MANY_ARRAY_SUBRECORDS;
-        return(-1);
+        return (-1);
     }
 
     if ((handle < 1) || (handle > GSF_MAX_OPEN_FILES))
@@ -2140,20 +2154,20 @@ gsfGetScaleFactor(int handle, unsigned int subrecordID, unsigned char *c_flag, d
         return (-1);
     }
 
-    /* Make sure the multiplier is not zero */
+    /* Make sure the multiplier is not zero. */
     if (gsfFileTable[handle-1].rec.mb_ping.scaleFactors.scaleTable[subrecordID-1].multiplier == 0.0)
     {
         gsfError = GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER;
         return (-1);
     }
 
-    /* Set the compression flag */
+    /* Set the compression flag. */
     *c_flag = gsfFileTable[handle-1].rec.mb_ping.scaleFactors.scaleTable[subrecordID-1].compressionFlag;
 
-    /* Set the multiplier */
+    /* Set the multiplier. */
     *multiplier = gsfFileTable[handle-1].rec.mb_ping.scaleFactors.scaleTable[subrecordID-1].multiplier;
 
-    /* Set the offset */
+    /* Set the offset. */
     *offset = gsfFileTable[handle-1].rec.mb_ping.scaleFactors.scaleTable[subrecordID-1].offset;
 
     return (0);
@@ -2181,7 +2195,7 @@ gsfFree (gsfRecords *rec)
 {
     int i;
 
-    /* Free the array subrecords in ping data structure */
+    /* Free the array subrecords in ping data structure. */
     if (rec->mb_ping.depth != (double *) NULL)
     {
         free (rec->mb_ping.depth);
@@ -2332,7 +2346,7 @@ gsfFree (gsfRecords *rec)
         rec->mb_ping.doppler_corr = (double *) NULL;
     }
 
-    /* we have an array of number_beams gsfIntensitySeries structures */
+    /* We have an array of number_beams gsfIntensitySeries structures. */
     if (rec->mb_ping.brb_inten != (gsfBRBIntensity *) NULL)
     {
         if (rec->mb_ping.brb_inten->time_series != (gsfTimeSeriesIntensity *) NULL)
@@ -2352,7 +2366,7 @@ gsfFree (gsfRecords *rec)
         rec->mb_ping.brb_inten = (gsfBRBIntensity *) NULL;
     }
 
-    /* Free the dynamically allocated memory from the svp record */
+    /* Free the dynamically allocated memory from the svp record. */
     if (rec->svp.depth != (double *) NULL)
     {
         free (rec->svp.depth);
@@ -2365,7 +2379,7 @@ gsfFree (gsfRecords *rec)
         rec->svp.sound_speed = (double *) NULL;
     }
 
-    /* Free the dynamically allocated memory from the processing parameters */
+    /* Free the dynamically allocated memory from the processing parameters. */
     for (i=0; i<rec->process_parameters.number_parameters; i++)
     {
         if (rec->process_parameters.param[i] != (char *) NULL)
@@ -2376,7 +2390,7 @@ gsfFree (gsfRecords *rec)
     }
     rec->process_parameters.number_parameters = 0;
 
-    /* Free the dynamically allocated memory from the sensor parameters */
+    /* Free the dynamically allocated memory from the sensor parameters. */
     for (i=0; i<rec->sensor_parameters.number_parameters; i++)
     {
         if (rec->sensor_parameters.param[i] != (char *) NULL)
@@ -2387,14 +2401,14 @@ gsfFree (gsfRecords *rec)
     }
     rec->sensor_parameters.number_parameters = 0;
 
-    /* Free the dynamically allocated memory from the comment record */
+    /* Free the dynamically allocated memory from the comment record. */
     if (rec->comment.comment != (char *) NULL)
     {
         free (rec->comment.comment);
         rec->comment.comment = (char *) NULL;
     }
 
-    /* Free the dynamically allocated memory from the history record */
+    /* Free the dynamically allocated memory from the history record. */
     if (rec->history.command_line != (char *) NULL)
     {
         free (rec->history.command_line);
@@ -2407,7 +2421,7 @@ gsfFree (gsfRecords *rec)
         rec->history.comment = (char *) NULL;
     }
 
-    /* Free the dynamically allocated memory from the attitude record */
+    /* Free the dynamically allocated memory from the attitude record. */
     if (rec->attitude.attitude_time != (struct timespec *) NULL)
     {
         free (rec->attitude.attitude_time);
@@ -2438,7 +2452,7 @@ gsfFree (gsfRecords *rec)
         rec->attitude.heading = (double *) NULL;
     }
 
-    /* Now clear all the data from the gsf Records structure */
+    /* Now clear all the data from the gsfRecords structure. */
     memset (rec, 0, sizeof(gsfRecords));
 
     return;
@@ -2489,7 +2503,7 @@ gsfPrintError(FILE * fp)
 
 int gsfIntError(void)
 {
-    return gsfError;
+    return (gsfError);
 }
 
 /********************************************************************
@@ -2771,7 +2785,7 @@ gsfIndexTime(int handle, int record_type, int record_number, time_t * sec, long 
         return (-1);
     }
 
-    /* Check the record_types to see if the requested type is available */
+    /* Check the record_types to see if the requested type is available. */
     if (gsfFileTable[handle - 1].index_data.record_type[record_type] == -1)
     {
         gsfError = GSF_RECORD_TYPE_NOT_AVAILABLE;
@@ -2848,7 +2862,7 @@ gsfChecksum(unsigned char *buff, unsigned int num_bytes)
     {
         checkSum += *ptr;
     }
-    return checkSum;
+    return (checkSum);
 }
 
 /********************************************************************
@@ -2881,7 +2895,7 @@ gsfPercent (int handle)
     int             percent;
     long long       addr, rc;
 
-    /* Clear gsfError each time down */
+    /* Clear gsfError each time down. */
     gsfError = 0;
 
     if ((handle < 1) || (handle > GSF_MAX_OPEN_FILES))
@@ -2890,14 +2904,14 @@ gsfPercent (int handle)
         return (-1);
     }
 
-    /* the file is no longer open */
+    /* The file is no longer open. */
     if (!gsfFileTable[handle - 1].occupied)
     {
         gsfError = GSF_BAD_FILE_HANDLE;
         return (-1);
     }
 
-    /* Retrieve the current file position */
+    /* Retrieve the current file position. */
     rc = ftell (gsfFileTable[handle - 1].fp);
     if (rc == -1)
     {
@@ -2911,7 +2925,7 @@ gsfPercent (int handle)
     {
         percent = 100.0 * (double)addr / (double)gsfFileTable[handle - 1].file_size;
     }
-    return(percent);
+    return (percent);
 }
 
 /********************************************************************
@@ -2941,7 +2955,7 @@ gsfPercent (int handle)
 int
 gsfGetNumberRecords (int handle, int desiredRecord)
 {
-    /* Clear gsfError each time down */
+    /* Clear gsfError each time down. */
     gsfError = 0;
 
     if ((handle < 1) || (handle > GSF_MAX_OPEN_FILES))
@@ -2950,7 +2964,7 @@ gsfGetNumberRecords (int handle, int desiredRecord)
         return (-1);
     }
 
-    if ((desiredRecord < 0) || (desiredRecord > NUM_REC_TYPES))
+    if ((desiredRecord < 0) || (desiredRecord >= NUM_REC_TYPES))
     {
         gsfError = GSF_UNRECOGNIZED_RECORD_ID;
         return (-1);
@@ -2959,7 +2973,7 @@ gsfGetNumberRecords (int handle, int desiredRecord)
     if (gsfFileTable[handle - 1].direct_access == 0)
     {
         gsfError = GSF_BAD_ACCESS_MODE;
-        return(-1);
+        return (-1);
     }
 
     return (gsfFileTable[handle - 1].index_data.number_of_records[desiredRecord]);
@@ -2999,13 +3013,13 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
 
     gsfError = 0;
 
-    /* Copy the GSF header over to the target */
+    /* Copy the GSF header over to the target. */
     memcpy(&target->header, &source->header, sizeof(target->header));
 
-    /* Copy the ping summary record over to the target */
+    /* Copy the ping summary record over to the target. */
     memcpy(&target->summary, &source->summary, sizeof(target->summary));
 
-    /* Decide which arrays we need to allocate memory for */
+    /* Decide which arrays we need to allocate memory for. */
     if (source->mb_ping.depth != (double *) NULL)
     {
         if (target->mb_ping.depth == (double *) NULL)
@@ -3014,7 +3028,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.depth == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3023,13 +3037,13 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.depth == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.depth, source->mb_ping.depth, sizeof(double) * source->mb_ping.number_beams);
     }
 
-    /* Decide which arrays we need to allocate memory for */
+    /* Decide which arrays we need to allocate memory for. */
     if (source->mb_ping.nominal_depth != (double *) NULL)
     {
         if (target->mb_ping.nominal_depth == (double *) NULL)
@@ -3038,7 +3052,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.nominal_depth == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3047,7 +3061,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.nominal_depth == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.nominal_depth, source->mb_ping.nominal_depth, sizeof(double) * source->mb_ping.number_beams);
@@ -3061,7 +3075,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.across_track == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3070,7 +3084,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.across_track == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.across_track, source->mb_ping.across_track, sizeof(double) * source->mb_ping.number_beams);
@@ -3084,7 +3098,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.along_track == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3093,7 +3107,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.along_track == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.along_track, source->mb_ping.along_track, sizeof(double) * source->mb_ping.number_beams);
@@ -3107,7 +3121,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.travel_time == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3116,7 +3130,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.travel_time == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.travel_time, source->mb_ping.travel_time, sizeof(double) * source->mb_ping.number_beams);
@@ -3130,7 +3144,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.beam_angle == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3139,7 +3153,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.beam_angle == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.beam_angle, source->mb_ping.beam_angle, sizeof(double) * source->mb_ping.number_beams);
@@ -3153,7 +3167,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.mc_amplitude == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3162,7 +3176,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.mc_amplitude == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.mc_amplitude, source->mb_ping.mc_amplitude, sizeof(double) * source->mb_ping.number_beams);
@@ -3176,7 +3190,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.mr_amplitude == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3185,7 +3199,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.mr_amplitude == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.mr_amplitude, source->mb_ping.mr_amplitude, sizeof(double) * source->mb_ping.number_beams);
@@ -3199,7 +3213,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.echo_width == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3208,7 +3222,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.echo_width == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.echo_width, source->mb_ping.echo_width, sizeof(double) * source->mb_ping.number_beams);
@@ -3222,7 +3236,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.quality_factor == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3231,7 +3245,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.quality_factor == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.quality_factor, source->mb_ping.quality_factor, sizeof(double) * source->mb_ping.number_beams);
@@ -3245,7 +3259,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.receive_heave == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3254,7 +3268,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.receive_heave == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.receive_heave, source->mb_ping.receive_heave, sizeof(double) * source->mb_ping.number_beams);
@@ -3268,7 +3282,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.depth_error == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3277,7 +3291,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.depth_error == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.depth_error, source->mb_ping.depth_error, sizeof(double) * source->mb_ping.number_beams);
@@ -3291,7 +3305,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.across_track_error == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3300,7 +3314,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.across_track_error == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.across_track_error, source->mb_ping.across_track_error, sizeof(double) * source->mb_ping.number_beams);
@@ -3314,7 +3328,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.along_track_error == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3323,7 +3337,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.along_track_error == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.along_track_error, source->mb_ping.along_track_error, sizeof(double) * source->mb_ping.number_beams);
@@ -3337,7 +3351,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.quality_flags == (unsigned char *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3346,7 +3360,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.quality_flags == (unsigned char *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.quality_flags, source->mb_ping.quality_flags, sizeof(unsigned char) * source->mb_ping.number_beams);
@@ -3360,7 +3374,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.beam_flags == (unsigned char *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3369,7 +3383,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.beam_flags == (unsigned char *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.beam_flags, source->mb_ping.beam_flags, sizeof(unsigned char) * source->mb_ping.number_beams);
@@ -3383,7 +3397,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.signal_to_noise == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3392,7 +3406,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.signal_to_noise == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.signal_to_noise, source->mb_ping.signal_to_noise, sizeof(double) * source->mb_ping.number_beams);
@@ -3406,7 +3420,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.beam_angle_forward == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3415,7 +3429,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.beam_angle_forward == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.beam_angle_forward, source->mb_ping.beam_angle_forward, sizeof(double) * source->mb_ping.number_beams);
@@ -3429,7 +3443,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.vertical_error == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3438,7 +3452,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.vertical_error == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.vertical_error, source->mb_ping.vertical_error, sizeof(double) * source->mb_ping.number_beams);
@@ -3452,7 +3466,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.horizontal_error == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3461,7 +3475,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.horizontal_error == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.horizontal_error, source->mb_ping.horizontal_error, sizeof(double) * source->mb_ping.number_beams);
@@ -3475,7 +3489,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.sector_number == (unsigned short *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3484,7 +3498,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.sector_number == (unsigned short *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.sector_number, source->mb_ping.sector_number, sizeof(unsigned short) * source->mb_ping.number_beams);
@@ -3498,7 +3512,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.detection_info == (unsigned short *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3507,7 +3521,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.detection_info == (unsigned short *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.detection_info, source->mb_ping.detection_info, sizeof(unsigned short) * source->mb_ping.number_beams);
@@ -3521,7 +3535,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.incident_beam_adj == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3530,7 +3544,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.incident_beam_adj == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.incident_beam_adj, source->mb_ping.incident_beam_adj, sizeof(double) * source->mb_ping.number_beams);
@@ -3544,7 +3558,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.system_cleaning == (unsigned short *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3553,7 +3567,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.system_cleaning == (unsigned short *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.system_cleaning, source->mb_ping.system_cleaning, sizeof(unsigned short) * source->mb_ping.number_beams);
@@ -3567,7 +3581,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.doppler_corr == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3576,7 +3590,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.doppler_corr == (double *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
         memcpy (target->mb_ping.doppler_corr, source->mb_ping.doppler_corr, sizeof(double) * source->mb_ping.number_beams);
@@ -3590,7 +3604,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->mb_ping.brb_inten == (gsfBRBIntensity *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
         }
 
@@ -3607,7 +3621,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
                 if (target->mb_ping.brb_inten->time_series == (gsfTimeSeriesIntensity *) NULL)
                 {
                     gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                    return(-1);
+                    return (-1);
                 }
             }
             else if (target->mb_ping.number_beams < source->mb_ping.number_beams)
@@ -3616,7 +3630,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
                 if (target->mb_ping.brb_inten->time_series == (gsfTimeSeriesIntensity *) NULL)
                 {
                     gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                    return(-1);
+                    return (-1);
                 }
             }
 
@@ -3630,7 +3644,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
                         if (target->mb_ping.brb_inten->time_series[i].samples == (unsigned int *) NULL)
                         {
                             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                            return(-1);
+                            return (-1);
                         }
                     }
                     else if (target->mb_ping.brb_inten->time_series[i].sample_count < source->mb_ping.brb_inten->time_series[i].sample_count)
@@ -3639,7 +3653,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
                         if (target->mb_ping.brb_inten->time_series[i].samples == (unsigned int *) NULL)
                         {
                             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                            return(-1);
+                            return (-1);
                         }
                     }
                     memcpy (target->mb_ping.brb_inten->time_series[i].samples, source->mb_ping.brb_inten->time_series[i].samples, sizeof(unsigned int) * source->mb_ping.brb_inten->time_series[i].sample_count);
@@ -3675,14 +3689,14 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
     target->mb_ping.sensor_id           = source->mb_ping.sensor_id;
     target->mb_ping.sensor_data         = source->mb_ping.sensor_data;
 
-    /* Now hande the sound velocity profile dynamic memory */
+    /* Now handle the sound velocity profile dynamic memory. */
     if (target->svp.depth == (double *) NULL)
     {
         target->svp.depth = (double *) calloc (sizeof(double), source->svp.number_points);
         if (target->svp.depth == (double *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->svp.depth, source->svp.depth, sizeof(double) * source->svp.number_points);
     }
@@ -3692,7 +3706,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->svp.depth == (double *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->svp.depth, source->svp.depth, sizeof(double) * source->svp.number_points);
     }
@@ -3703,7 +3717,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->svp.sound_speed == (double *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->svp.sound_speed, source->svp.sound_speed, sizeof(double) * source->svp.number_points);
     }
@@ -3713,19 +3727,19 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->svp.sound_speed == (double *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->svp.sound_speed, source->svp.sound_speed, sizeof(double) * source->svp.number_points);
     }
 
-    /* Copy the sound velocity profile record from the source to the target */
+    /* Copy the sound velocity profile record from the source to the target. */
     target->svp.observation_time = source->svp.observation_time;
     target->svp.application_time = source->svp.application_time;
     target->svp.latitude         = source->svp.latitude;
     target->svp.longitude        = source->svp.longitude;
     target->svp.number_points    = source->svp.number_points;
 
-    /* Copy the processing parameters from the source to the target */
+    /* Copy the processing parameters from the source to the target. */
     target->process_parameters.param_time        = source->process_parameters.param_time;
     target->process_parameters.number_parameters = source->process_parameters.number_parameters;
     for (i=0; i<source->process_parameters.number_parameters; i++)
@@ -3736,7 +3750,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->process_parameters.param[i] == (char *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
             strncpy (target->process_parameters.param[i], source->process_parameters.param[i], source->process_parameters.param_size[i] + 1);
             target->process_parameters.param_size[i] = source->process_parameters.param_size[i];
@@ -3747,14 +3761,14 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->process_parameters.param[i] == (char *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
             strncpy (target->process_parameters.param[i], source->process_parameters.param[i], source->process_parameters.param_size[i] + 1);
             target->process_parameters.param_size[i] = source->process_parameters.param_size[i];
         }
     }
 
-    /* Copy the sensor parameters from the source to the target */
+    /* Copy the sensor parameters from the source to the target. */
     target->sensor_parameters.param_time        = source->sensor_parameters.param_time;
     target->sensor_parameters.number_parameters = source->sensor_parameters.number_parameters;
     for (i=0; i<source->sensor_parameters.number_parameters; i++)
@@ -3765,7 +3779,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->sensor_parameters.param[i] == (char *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
             strncpy (target->sensor_parameters.param[i], source->sensor_parameters.param[i], source->sensor_parameters.param_size[i] + 1);
             target->sensor_parameters.param_size[i] = source->sensor_parameters.param_size[i];
@@ -3776,14 +3790,14 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->sensor_parameters.param[i] == (char *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
             strncpy (target->sensor_parameters.param[i], source->sensor_parameters.param[i], source->sensor_parameters.param_size[i] + 1);
             target->sensor_parameters.param_size[i] = source->sensor_parameters.param_size[i];
         }
     }
 
-    /* Copy the comment from the source to the target */
+    /* Copy the comment from the source to the target. */
     target->comment.comment_time = source->comment.comment_time;
     target->comment.comment_length = source->comment.comment_length;
     if (source->comment.comment_length > 0)
@@ -3794,7 +3808,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->comment.comment == (char *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
             strncpy (target->comment.comment, source->comment.comment, source->comment.comment_length + 1);
             target->comment.comment_length = source->comment.comment_length;
@@ -3805,14 +3819,14 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
             if (target->comment.comment == (char *) NULL)
             {
                 gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-                return(-1);
+                return (-1);
             }
             strncpy (target->comment.comment, source->comment.comment, source->comment.comment_length + 1);
             target->comment.comment_length = source->comment.comment_length;
         }
     }
 
-    /* Copy the history record from the source to the target */
+    /* Copy the history record from the source to the target. */
     target->history.history_time = source->history.history_time;
     strncpy(target->history.host_name, source->history.host_name, GSF_HOST_NAME_LENGTH);
     strncpy(target->history.operator_name, source->history.operator_name, GSF_OPERATOR_LENGTH);
@@ -3827,7 +3841,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->history.command_line == (char *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         strncpy(target->history.command_line, source->history.command_line, strlen (source->history.command_line) + 1);
     }
@@ -3842,25 +3856,25 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->history.comment == (char *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         strncpy(target->history.comment, source->history.comment, strlen (source->history.comment) + 1);
     }
 
-    /* Copy the navigation error record from the source to the target */
+    /* Copy the navigation error record from the source to the target. */
     target->nav_error = source->nav_error;
 
-    /* Copy the HV navigation error record from the source to the target */
+    /* Copy the HV navigation error record from the source to the target. */
     target->hv_nav_error = source->hv_nav_error;
 
-    /* Now hande the attitude record dynamic memory */
+    /* Now handle the attitude record dynamic memory. */
     if (target->attitude.attitude_time == (struct timespec *) NULL)
     {
         target->attitude.attitude_time = (struct timespec *) calloc (sizeof(struct timespec), source->attitude.num_measurements);
         if (target->attitude.attitude_time == (struct timespec *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->attitude.attitude_time, source->attitude.attitude_time, sizeof(struct timespec) * source->attitude.num_measurements);
     }
@@ -3870,7 +3884,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->attitude.attitude_time == (struct timespec *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->attitude.attitude_time, source->attitude.attitude_time, sizeof(struct timespec) * source->attitude.num_measurements);
     }
@@ -3881,7 +3895,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->attitude.roll == (double *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->attitude.roll, source->attitude.roll, sizeof(double) * source->attitude.num_measurements);
     }
@@ -3891,7 +3905,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->attitude.roll == (double *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->attitude.roll, source->attitude.roll, sizeof(double) * source->attitude.num_measurements);
     }
@@ -3902,7 +3916,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->attitude.pitch == (double *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->attitude.pitch, source->attitude.pitch, sizeof(double) * source->attitude.num_measurements);
     }
@@ -3912,7 +3926,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->attitude.pitch == (double *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->attitude.pitch, source->attitude.pitch, sizeof(double) * source->attitude.num_measurements);
     }
@@ -3923,7 +3937,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->attitude.heave == (double *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->attitude.heave, source->attitude.heave, sizeof(double) * source->attitude.num_measurements);
     }
@@ -3933,7 +3947,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->attitude.heave == (double *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->attitude.heave, source->attitude.heave, sizeof(double) * source->attitude.num_measurements);
     }
@@ -3944,7 +3958,7 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->attitude.heading == (double *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->attitude.heading, source->attitude.heading, sizeof(double) * source->attitude.num_measurements);
     }
@@ -3954,15 +3968,15 @@ gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
         if (target->attitude.heading == (double *) NULL)
         {
             gsfError = GSF_MEMORY_ALLOCATION_FAILED;
-            return(-1);
+            return (-1);
         }
         memcpy (target->attitude.heading, source->attitude.heading, sizeof(double) * source->attitude.num_measurements);
     }
 
-    /* Copy the sound velocity profile record from the source to the target */
+    /* Copy the sound velocity profile record from the source to the target. */
     target->attitude.num_measurements    = source->attitude.num_measurements;
 
-    return(0);
+    return (0);
 }
 
 /********************************************************************
@@ -4012,7 +4026,7 @@ gsfSetParam(int handle, int index, char *val, gsfRecords *rec)
             return (-1);
         }
     }
-    /* If memory has already been allocated, make sure we have enough space */
+    /* If memory has already been allocated, make sure we have enough space. */
     else if (gsfFileTable[handle-1].rec.process_parameters.param_size[index] < len)
     {
         /* If the output file is open update, we cannot write a parameter
@@ -4022,7 +4036,7 @@ gsfSetParam(int handle, int index, char *val, gsfRecords *rec)
             (gsfFileTable[handle-1].access_mode == GSF_UPDATE_INDEX))
         {
             gsfError = GSF_PARAM_SIZE_FIXED;
-            return(-1);
+            return (-1);
         }
         ptr = (char *) realloc((void *) ptr, len + 1);
         if (ptr == (char *) NULL)
@@ -4037,7 +4051,7 @@ gsfSetParam(int handle, int index, char *val, gsfRecords *rec)
     rec->process_parameters.param_size[index] = len;
     strncpy(rec->process_parameters.param[index], val, len+1);
 
-    return(0);
+    return (0);
 }
 
 /********************************************************************
@@ -4094,16 +4108,16 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
             (gsfFileTable[handle-1].rec.process_parameters.number_parameters < GSF_NUMBER_PROCESSING_PARAMS))
         {
             gsfError = GSF_PARAM_SIZE_FIXED;
-            return(-1);
+            return (-1);
         }
     }
 
-    /* Load the text descriptor for the start of time epoch */
+    /* Load the text descriptor for the start of time epoch. */
     sprintf(temp, "REFERENCE TIME=1970/001 00:00:00");
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     if ((p->number_of_transmitters < 1) || (p->number_of_transmitters > GSF_MAX_OFFSETS))
@@ -4148,7 +4162,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
         return (-1);
     }
 
-    /* This parameter indicates whether the depth data has been roll compensated */
+    /* This parameter indicates whether the depth data has been roll compensated. */
     if (p->roll_compensated == GSF_COMPENSATED)
     {
         sprintf(temp, "ROLL_COMPENSATED=YES");
@@ -4160,10 +4174,10 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
-    /* This parameter indicates whether the depth data has been pitch compensated */
+    /* This parameter indicates whether the depth data has been pitch compensated. */
     if (p->pitch_compensated == GSF_COMPENSATED)
     {
         sprintf(temp, "PITCH_COMPENSATED=YES");
@@ -4175,10 +4189,10 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
-    /* This parameter indicates whether the depth has been heave compensated */
+    /* This parameter indicates whether the depth has been heave compensated. */
     if (p->heave_compensated == GSF_COMPENSATED)
     {
         sprintf(temp, "HEAVE_COMPENSATED=YES");
@@ -4190,10 +4204,10 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
-    /* This parameter indicates whether the depth has been tide compensated */
+    /* This parameter indicates whether the depth has been tide compensated. */
     if (p->tide_compensated == GSF_COMPENSATED)
     {
         sprintf(temp, "TIDE_COMPENSATED=YES");
@@ -4205,11 +4219,10 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
-    /* This parameter indicates the number of receivers.
-     */
+    /* This parameter indicates the number of receivers. */
     if ((num_rx >= 1) && (num_rx <= 2))
     {
         sprintf(temp, "NUMBER_OF_RECEIVERS=%d", num_rx);
@@ -4221,11 +4234,10 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
-    /* This parameter indicates the number of transmitters.
-     */
+    /* This parameter indicates the number of transmitters. */
     if ((num_tx >= 1) && (num_tx <= 2))
     {
         sprintf(temp, "NUMBER_OF_TRANSMITTERS=%d", num_tx);
@@ -4237,7 +4249,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* If the depth field of the swath bathy ping data structure is true depth,
@@ -4262,7 +4274,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* This parameter indicates whether the angle travel time pairs
@@ -4279,7 +4291,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* This parameter indicates whether the motion sensor bias - measured from the
@@ -4296,7 +4308,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* This parameter indicates whether the heave data has been subtracted from
@@ -4313,7 +4325,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* This parameter indicates the offset from UTC of the original data.
@@ -4329,7 +4341,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* This parameter indicates the roll reference type.
@@ -4348,7 +4360,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     }
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret) {
-        return(-1);
+        return (-1);
     }
 
     /* The DRAFT_TO_APPLY parameter is a place holder for a new draft
@@ -4408,7 +4420,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The PITCH_BIAS_TO_APPLY parameter is place holder for a pitch bias
@@ -4467,7 +4479,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The ROLL_BIAS_TO_APPLY parameter is place holder for a roll bias value
@@ -4526,7 +4538,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The GYRO_BIAS_TO_APPLY parameter is place holder for a gyro bias value
@@ -4585,7 +4597,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The POSITION_OFFSET_TO_APPLY parameter is place holder for a position
@@ -4643,7 +4655,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The ANTENNA_OFFSET_TO_APPLY parameter is place holder for a antenna
@@ -4700,7 +4712,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The TRANSDUCER_OFFSET_TO_APPLY parameter is place holder for a
@@ -4860,7 +4872,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The TRANSDUCER_PITCH_OFFSET_TO_APPLY parameter is a place holder for a transducer pitch angle
@@ -4918,7 +4930,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The TRANSDUCER_ROLL_OFFSET_TO_APPLY parameter is a place holder for a transducer roll angle
@@ -4976,7 +4988,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The TRANSDUCER_HEADING_OFFSET_TO_APPLY parameter is a place holder for a transducer heading angle
@@ -5035,7 +5047,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The MRU_PITCH_TO_APPLY parameter is place holder for a motion
@@ -5060,7 +5072,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The MRU_ROLL_TO_APPLY parameter is place holder for a motion
@@ -5085,7 +5097,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The MRU_HEADING_TO_APPLY parameter is place holder for a motion
@@ -5110,7 +5122,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The MRU_OFFSET_TO_APPLY parameter is place holder for a mru
@@ -5167,7 +5179,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The CENTER_OF_ROTATION_OFFSET_TO_APPLY parameter is place holder for a mru
@@ -5224,7 +5236,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The POSITION_LATENCY_TO_APPLY parameter is a place holder for a navigation
@@ -5249,7 +5261,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The ATTITUDE_LATENCY_TO_APPLY parameter is a place holder for an attitude
@@ -5274,7 +5286,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The DEPTH_SENSOR_LATENCY_TO_APPLY parameter is a place holder for a depth
@@ -5299,7 +5311,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The DEPTH_SENSOR_OFFSET_TO_APPLY parameter is place holder for a depth
@@ -5351,7 +5363,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The RX_TRANSDUCER_OFFSET_TO_APPLY parameter is place holder for a
@@ -5493,7 +5505,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The RX_TRANSDUCER_PITCH_TO_APPLY parameter is place holder for a
@@ -5551,7 +5563,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The RX_TRANSDUCER_ROLL_TO_APPLY parameter is place holder for a
@@ -5609,7 +5621,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The RX_TRANSDUCER_HEADING_TO_APPLY parameter is place holder for a
@@ -5667,10 +5679,10 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
-    /***** end of "to apply" parameters, on to "applied" ****/
+    /* End of "to apply" parameters, on to "applied". */
 
     /* The APPLIED_DRAFT parameter defines the transducer draft value
      * previously applied to the depths.
@@ -5726,12 +5738,10 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
-    /* The APPLIED_PITCH_BIAS parameter defines the pitch bias previously
-     * applied.
-     */
+    /* The APPLIED_PITCH_BIAS parameter defines the pitch bias previously applied. */
     if (num_tx == 1)
     {
         if (p->applied.pitch_bias[0] == GSF_UNKNOWN_PARAM_VALUE)
@@ -5783,7 +5793,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_ROLL_BIAS parameter defines the roll bias previously
@@ -5840,7 +5850,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_GYRO_BIAS parameter defines the gyro bias previously
@@ -5897,7 +5907,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_POSITION_OFFSET parameter defines the x,y,z position in
@@ -5956,7 +5966,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_ANTENNA_OFFSET parameter defines the x,y,z position of the antenna
@@ -6015,7 +6025,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_TRANSDUCER_OFFSET parameter defines the x,y,z offsets
@@ -6177,7 +6187,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_TRANSDUCER_PITCH_OFFSET parameter defines the transducer pitch installation angle
@@ -6236,7 +6246,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_TRANSDUCER_ROLL_OFFSET parameter defines the transducer roll installation angle
@@ -6295,7 +6305,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_TRANSDUCER_HEADING_OFFSET parameter defines the transducer heading installation angle
@@ -6354,7 +6364,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_MRU_ROLL parameter defines the roll bias previously
@@ -6379,7 +6389,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_MRU_PITCH parameter defines the pitch bias previously
@@ -6404,7 +6414,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_MRU_HEADING parameter defines the heading bias previously
@@ -6429,7 +6439,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_MRU_OFFSET parameter defines the x,y,z offsets
@@ -6487,7 +6497,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_CENTER_OF_ROTATION_OFFSET parameter defines the x,y,z offsets
@@ -6545,7 +6555,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_POSITION_LATENCY parameter defines the navigation
@@ -6570,7 +6580,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_ATTITUDE_LATENCY parameter defines the attitude
@@ -6595,7 +6605,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_DEPTH_SENSOR_LATENCY parameter defines the depth
@@ -6620,7 +6630,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_DEPTH_SENSOR_OFFSET parameter defines the x,y,z position
@@ -6672,11 +6682,11 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The APPLIED_RX_TRANSDUCER_OFFSET parameter is the x, y, z position
-     * offsets of the receiver array that have been applied
+     * offsets of the receiver array that have been applied.
      */
     sprintf (temp, "APPLIED_RX_TRANSDUCER_OFFSET=");
     if (num_rx == 1)
@@ -6814,11 +6824,10 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
-    /* The APPLIED_RX_TRANSDUCER_PITCH parameter is the receiver pitch offset that has been applied.
-     */
+    /* The APPLIED_RX_TRANSDUCER_PITCH parameter is the receiver pitch offset that has been applied. */
     sprintf (temp, "APPLIED_RX_TRANSDUCER_PITCH_OFFSET=");
     if (num_rx == 1)
     {
@@ -6871,11 +6880,10 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
-    /* The APPLIED_RX_TRANSDUCER_ROLL parameter is the receiver roll offset that has been applied.
-     */
+    /* The APPLIED_RX_TRANSDUCER_ROLL parameter is the receiver roll offset that has been applied. */
     sprintf (temp, "APPLIED_RX_TRANSDUCER_ROLL_OFFSET=");
     if (num_rx == 1)
     {
@@ -6928,11 +6936,10 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
-    /* The APPLIED_RX_TRANSDUCER_HEADING_TO_APPLY parameter is the receiver heading offset that has been applied.
-     */
+    /* The APPLIED_RX_TRANSDUCER_HEADING_TO_APPLY parameter is the receiver heading offset that has been applied. */
     sprintf (temp, "APPLIED_RX_TRANSDUCER_HEADING_OFFSET=");
     if (num_rx == 1)
     {
@@ -6985,10 +6992,10 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
-    /******* end of the applied parameters *******/
+    /* End of the applied parameters. */
 
     /* The horizontal datum parameter defines the elipsoid to which the
      * latitude longitude values are referenced.
@@ -7007,7 +7014,7 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     /* The TIDAL_DATUM parameter defines the reference datum for tide
@@ -7074,12 +7081,12 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
     {
-        return(-1);
+        return (-1);
     }
 
     rec->process_parameters.number_parameters = number_parameters;
 
-    return(0);
+    return (0);
 }
 
 /********************************************************************
@@ -7117,8 +7124,8 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
     char str[64];
     int num_tx = 0, num_rx = 0;
 
-    gsfInitializeMBParams (p);   /* set everything to "unknown" */
-    /* Set this value to zero in case we can't determine it */
+    gsfInitializeMBParams (p);   /* Set everything to "unknown". */
+    /* Set this value to zero in case we can't determine it. */
     *numArrays = 0;
 
     for (i=0; i<rec->process_parameters.number_parameters; i++)
@@ -7126,7 +7133,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
         if (strncmp(rec->process_parameters.param[i], "REFERENCE TIME", strlen("REFERENCE TIME")) == 0)
         {
             memset(p->start_of_epoch, 0, sizeof(p->start_of_epoch));
-            strncpy(p->start_of_epoch, rec->process_parameters.param[i], sizeof(p->start_of_epoch));
+            strncpy(p->start_of_epoch, rec->process_parameters.param[i], sizeof(p->start_of_epoch) - 1);
         }
 
         else if (strncmp (rec->process_parameters.param[i], "PLATFORM_TYPE", strlen ("PLATFORM_TYPE")) == 0)
@@ -7327,7 +7334,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->to_apply.draft[0],
                     &p->to_apply.draft[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7342,7 +7349,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->to_apply.pitch_bias[0],
                     &p->to_apply.pitch_bias[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7357,7 +7364,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->to_apply.roll_bias[0],
                     &p->to_apply.roll_bias[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7372,7 +7379,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->to_apply.gyro_bias[0],
                     &p->to_apply.gyro_bias[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7424,7 +7431,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->to_apply.transducer_pitch_offset[0],
                     &p->to_apply.transducer_pitch_offset[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7439,7 +7446,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->to_apply.transducer_roll_offset[0],
                     &p->to_apply.transducer_roll_offset[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7454,7 +7461,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->to_apply.transducer_heading_offset[0],
                     &p->to_apply.transducer_heading_offset[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7622,7 +7629,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
             }
             if (!num_rx)
                 num_rx = gsfNumberParams(rec->process_parameters.param[i]);
-        }  /** end of "to apply" values */
+        }  /* End of "to apply" values. */
         else if (strncmp(rec->process_parameters.param[i], "APPLIED_DRAFT", strlen("APPLIED_DRAFT")) == 0)
         {
             p->applied.draft[0] = GSF_UNKNOWN_PARAM_VALUE;
@@ -7633,7 +7640,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->applied.draft[0],
                     &p->applied.draft[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7648,7 +7655,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->applied.pitch_bias[0],
                     &p->applied.pitch_bias[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7663,7 +7670,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->applied.roll_bias[0],
                     &p->applied.roll_bias[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7678,7 +7685,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->applied.gyro_bias[0],
                     &p->applied.gyro_bias[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7745,7 +7752,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->applied.transducer_pitch_offset[0],
                     &p->applied.transducer_pitch_offset[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7760,7 +7767,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->applied.transducer_roll_offset[0],
                     &p->applied.transducer_roll_offset[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7775,7 +7782,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->applied.transducer_heading_offset[0],
                     &p->applied.transducer_heading_offset[1]);
             }
-            /* Get the number of array pairs from each sonar alignment parameter */
+            /* Get the number of array pairs from each sonar alignment parameter. */
             *numArrays = gsfNumberParams(rec->process_parameters.param[i]);
             if (!num_tx)
                 num_tx = *numArrays;
@@ -7924,7 +7931,9 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
                     &p->applied.rx_transducer_heading_offset[0],
                     &p->applied.rx_transducer_heading_offset[1]);
             }
-        }   /** end of "applied" parameters **/
+        }
+
+        /* End of "applied" parameters. */
 
         /* The horizontal datum parameter defines the elipsoid to which
          * the latitude and longitude values are referenced.
@@ -7942,9 +7951,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
             }
         }
 
-        /* The TIDAL_DATUM parameter defines the reference datum for tide
-         * corrections
-         */
+        /* The TIDAL_DATUM parameter defines the reference datum for tide corrections. */
         else if (strncmp(rec->process_parameters.param[i], "TIDAL_DATUM", strlen("TIDAL_DATUM")) == 0)
         {
             sscanf (rec->process_parameters.param[i], "TIDAL_DATUM=%s",
@@ -8011,7 +8018,7 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
     p->number_of_transmitters = num_tx;
     p->number_of_receivers = num_rx;
 
-    return(0);
+    return (0);
 }
 
 /********************************************************************
@@ -8040,7 +8047,8 @@ gsfNumberParams(char *param)
     char *p;
     char tmp[128];
 
-    strncpy (tmp, param, sizeof(tmp));
+    strncpy(tmp, param, sizeof(tmp) - 1);
+    tmp[sizeof(tmp) - 1] = '\0';
     p = strtok (tmp, ",");
 
     if (p == NULL)
@@ -8088,7 +8096,7 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
 {
     int             ret=0;   /* Assume that we will be successful. */
 
-    /* Switch on the type of sonar this data came from */
+    /* Switch on the type of sonar this data came from. */
     switch (data->mb_ping.sensor_id)
     {
         case GSF_SWATH_BATHY_SUBRECORD_SEABEAM_SPECIFIC:
@@ -8104,19 +8112,19 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
         case GSF_SWATH_BATHY_SUBRECORD_EM100_SPECIFIC:
             switch (data->mb_ping.sensor_data.gsfEM100Specific.mode)
             {
-                case(1):  /* wide */
+                case(1):  /* Wide. */
                    *athwartship = 2.5;
                    break;
 
-                case(2):  /* ulta-wide */
+                case(2):  /* Ulta-wide. */
                    *athwartship = 5.5;
                    break;
 
-                case(3):  /* narrow */
+                case(3):  /* Narrow. */
                    *athwartship = 2.0;
                    break;
 
-                default:  /* Unrecognized sonar mode */
+                default:  /* Unrecognized sonar mode. */
                    *athwartship = 0.0;
                    ret = -1;
                    break;
@@ -8140,12 +8148,10 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
             *athwartship = data->mb_ping.sensor_data.gsfEM121Specific.beam_width;
             break;
 
-#if 1
-/* obsolete */
+        /* Obsolete. */
         case GSF_SWATH_BATHY_SUBRECORD_SASS_SPECIFIC:
             ret = -1;
             break;
-#endif
 
         case GSF_SWATH_BATHY_SUBRECORD_SEAMAP_SPECIFIC:
             ret = -1;
@@ -8332,7 +8338,7 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
             ret = -1;
             break;
     }
-    return(ret);
+    return (ret);
 }
 
 /********************************************************************
@@ -8361,24 +8367,22 @@ gsfIsStarboardPing(const gsfRecords *data)
     int ret = 0;
 
 
-    /* Switch on the type of sonar this data came from */
+    /* Switch on the type of sonar this data came from. */
     switch (data->mb_ping.sensor_id)
     {
 
         case GSF_SWATH_BATHY_SUBRECORD_GEOSWATH_PLUS_SPECIFIC:
-            return data->mb_ping.sensor_data.gsfGeoSwathPlusSpecific.side;
-            break;
+            return (data->mb_ping.sensor_data.gsfGeoSwathPlusSpecific.side);
         case GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC:
-            return data->mb_ping.sensor_data.gsfKlein5410BssSpecific.side;
-            break;
+            return (data->mb_ping.sensor_data.gsfKlein5410BssSpecific.side);
         case GSF_SWATH_BATHY_SUBRECORD_SEABAT_SPECIFIC:
-            if ( data->mb_ping.sensor_data.gsfSeaBatSpecific.mode  &  GSF_SEABAT_STBD_HEAD )
+            if (data->mb_ping.sensor_data.gsfSeaBatSpecific.mode & GSF_SEABAT_STBD_HEAD)
             {
                 ret = 1;
             }
             break;
         case GSF_SWATH_BATHY_SUBRECORD_ELAC_MKII_SPECIFIC:
-            if ( data->mb_ping.sensor_data.gsfElacMkIISpecific.mode  &  GSF_MKII_STBD_HEAD )
+            if (data->mb_ping.sensor_data.gsfElacMkIISpecific.mode & GSF_MKII_STBD_HEAD)
             {
                 ret = 1;
             }
@@ -8389,24 +8393,24 @@ gsfIsStarboardPing(const gsfRecords *data)
         case GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC:
         case GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC:
         case GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC:
-            /* it is assumed that the center_beam is set to the vertical beam. */
+            /* It is assumed that the center_beam is set to the vertical beam. */
             if (data->mb_ping.center_beam < data->mb_ping.number_beams / 2)
             {
-                /* most of the beams are to starboard of vertical */
+                /* Most of the beams are to starboard of vertical. */
                 ret = 1;
             }
             else
             {
-                /* most of the beams are to port of vertical */
+                /* Most of the beams are to port of vertical. */
                 ret = 0;
             }
-        break;
+            break;
         default:
             ret = 0;
             break;
     }
 
-    return(ret);
+    return (ret);
 }
 
 /********************************************************************
@@ -8458,7 +8462,7 @@ gsfIsStarboardPing(const gsfRecords *data)
  *
  ********************************************************************/
 int
-gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecordID, int reset, double min_depth, double max_depth, double *last_corrector, char c_flag, double precision)
+gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecordID, int reset, UNUSED double min_depth, double max_depth, double *last_corrector, char c_flag, double precision)
 {
     double          offset;
     double          fraction;
@@ -8479,22 +8483,22 @@ gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecor
         layer_interval = 10.0;
     }
 
-    /* Test for valid subrecordID, we only supported automated establishement of the DC offset for the depth subrecords */
+    /* Test for valid subrecordID, we only supported automated establishement of the DC offset for the depth subrecords. */
     if ((subrecordID != GSF_SWATH_BATHY_SUBRECORD_DEPTH_ARRAY) && (subrecordID != GSF_SWATH_BATHY_SUBRECORD_NOMINAL_DEPTH_ARRAY))
     {
         gsfError = GSF_UNRECOGNIZED_ARRAY_SUBRECORD_ID;
-        return(-1);
+        return (-1);
     }
 
-    /* Get the current offset scaling factor from the ping data structure */
+    /* Get the current offset scaling factor from the ping data structure. */
     offset    = ping->scaleFactors.scaleTable[subrecordID - 1].offset;
 
-    /* Break the total correction value into integer and fractional components based on the layering interval */
+    /* Break the total correction value into integer and fractional components based on the layering interval. */
     corrector = ping->depth_corrector + ping->tide_corrector;
     fraction = modf (corrector / layer_interval, &layer);
     layer = layer * layer_interval;
 
-    /* Handle the startup and/or reset situation */
+    /* Handle the startup and/or reset situation. */
     if (reset)
     {
         if (layer < layer_interval)
@@ -8508,7 +8512,7 @@ gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecor
         *last_corrector = 0.0;
     }
 
-    /* Set the corrector layer trip thresholds based on the sign of the current layer */
+    /* Set the corrector layer trip thresholds based on the sign of the current layer. */
     if (fraction < 0.0)
     {
         percent = (int) (fraction * layer_interval);
@@ -8584,7 +8588,7 @@ gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecor
         offset = 20;
     }
 
-    /* Round to the nearest whole integer */
+    /* Round to the nearest whole integer. */
     if (offset < 0.0)
     {
         dc_offset = (int) (offset - 0.5);
@@ -8649,14 +8653,14 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
     double          offset;
     int             ret_code = 0;
 
-    /* Make sure that we received a valid subrecordID */
+    /* Make sure that we received a valid subrecordID. */
     if ((subrecordID < 1) || (subrecordID > GSF_MAX_PING_ARRAY_SUBRECORDS))
     {
         gsfError = GSF_UNRECOGNIZED_ARRAY_SUBRECORD_ID;
-        return(-1);
+        return (-1);
     }
 
-    /* Make sure scale factors have been established for this array */
+    /* Make sure scale factors have been established for this array. */
     if (ping->scaleFactors.scaleTable[subrecordID - 1].multiplier == 0.0)
     {
         gsfError = GSF_ILLEGAL_SCALE_FACTOR_MULTIPLIER;
@@ -9162,7 +9166,7 @@ gsfIsNewSurveyLine(int handle, const gsfRecords *rec, double azimuth_change, dou
         }
     }
 
-    return(new_line);
+    return (new_line);
 }
 
 /********************************************************************
@@ -9187,25 +9191,29 @@ gsfInitializeMBParams (gsfMBParams *p)
 {
     int i;
 
+    /* The integer unknown values were implicitly being converted from
+       DBL_MIN to 0 in GSF 3.06 and older.
+     */
     memset(p->start_of_epoch, 0, sizeof(p->start_of_epoch));
-    p->horizontal_datum = GSF_UNKNOWN_PARAM_VALUE;
-    p->vertical_datum = GSF_UNKNOWN_PARAM_VALUE;
-    p->roll_compensated = GSF_UNKNOWN_PARAM_VALUE;
-    p->pitch_compensated = GSF_UNKNOWN_PARAM_VALUE;
-    p->heave_compensated = GSF_UNKNOWN_PARAM_VALUE;
-    p->tide_compensated = GSF_UNKNOWN_PARAM_VALUE;
-    p->ray_tracing = GSF_UNKNOWN_PARAM_VALUE;
-    p->depth_calculation = GSF_UNKNOWN_PARAM_VALUE;
-    p->vessel_type = GSF_UNKNOWN_PARAM_VALUE;
-    p->full_raw_data = GSF_UNKNOWN_PARAM_VALUE;
-    p->msb_applied_to_attitude = GSF_UNKNOWN_PARAM_VALUE;
-    p->heave_removed_from_gps_tc = GSF_UNKNOWN_PARAM_VALUE;
+    p->horizontal_datum = GSF_H_DATUM_UNKNOWN;
+    p->vertical_datum = GSF_V_DATUM_UNKNOWN;
+    p->roll_compensated = GSF_UNCOMPENSATED;
+    p->pitch_compensated = GSF_UNCOMPENSATED;
+    p->heave_compensated = GSF_UNCOMPENSATED;
+    p->tide_compensated = GSF_UNCOMPENSATED;
+    p->ray_tracing = GSF_UNCOMPENSATED;
+    /* Default changed from 0 to 3 after GSF 3.06. */
+    p->depth_calculation = GSF_DEPTH_CALC_UNKNOWN;
+    p->vessel_type = GSF_PLATFORM_TYPE_SURFACE_SHIP;
+    p->full_raw_data = GSF_FALSE;
+    p->msb_applied_to_attitude = GSF_FALSE;
+    p->heave_removed_from_gps_tc = GSF_FALSE;
     p->utc_offset = GSF_UNKNOWN_PARAM_INT;
     p->roll_reference = GSF_UNKNOWN_PARAM_INT;
     p->number_of_transmitters = GSF_UNKNOWN_PARAM_INT;
     p->number_of_receivers = GSF_UNKNOWN_PARAM_INT;
 
-    /* initialize the "to apply" fields */
+    /* Initialize the "to apply" fields. */
     p->to_apply.position_x_offset = GSF_UNKNOWN_PARAM_VALUE;
     p->to_apply.position_y_offset = GSF_UNKNOWN_PARAM_VALUE;
     p->to_apply.position_z_offset = GSF_UNKNOWN_PARAM_VALUE;
@@ -9247,7 +9255,7 @@ gsfInitializeMBParams (gsfMBParams *p)
         p->to_apply.rx_transducer_heading_offset[i] = GSF_UNKNOWN_PARAM_VALUE;
     }
 
-    /* initialize the "applied" fields */
+    /* Initialize the "applied" fields. */
     p->applied.position_x_offset = GSF_UNKNOWN_PARAM_VALUE;
     p->applied.position_y_offset = GSF_UNKNOWN_PARAM_VALUE;
     p->applied.position_z_offset = GSF_UNKNOWN_PARAM_VALUE;

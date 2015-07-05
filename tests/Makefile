@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-TESTS :=
+TESTS := index_test
 TESTS += read_gsf_2_9_test
 TESTS += read_gsf_3_6_test
+TESTS += write_test
 
 all: test
 	@echo "Done"
@@ -92,10 +93,16 @@ libgsftest.a: gsf_test_util.o
 gsf_test_util.o: gsf_test_util.cc gsf_test_util.h
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
+index_test: index_test.o gtest_main.a libgsftest.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../src/libgsf.a
+
 read_gsf_2_9_test: read_gsf_2_9_test.o gtest_main.a libgsftest.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../src/libgsf.a
 
 read_gsf_3_6_test: read_gsf_3_6_test.o gtest_main.a libgsftest.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../src/libgsf.a
+
+write_test: write_test.o gtest_main.a libgsftest.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../src/libgsf.a
 
 gsf_info: gsf_info.o
