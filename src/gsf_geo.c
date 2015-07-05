@@ -85,12 +85,12 @@ static GSF_GP_INFO gp_info[] = {
 
 static double a0 (int k)
 {
-    return gp_info[k].a0;
+    return (gp_info[k].a0);
 }
 
 static double b0 (int k)
 {
-    return gp_info[k].b0;
+    return (gp_info[k].b0);
 }
 
 static void metric (double phi, int k, double *gx, double *gy)
@@ -156,7 +156,7 @@ GSF_POSITION *gsfGetPositionDestination(GSF_POSITION gp, GSF_POSITION_OFFSETS of
     new_gp.lat = RTOD(ilat);
     new_gp.z   = iz;
 
-    return &new_gp;
+    return (&new_gp);
 }
 
 
@@ -246,6 +246,6 @@ GSF_POSITION_OFFSETS *gsfGetPositionOffsets(GSF_POSITION gp_from, GSF_POSITION g
     offsets.y = iy;
     offsets.z = iz;
 
-    return &offsets;
+    return (&offsets);
 }
 

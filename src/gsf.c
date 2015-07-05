@@ -150,7 +150,7 @@ gsfStat (const char *filename, long long *sz)
     if (sz == NULL)
     {
         gsfError = GSF_FOPEN_ERROR;
-        return -1;
+        return (-1);
     }
 
 #if (defined __WINDOWS__) || (defined __MINGW32__)
@@ -175,7 +175,7 @@ gsfStat (const char *filename, long long *sz)
         gsfError = GSF_UNRECOGNIZED_FILE;
     }
 
-    return rc;
+    return (rc);
 }
 
 
@@ -2125,7 +2125,7 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
  * Inputs :
  *  handle = the integer value set by a call to gsfOpen.
  *  subrecordID = an integer value containing the subrecord id of the requested scale factors
- *  c_flag = the address of an unsigned character to contain the the compression flag
+ *  c_flag = the address of an unsigned character to contain the compression flag
  *  multiplier = the address of a double to contain the scaling multiplier
  *  offset = the address of a double to contain the scaling DC offset.
  *
@@ -2503,7 +2503,7 @@ gsfPrintError(FILE * fp)
 
 int gsfIntError(void)
 {
-    return gsfError;
+    return (gsfError);
 }
 
 /********************************************************************
@@ -2862,7 +2862,7 @@ gsfChecksum(unsigned char *buff, unsigned int num_bytes)
     {
         checkSum += *ptr;
     }
-    return checkSum;
+    return (checkSum);
 }
 
 /********************************************************************
@@ -8372,19 +8372,17 @@ gsfIsStarboardPing(const gsfRecords *data)
     {
 
         case GSF_SWATH_BATHY_SUBRECORD_GEOSWATH_PLUS_SPECIFIC:
-            return data->mb_ping.sensor_data.gsfGeoSwathPlusSpecific.side;
-            break;
+            return (data->mb_ping.sensor_data.gsfGeoSwathPlusSpecific.side);
         case GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC:
-            return data->mb_ping.sensor_data.gsfKlein5410BssSpecific.side;
-            break;
+            return (data->mb_ping.sensor_data.gsfKlein5410BssSpecific.side);
         case GSF_SWATH_BATHY_SUBRECORD_SEABAT_SPECIFIC:
-            if ( data->mb_ping.sensor_data.gsfSeaBatSpecific.mode  &  GSF_SEABAT_STBD_HEAD )
+            if (data->mb_ping.sensor_data.gsfSeaBatSpecific.mode & GSF_SEABAT_STBD_HEAD)
             {
                 ret = 1;
             }
             break;
         case GSF_SWATH_BATHY_SUBRECORD_ELAC_MKII_SPECIFIC:
-            if ( data->mb_ping.sensor_data.gsfElacMkIISpecific.mode  &  GSF_MKII_STBD_HEAD )
+            if (data->mb_ping.sensor_data.gsfElacMkIISpecific.mode & GSF_MKII_STBD_HEAD)
             {
                 ret = 1;
             }
@@ -8406,7 +8404,7 @@ gsfIsStarboardPing(const gsfRecords *data)
                 /* Most of the beams are to port of vertical. */
                 ret = 0;
             }
-        break;
+            break;
         default:
             ret = 0;
             break;

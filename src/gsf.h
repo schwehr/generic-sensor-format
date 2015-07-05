@@ -2121,7 +2121,7 @@ int OPTLK gsfGetScaleFactor(int handle, unsigned int subrecordID, unsigned char 
  * Inputs :
  *  handle = the integer value set by a call to gsfOpen.
  *  subrecordID = an integer value containing the subrecord id of the requested scale factors
- *  c_flag = the address of an unsigned character to contain the the compression flag
+ *  c_flag = the address of an unsigned character to contain the compression flag
  *  multiplier = the address of a double to contain the scaling multiplier
  *  offset = the address of a double to contain the scaling DC offset.
  *
