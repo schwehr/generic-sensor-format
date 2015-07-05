@@ -1437,8 +1437,8 @@ NUM_MEASUREMENTS | Number of attitude measurements in this record (N). | I | 2
 ATTITUDE_TIME | Array of attitude measurement times, offset from the base time | I | N*2
 PITCH | Array of pitch measurements | I | N*2
 ROLL | Array of roll measurements | I | N*2
-HEAVE | Array of heave measurements | T | N*2
-HEADING | Array of heading measurements | T | N*2
+HEAVE | Array of heave measurements | I | N*2
+HEADING | Array of heading measurements | U | N*2
 
 ## Appendix A.1 Record Identifier Definition
 
@@ -1843,7 +1843,7 @@ RESERVED | Reserved for future use | I | 4
 **SEABEAM 2112** | Subrecord containing fields peculiar to SEABEAM 2112 sonars. | | 14
 MODE | Sonar mode of operation | I | 1
 SURFACE_SOUND_VELOCITY | Surface sound velocity in hundredths of meters/second | I | 2
-SSSV_SOURCE | Source of surface sound velocity | I | 1
+SSV_SOURCE | Source of surface sound velocity | I | 1
 PING_GAIN | Ping gain | I | 1
 PULSE_WIDTH | Ping pulse width | I | 1
 TRANSMITTER_ATTENUATION | Transmitter attenuation | I | 1

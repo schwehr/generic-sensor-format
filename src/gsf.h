@@ -836,7 +836,7 @@ typedef struct t_gsfEMRunTime
     unsigned char    bsp_status;                    /* Bit mask of status information for BSP status. */
     unsigned char    head_transceiver_status;       /* Bit mask of status information for sonar head or sonar transceiver. */
     unsigned char    mode;                          /* Bit mask of sonar operating information, see mode bit mask definitions. */
-    unsigned char    filter_id;                     /* One byte tit mask for various sonar processing filter settings. */
+    unsigned char    filter_id;                     /* One byte bit mask for various sonar processing filter settings. */
     double           min_depth;                     /* Meters. */
     double           max_depth;                     /* Meters. */
     double           absorption;                    /* dB/km. */
@@ -847,7 +847,7 @@ typedef struct t_gsfEMRunTime
     double           rx_bandwidth;                  /* Hz. */
     double           rx_fixed_gain;                 /* dB. */
     double           tvg_cross_over_angle;          /* Degrees. */
-    unsigned char    ssv_source;                    /* One byte bit mask defining SSSV source -> 0=sensor, 1=manual, 2=profile. */
+    unsigned char    ssv_source;                    /* One byte bit mask defining SSV source -> 0=sensor, 1=manual, 2=profile. */
     int              max_port_swath_width;          /* Total swath width to port side in meters. */
     unsigned char    beam_spacing;                  /* One byte bit mask -> 0=beamwidth, 1=equiangle, 2=equidistant, 3=intermediate. */
     int              max_port_coverage;             /* Coverage to port side in degrees. */
@@ -2121,7 +2121,7 @@ int OPTLK gsfGetScaleFactor(int handle, unsigned int subrecordID, unsigned char 
  * Inputs :
  *  handle = the integer value set by a call to gsfOpen.
  *  subrecordID = an integer value containing the subrecord id of the requested scale factors
- *  c_flag = the address of an unsigned character to contain the the compression flag
+ *  c_flag = the address of an unsigned character to contain the compression flag
  *  multiplier = the address of a double to contain the scaling multiplier
  *  offset = the address of a double to contain the scaling DC offset.
  *
