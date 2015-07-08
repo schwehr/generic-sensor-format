@@ -36,8 +36,9 @@ char kComment[] =
 TEST(GsfRead3_6Test, CountPackets) {
   int handle;
   ASSERT_EQ(
-      0, gsfOpen("../data/surveys/0175_20150322_232639_EX1502L2_MB.gsf.mb121",
-                 GSF_READONLY, &handle));
+      0,
+      gsfOpen("../../data/surveys/0175_20150322_232639_EX1502L2_MB.gsf.mb121",
+              GSF_READONLY, &handle));
   ASSERT_GE(handle, 0);
 
   gsfDataID data_id;
@@ -58,7 +59,7 @@ TEST(GsfRead3_6Test, CountPackets) {
 TEST(GsfReadTest, ReadVersion3_6) {
   int handle;
   ASSERT_EQ(0,
-      gsfOpen("../data/surveys/0175_20150322_232639_EX1502L2_MB.gsf.mb121",
+      gsfOpen("../../data/surveys/0175_20150322_232639_EX1502L2_MB.gsf.mb121",
               GSF_READONLY, &handle));
   ASSERT_GE(handle, 0);
 

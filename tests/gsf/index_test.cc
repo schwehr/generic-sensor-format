@@ -66,12 +66,12 @@ TEST(GsfIndex, Comment) {
   // TempDir
   // cp gsf to tempdir
   int handle;
-  string filename = "../data/single-record/comment.gsf";
+  string filename = "../../data/single-record/comment.gsf";
   ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_UPDATE_INDEX, &handle));
   ASSERT_EQ(0, gsfClose(handle));
 
-  string filename_old_index = "../data/single-record/comment.orig.nsf";
-  string filename_new_index = "../data/single-record/comment.nsf";
+  string filename_old_index = "../../data/single-record/comment.orig.nsf";
+  string filename_new_index = "../../data/single-record/comment.nsf";
 
   CheckFileEqual(filename_old_index, filename_new_index);
 }

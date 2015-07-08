@@ -12,6 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+clean:
+	for dir in ${DIRS}; do \
+	  echo $$dir ; \
+	  (cd $$dir && make $@) ; \
+	done
+	rm -f README.html
+
 README.html: README.md
 	markdown $< > $@
 
