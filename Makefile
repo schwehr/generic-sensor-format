@@ -22,32 +22,17 @@ default:
 	@echo
 	@echo "  all      - build everything"
 	@echo "  clean    - remove all objects and executables"
-	@echo "  tar      - create a release source tar using VERSION"
 	@echo
 	@echo "  test     - C++ unittests"
 
 test: all
-	(cd tests && make test)
+	(cd tests && make $@)
 
 all:
-	(cd src && make all)
-
-DIST:=gsf-${shell cat VERSION}
-TAR:=${DIST}.tar
-tar:
-	rm -f ${TAR}.bz2 ${TAR}
-	rm -rf ${DIST}
-	mkdir ${DIST}
-	cp -rp [A-Z]* src ${DIST}/
-	tar cf ${TAR} ${DIST}
-	xz -9 ${TAR}
-	rm -rf ${DIST}
+	(cd src && make $@)
 
 clean:
-	(cd src && make clean)
-	(cd tests && make clean)
-
-real-clean:
-	rm -rf ${DIST}
-	rm -rf ${TAR}
+	(cd src && make $@)
+	(cd tests && make $@)
+	(cd data && make $@)
 

@@ -12,17 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-DIRS := gsf
-# DIRS += gsfxx
-
-test:
-	for dir in ${DIRS}; do \
-	  echo $$dir ; \
-	  (cd $$dir && make $@) ; \
-	done
+all:
+	echo "Nothing to do yet for gsfxx"
 
 clean:
-	for dir in ${DIRS}; do \
-	  echo $$dir ; \
-	  (cd $$dir && make $@) ; \
-	done
+	-rm -f *.o
+	-rm -f ${LIB}

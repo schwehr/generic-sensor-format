@@ -12,43 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-WARN := -Wall
-WARN += -Wextra
-# WARN += -Werror
+DIRS := gsf
+DIRS += gsfxx
+DIRS += bin
 
-DEBUG := -g3 -DDEBUG=1
-DEBUG += -O0
-
-OPT := -O3
-OPT += -funroll-loops -fexpensive-optimizations -ffast-math
-OPT += -DNDEBUG
-
-ifdef OPTIMIZE
-  CFLAGS += ${OPT}
-else
-  CFLAGS += ${DEBUG}
-endif
-
-CFLAGS += ${WARN}
-
-SRCS := $(wildcard *.c)
-OBJS := ${SRCS:.c=.o}
-LIB := libgsf.a
-
-${LIB}: ${OBJS}
-	ar rv $@ $?
-	ranlib $@
-
-all: ${LIB}
+all:
+	for dir in ${DIRS}; do \
+	  echo $$dir ; \
+	  (cd $$dir && make $@) ; \
+	done
 
 clean:
-	-rm -f *.o
-	-rm -f ${LIB}
-
-HDRS := gsf.h gsf_ft.h gsf_dec.h gsf_enc.h gsf_indx.h
-gsf.o: gsf.c ${HDRS}
-gsf_dec.o: gsf_dec.c ${HDRS}
-gsf_enc.o: gsf_enc.c ${HDRS}
-gsf_geo.o: gsf_geo.c ${HDRS}
-gsf_indx.o: gsf_indx.c ${HDRS}
-gsf_info.o: gsf_info.c ${HDRS}
+	for dir in ${DIRS}; do \
+	  echo $$dir ; \
+	  (cd $$dir && make $@) ; \
+	done
