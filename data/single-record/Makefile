@@ -13,5 +13,5 @@
 # limitations under the License.
 
 clean:
-	-rm comment.nsf
+	-rm -f comment.nsf
 
