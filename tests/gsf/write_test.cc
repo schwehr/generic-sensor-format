@@ -49,7 +49,7 @@ TEST(GsfWriteSimple, HeaderOnly) {
   ASSERT_EQ(0, gsfClose(handle));
   struct stat buf;
   ASSERT_EQ(0, stat(filename, &buf));
-  ASSERT_EQ(24, buf.st_size);
+  ASSERT_EQ(20, buf.st_size);
 }
 
 // TODO(schwehr): GSF_RECORD_SWATH_BATHYMETRY_PING.
@@ -65,7 +65,7 @@ void ValidateWriteComment(const char *filename,
   ASSERT_NE(nullptr, filename);
   ASSERT_GE(expected_write_size, 20);
   ASSERT_NE(nullptr, comment);
-  ASSERT_GE(expected_file_size, 44);
+  ASSERT_GE(expected_file_size, 40);
 
   int handle;
   ASSERT_EQ(0, gsfOpen(filename, GSF_CREATE, &handle));
@@ -94,31 +94,31 @@ void ValidateWriteComment(const char *filename,
 TEST(GsfWriteSimple, CommentEmpty) {
   char filename[] = "comment-empty.gsf";
   char comment[] = "";
-  ValidateWriteComment(filename, false, 20, comment, 44);
+  ValidateWriteComment(filename, false, 20, comment, 40);
 }
 
 TEST(GsfWriteSimple, CommentEmptyChecksum) {
   char filename[] = "comment-empty-checksum.gsf";
   char comment[] = "";
-  ValidateWriteComment(filename, true, 24, comment, 48);
+  ValidateWriteComment(filename, true, 24, comment, 44);
 }
 
 TEST(GsfWriteSimple, CommentUpTo5) {
   char filename1[] = "comment-1.gsf";
   char comment1[] = "a";
-  ValidateWriteComment(filename1, false, 24, comment1, 48);
+  ValidateWriteComment(filename1, false, 24, comment1, 44);
   char filename2[] = "comment-2.gsf";
   char comment2[] = "ab";
-  ValidateWriteComment(filename2, false, 24, comment2, 48);
+  ValidateWriteComment(filename2, false, 24, comment2, 44);
   char filename3[] = "comment-3.gsf";
   char comment3[] = "abc";
-  ValidateWriteComment(filename3, false, 24, comment3, 48);
+  ValidateWriteComment(filename3, false, 24, comment3, 44);
   char filename4[] = "comment-4.gsf";
   char comment4[] = "abcd";
-  ValidateWriteComment(filename4, false, 24, comment4, 48);
+  ValidateWriteComment(filename4, false, 24, comment4, 44);
   char filename5[] = "comment-5.gsf";
   char comment5[] = "abcde";
-  ValidateWriteComment(filename5, false, 28, comment5, 52);
+  ValidateWriteComment(filename5, false, 28, comment5, 48);
 }
 
 TEST(GsfWriteSimple, CommentLarge) {
@@ -135,7 +135,7 @@ TEST(GsfWriteSimple, CommentLarge) {
     "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     "de";
-  ValidateWriteComment(filename, false, 656, comment, 680);
+  ValidateWriteComment(filename, false, 656, comment, 676);
 }
 
 void ValidateWriteHistory(const char *filename,
@@ -154,7 +154,7 @@ void ValidateWriteHistory(const char *filename,
   ASSERT_LE(strlen(operator_name), GSF_OPERATOR_LENGTH);
   ASSERT_NE(nullptr, command_line);
   ASSERT_NE(nullptr, comment);
-  ASSERT_GE(expected_file_size, 52);
+  ASSERT_GE(expected_file_size, 48);
 
   int handle;
   ASSERT_EQ(0, gsfOpen(filename, GSF_CREATE, &handle));
@@ -182,13 +182,13 @@ void ValidateWriteHistory(const char *filename,
 
 TEST(GsfWriteSimple, History) {
   ValidateWriteHistory(
-      "history-empty.gsf", false, 28, "", "", "", "", 52);
+      "history-empty.gsf", false, 28, "", "", "", "", 48);
   ValidateWriteHistory(
-      "history-empty-checksum.gsf", true, 32, "", "", "", "", 56);
+      "history-empty-checksum.gsf", true, 32, "", "", "", "", 52);
   ValidateWriteHistory(
-      "history-1.gsf", false, 32, "a", "b", "c", "d", 56);
+      "history-1.gsf", false, 32, "a", "b", "c", "d", 52);
   ValidateWriteHistory(
-      "history-longer.gsf", false, 40, "ab", "cde", "fghi", "jklm", 64);
+      "history-longer.gsf", false, 40, "ab", "cde", "fghi", "jklm", 60);
 }
 
 // TODO(schwehr): GSF_RECORD_NAVIGATION_ERROR
@@ -203,7 +203,7 @@ void ValidateWriteAttitude(const char *filename,
                            int expected_file_size) {
   ASSERT_NE(nullptr, filename);
   ASSERT_GE(expected_write_size, 20);
-  ASSERT_GE(expected_file_size, 44);
+  ASSERT_GE(expected_file_size, 40);
 
   int handle;
   ASSERT_EQ(0, gsfOpen(filename, GSF_CREATE, &handle));
@@ -275,7 +275,7 @@ TEST(GsfWriteSimple, AttitudeEmpty) {
   const struct timespec times[] = {{3, 4}};
   const gsfAttitude attitude
       = GsfAttitude(0, times, nullptr, nullptr, nullptr, nullptr);
-  ValidateWriteAttitude("attitude-empty.gsf", false, 20, attitude, 44);
+  ValidateWriteAttitude("attitude-empty.gsf", false, 20, attitude, 40);
 }
 
 TEST(GsfWriteSimple, AttitudeLength1) {
@@ -284,7 +284,7 @@ TEST(GsfWriteSimple, AttitudeLength1) {
   const gsfAttitude attitude0
       = GsfAttitude(1, times0, data0, data0, data0, data0);
   ValidateWriteAttitude(
-      "attitude-length1-0.gsf", false, 28, attitude0, 52);
+      "attitude-length1-0.gsf", false, 28, attitude0, 48);
 
   // Small positive values.
   const struct timespec times1[] = {{7, 8}};
@@ -295,7 +295,7 @@ TEST(GsfWriteSimple, AttitudeLength1) {
   const gsfAttitude attitude1
       = GsfAttitude(1, times1, pitch1, roll1, heave1, heading1);
   ValidateWriteAttitude(
-      "attitude-length1-1-checksum.gsf", true, 32, attitude1, 56);
+      "attitude-length1-1-checksum.gsf", true, 32, attitude1, 52);
 
   const struct timespec times2[] = {{9, 10}};
   const double data2[] = {-2.3};
@@ -304,7 +304,7 @@ TEST(GsfWriteSimple, AttitudeLength1) {
   const gsfAttitude attitude2
       = GsfAttitude(1, times2, data2, data2, data2, heading2);
   ValidateWriteAttitude(
-      "attitude-length1-2neg.gsf", false, 28, attitude2, 52);
+      "attitude-length1-2neg.gsf", false, 28, attitude2, 48);
 }
 
 TEST(GsfWriteSimple, AttitudeRounding) {
@@ -321,7 +321,7 @@ TEST(GsfWriteSimple, AttitudeRounding) {
       = WriteAttitudeAndReturnRead("attitude-round.gsf",
                                    src, &file_size, &num_bytes);
   ASSERT_NE(nullptr, dst);
-  ASSERT_EQ(52, file_size);
+  ASSERT_EQ(48, file_size);
   ASSERT_EQ(28, num_bytes);
 
   const double pitch2[] = {-1.00};
