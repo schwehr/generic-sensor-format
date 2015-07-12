@@ -108,7 +108,7 @@ int main(int /* argc */, char * /*argv*/ []) {
   auto buf = file->NextBuffer();
   cout << "record_type: " << buf->type() << "-" << RECORD_STRINGS[buf->type()]
        << " size: " << buf->size() << "\n";
-  auto header = DecodeHeader(*buf);
+  auto header = Header::Decode(*buf);
   cout << "header: " << header->version_major() << "."
        << header->version_minor() << "\n";
   while ((buf = file->NextBuffer())) {

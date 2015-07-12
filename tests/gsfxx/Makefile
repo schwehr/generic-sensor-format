@@ -13,13 +13,11 @@
 # limitations under the License.
 
 TESTS :=
+TESTS += records_test
 TESTS += util_test
 
 all: test
 	echo "Done with gsfxx testing."
-
-test:
-	echo "Nothing to do yet for gsfxx"
 
 clean:
 	rm -rf $(TESTS) *.a *.o *.gsf *.dSYM

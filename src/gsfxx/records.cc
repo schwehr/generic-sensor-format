@@ -39,11 +39,12 @@ string RecordBuffer::ToString(uint32_t start, uint32_t max_length) const {
 
 
 // static
-unique_ptr<Header> DecodeHeader(const RecordBuffer &buf) {
+  unique_ptr<Header> Header::Decode(const RecordBuffer &buf) {
   assert(buf.type() == RECORD_HEADER);
   assert(buf.size() >= 12);
   // TODO(schwehr): Why is the payload of the header 16?
   const string version = buf.ToString(0, 12);
+  // TODO(schwehr): Actually parse the version string.
   return MakeUnique<Header>(3, 6);
 }
 

@@ -84,7 +84,7 @@ class Header : Record {
  public:
   Header(int version_major, int version_minor)
       : version_major_(version_major), version_minor_(version_minor) {}
-  static std::unique_ptr<Header> DecodeHeader(const RecordBuffer buf);
+  static std::unique_ptr<Header> Decode(const RecordBuffer &buf);
   int version_major() { return version_major_; }
   int version_minor() { return version_minor_; }
 
