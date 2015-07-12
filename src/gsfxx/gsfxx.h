@@ -15,6 +15,8 @@
 #ifndef GSFXX_H_
 #define GSFXX_H_
 
+#include <cstdint>
+
 #include <memory>
 #include <string>
 
@@ -75,6 +77,22 @@ class FileReaderMmap {
   mutable size_t offset_;
   const size_t size_;
 };
+
+class Record {};
+
+class Header : Record {
+ public:
+  Header(int version_major, int version_minor)
+      : version_major_(version_major), version_minor_(version_minor) {}
+  static std::unique_ptr<Header> DecodeHeader(const RecordBuffer buf);
+  int version_major() { return version_major_; }
+  int version_minor() { return version_minor_; }
+
+ private:
+  const int version_major_;
+  const int version_minor_;
+};
+
 
 }  // namespace gsfxx
 

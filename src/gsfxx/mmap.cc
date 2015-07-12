@@ -30,38 +30,17 @@
 
 #include <memory>
 #include <string>
-#include <utility>
 
 using std::string;
 using std::unique_ptr;
 
 namespace gsfxx {
 
-uint32_t SwapEndian(uint32_t src) {
-  uint32_t dst = src;
-  char *ptr = reinterpret_cast<char *>(&dst);
-  std::swap(ptr[0], ptr[3]);
-  std::swap(ptr[1], ptr[2]);
-  return dst;
-}
-
-const char *const RECORD_STRINGS[RECORD_NUM_TYPES] = {
-    "INVALID",                "HEADER",                "SWATH_BATHYMETRY_PING",
-    "SOUND_VELOCITY_PROFILE", "PROCESSING_PARAMETERS", "SENSOR_PARAMETERS",
-    "COMMENT",                "HISTORY",               "NAVIGATION_ERROR",
-    "SWATH_BATHY_SUMMARY",    "SINGLE_BEAM_PING",      "HV_NAVIGATION_ERROR",
-};
-
 const uint32_t kChecksumMask = 0x80000000;
 const uint32_t kTypeMask = 0x003FFFFF;
 // TODO(schwehr): Do we need to processed the reserved?
 //   const uint32_t kReservedMask = 0x7FC00000;
 
-string RecordBuffer::ToString(uint32_t start, uint32_t max_length) const {
-  assert(start + max_length - 1 < size_);
-  const char *buf = reinterpret_cast<const char *>(buf_) + start;
-  return string(buf, max_length);
-}
 
 unique_ptr<RecordBuffer> FileReaderMmap::NextBuffer() {
   // TODO(schwehr): Check for the record being too short.
@@ -113,29 +92,6 @@ unique_ptr<FileReaderMmap> FileReaderMmap::Open(const string &filename) {
   return MakeUnique<FileReaderMmap>(data, stat_buf.st_size);
 }
 
-class Record {};
-
-class Header : Record {
- public:
-  Header(int version_major, int version_minor)
-      : version_major_(version_major), version_minor_(version_minor) {}
-  static unique_ptr<Header> DecodeHeader(const RecordBuffer buf);
-  int version_major() { return version_major_; }
-  int version_minor() { return version_minor_; }
-
- private:
-  const int version_major_;
-  const int version_minor_;
-};
-
-// static
-unique_ptr<Header> DecodeHeader(const RecordBuffer &buf) {
-  assert(buf.type() == RECORD_HEADER);
-  assert(buf.size() >= 12);
-  // TODO(schwehr): Why is the payload of the header 16?
-  const string version = buf.ToString(0, 12);
-  return MakeUnique<Header>(3, 6);
-}
 
 }  // namespace gsfxx
 
