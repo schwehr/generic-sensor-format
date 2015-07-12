@@ -1,5 +1,4 @@
 |  GSF | Ship                     | Survey        | Filename                                      |
-|  Ver |                          |               |                                               |
 |------+--------------------------+---------------+-----------------------------------------------|
 | 1.10 | Roger Revelle            | DRFT12RR      | [[http://surveys.ngdc.noaa.gov/mgg/MB/ocean/roger_revelle/DRFT12RR/multibeam/data/version1/MB/20070726153705022_0007_20020319_035500p.mb121.gz][20070726153705022_0007_20020319_035500p.mb121]] |
 | 1.11 | Littlehales              | LIT0214       | [[http://surveys.ngdc.noaa.gov/mgg/MB/ocean/littlehales/LIT0214/multibeam/data/version1/MB/em3000/07mbg02335.d07.mb121.gz][07mbg02335.d07.mb121]]                          |
