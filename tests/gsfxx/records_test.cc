@@ -21,6 +21,7 @@
 
 #include "gtest/gtest.h"
 
+using std::array;
 using std::unique_ptr;
 
 namespace gsfxx {
@@ -29,7 +30,7 @@ namespace {
 
 TEST(GsfxxRecordHeader, Simple) {
   const uint32_t size = 20;
-  std::array<uint8_t, size> data = {{
+  array<uint8_t, size> data = {{
     0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x01, 0x47, 0x53, 0x46, 0x2d,
     0x76, 0x30, 0x32, 0x2e, 0x30, 0x39, 0x00, 0x00
   }};
