@@ -55,7 +55,9 @@ else
   CXXFLAGS += ${DBG}
 endif
 
-LDFLAGS := -L ../../src/gsfxx -lgsfxx -L. -lgtest_main
+LDFLAGS := -L../../src/gsfxx -lgsfxx
+# TODO(schwehr): Move the gtest build stuff to its own directory.
+LDFLAGS += -L. -lgtest_main
 
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 		$(GTEST_DIR)/include/gtest/internal/*.h
@@ -101,3 +103,4 @@ gmock_main.a : gmock-all.o gtest-all.o gmock_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
 util_test: libgtest_main.a
+records_test: libgtest_main.a

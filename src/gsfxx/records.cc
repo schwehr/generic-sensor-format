@@ -17,8 +17,11 @@
 #include <cassert>
 
 #include <memory>
+#include <regex>
 #include <string>
 
+using std::regex;
+using std::smatch;
 using std::string;
 using std::unique_ptr;
 
@@ -37,15 +40,20 @@ string RecordBuffer::ToString(uint32_t start, uint32_t max_length) const {
   return string(buf, max_length);
 }
 
-
 // static
-  unique_ptr<Header> Header::Decode(const RecordBuffer &buf) {
-  assert(buf.type() == RECORD_HEADER);
-  assert(buf.size() >= 12);
-  // TODO(schwehr): Why is the payload of the header 16?
+unique_ptr<Header> Header::Decode(const RecordBuffer &buf) {
+  if (buf.type() != RECORD_HEADER || buf.size() != 12) {
+    return nullptr;
+  }
+  regex reg("GSF-v0*([[:digit:]])+[.]0*([[:digit:]]+)");
+  smatch result;
   const string version = buf.ToString(0, 12);
-  // TODO(schwehr): Actually parse the version string.
-  return MakeUnique<Header>(3, 6);
+  if (!regex_search(version, result, reg) || result.size() != 3) {
+    return nullptr;
+  }
+  const int major = stoi(result[1]);
+  const int minor = stoi(result[2]);
+  return MakeUnique<Header>(major, minor);
 }
 
-} // namespace gsfxx
+}  // namespace gsfxx

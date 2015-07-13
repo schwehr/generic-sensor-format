@@ -36,3 +36,6 @@ clean:
 	(cd tests && make $@)
 	(cd data && make $@)
 
+real-clean: clean
+	find . -name \*.pyc | xargs rm
+	find . -name \*.egg-info | xargs rm -r

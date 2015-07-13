@@ -13,7 +13,7 @@
 # limitations under the License.
 
 DIRS := gsf
-# DIRS += gsfxx
+DIRS += gsfxx
 
 test:
 	for dir in ${DIRS}; do \
