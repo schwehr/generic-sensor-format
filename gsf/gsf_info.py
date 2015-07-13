@@ -17,6 +17,7 @@ import collections
 
 import gsf
 
+
 def GetInfo(filename):
   gsf_file = gsf.GsfFile(filename)
   counter = collections.Counter()
@@ -31,6 +32,7 @@ def GetInfo(filename):
   print '  records:'
   for key in sorted(counter):
     print '    %2d: %6d' % (key, counter[key]), gsf.RECORD_TYPES[key]
+
 
 def main():
   parser = argparse.ArgumentParser()

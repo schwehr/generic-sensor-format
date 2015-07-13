@@ -35,6 +35,7 @@ setup(name='gsf',
       entry_points={
         'console_scripts': [
             'gsf-info = gsf.gsf_info:main',
+            'gsf-dump-hex = gsf.dump_hex:main',
         ],
       }
       )

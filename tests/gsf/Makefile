@@ -18,7 +18,7 @@ TESTS += read_gsf_3_6_test
 TESTS += write_test
 
 all: test
-	@echo "Done"
+	@echo "Done with gsf testing."
 
 clean:
 	rm -f $(TESTS) *.a *.o *.gsf

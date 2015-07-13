@@ -30,8 +30,8 @@ OPT += -DNDEBUG
 CXXFLAGS := ${WARN}
 CXXFLAGS += -std=c++11
 
-CPPFLAGS := -I../gsf
-# LDFLAGS := -L../gsf
+CPPFLAGS := -I../gsf -I../gsfxx
+LDFLAGS := -L../gsfxx
 
 ifdef OPTIMIZE
   CXXFLAGS += ${OPT}
@@ -48,3 +48,6 @@ clean:
 
 gsf_index: gsf_index.o ../gsf/libgsf.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ 
+
+gsf_info: gsf_info.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ ${LDFLAGS} -lgsfxx
