@@ -24,7 +24,6 @@ TEST(GsfxxUtil, SwapEndianUint32) {
   EXPECT_EQ(0x04030201, SwapEndian(0x01020304));
 }
 
-
 }  // namespace
 }  // namespace test
 }  // namespace gsfxx

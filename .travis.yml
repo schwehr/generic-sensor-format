@@ -1,14 +1,16 @@
+sudo: false
+
 language: cpp
 
 compiler:
   - gcc
 
-before_install:
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo apt-get update -qq
-
-install:
-  - sudo apt-get install -qq gcc-4.8 g++-4.8
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-5
 
 script:
-  - CXX=g++-4.8 make test
+  - CXX=g++-5 make test
