@@ -10,7 +10,7 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - g++-4.8
+    - g++-4.9
 
 script:
-  - CXX=g++-4.8 make test
+  - CXX=g++-4.9 make test
