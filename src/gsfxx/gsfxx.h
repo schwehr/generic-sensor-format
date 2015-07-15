@@ -17,6 +17,7 @@
 
 #include <cstdint>
 
+#include <chrono>
 #include <memory>
 #include <string>
 
@@ -49,6 +50,9 @@ extern const char *const RECORD_STRINGS[RECORD_NUM_TYPES];
 
 uint32_t SwapEndian(uint32_t src);
 
+std::chrono::system_clock::time_point SecNsecToTimePoint(int64_t sec, int32_t nsec);
+double TimePointToSeconds(std::chrono::system_clock::time_point time_point);
+
 class RecordBuffer {
  public:
   RecordBuffer(const void *buf, uint32_t size, RecordType type)
@@ -57,7 +61,7 @@ class RecordBuffer {
   RecordType type() const { return type_; }
 
   std::string ToString(uint32_t start, uint32_t max_length) const;
-
+  uint32_t ToUnsignedInt32(uint32_t start) const;
  private:
   const void *buf_;
   const uint32_t size_;
@@ -80,6 +84,7 @@ class FileReaderMmap {
 
 class Record {};
 
+// Record 1.
 class Header : Record {
  public:
   Header(int version_major, int version_minor)
@@ -93,6 +98,18 @@ class Header : Record {
   const int version_minor_;
 };
 
+// Record 6.
+class Comment : Record {
+ public:
+  Comment(std::chrono::system_clock::time_point time_point, std::string comment)
+   : time_point_(time_point), comment_(comment) {};
+  static std::unique_ptr<Comment> Decode(const RecordBuffer &buf);
+  std::chrono::system_clock::time_point time_point() const { return time_point_; }
+  std::string comment() const { return comment_; }
+ private:
+  const std::chrono::system_clock::time_point time_point_;
+  const std::string comment_;
+};
 
 }  // namespace gsfxx
 

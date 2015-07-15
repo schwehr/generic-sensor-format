@@ -15,8 +15,15 @@
 #include "gsfxx.h"
 
 #include <cstdint>
+#include <ctime>
 
+#include <chrono>
 #include <utility>
+
+using std::chrono::duration_cast;
+using std::chrono::nanoseconds;
+using std::chrono::seconds;
+using std::chrono::system_clock;
 
 namespace gsfxx {
 
@@ -28,4 +35,15 @@ uint32_t SwapEndian(uint32_t src) {
   return dst;
 }
 
-} // namespace gsfxx
+system_clock::time_point SecNsecToTimePoint(int64_t sec, int nsec) {
+  auto dur = seconds{sec} + nanoseconds{nsec};
+  return system_clock::time_point(duration_cast<system_clock::duration>(dur));
+}
+
+double TimePointToSeconds(system_clock::time_point time_point) {
+  nanoseconds ns = duration_cast<nanoseconds>(time_point.time_since_epoch());
+  seconds s = duration_cast<seconds>(ns);
+  return s.count() + (ns.count() - s.count() * 1e9) * 1e-9;
+}
+
+}  // namespace gsfxx

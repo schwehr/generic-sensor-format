@@ -16,12 +16,24 @@
 
 #include "gtest/gtest.h"
 
+using std::chrono::duration_cast;
+using std::chrono::nanoseconds;
+using std::chrono::seconds;
+using std::chrono::system_clock;
+
 namespace gsfxx {
 namespace test {
 namespace {
 
 TEST(GsfxxUtil, SwapEndianUint32) {
   EXPECT_EQ(0x04030201, SwapEndian(0x01020304));
+}
+
+TEST(GsfxxUtil, TimePoint) {
+  auto time_point = SecNsecToTimePoint(1436901964, 550947000);
+  seconds s = duration_cast<seconds>(time_point.time_since_epoch());
+  ASSERT_EQ(1436901964, s.count());
+  ASSERT_DOUBLE_EQ(1436901964.550947, TimePointToSeconds(time_point));
 }
 
 }  // namespace

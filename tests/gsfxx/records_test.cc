@@ -85,6 +85,34 @@ TEST(GsfxxRecordHeader, InvalidVersionNumber) {
   ASSERT_EQ(nullptr, Header::Decode(buf));
 }
 
+TEST(GsfxxRecordComment, Simple) {
+  const uint32_t size = 20;
+  array<uint8_t, size> data = {{
+      0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x05,
+      0x61, 0x62, 0x63, 0x64, 0x65, 0x00, 0x00, 0x00,
+  }};
+  RecordBuffer buf(reinterpret_cast<void *>(&data), size, RECORD_COMMENT);
+  unique_ptr<Comment> comment = Comment::Decode(buf);
+  ASSERT_NE(nullptr, comment);
+  ASSERT_EQ("abcde", comment->comment());
+  ASSERT_NEAR(1.000000002, TimePointToSeconds(comment->time_point()), 4e-7);
+}
+
+// TODO(schwehr): Why is the rounding error so large?
+TEST(GsfxxRecordComment, Time2015July14) {
+  const uint32_t size = 20;
+  array<uint8_t, size> data = {{
+      0x55, 0xA5, 0xD5, 0x4D, 0x3A, 0xDE, 0x68, 0xB1, 0x00, 0x00, 0x00, 0x03,
+      0x61, 0x62, 0x63, 0x00,
+  }};
+  RecordBuffer buf(reinterpret_cast<void *>(&data), size, RECORD_COMMENT);
+  unique_ptr<Comment> comment = Comment::Decode(buf);
+  ASSERT_NE(nullptr, comment);
+  ASSERT_EQ("abc", comment->comment());
+  ASSERT_NEAR(1436931405.987654321, TimePointToSeconds(comment->time_point()),
+              4e-7);
+}
+
 }  // namespace
 }  // namespace test
 }  // namespace gsfxx
