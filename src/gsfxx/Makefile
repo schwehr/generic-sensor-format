@@ -52,3 +52,5 @@ ${LIB}: ${OBJS}
 	ar rv $@ $?
 	ranlib $@
 
+records.o: records.cc gsfxx.h
+util.o: util.cc gsfxx.h

@@ -42,7 +42,6 @@ def DumpHex(filename, include_cpp=True):
       print
     header_data = record['header_data']
     data = record['data']
-    all_data = header_data + data
 
     type_str = record['record_type_str']
     header_hex = [Hex2(v) for v in header_data]
@@ -56,10 +55,10 @@ def DumpHex(filename, include_cpp=True):
 
     print 'c++ data:'
     print
-    print '  // Record:', type_str
-    print '  const uint32_t size_%d =' % record_num, len(all_data);
-    print '  array<uint8_t, size> data_%d = {{' % record_num
-    for piece in Pieces(all_data, 12):
+    print '  // Record type:', type_str
+    print '  const uint32_t size_%d = %d;' % (record_num, len(data));
+    print '  array<uint8_t, size_%d> data_%d = {{' % (record_num, record_num)
+    for piece in Pieces(data, 11):
       print '    ' + ', '.join([Hex2(v) for v in piece]) + ','
     print '  }};'
 
