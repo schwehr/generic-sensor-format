@@ -408,7 +408,10 @@ gsfOpenIndex(const char *filename, int handle, GSF_FILE_TABLE *ft)
             return (-1);
         }
 
-        fseek(ft->index_data.fp, ft->index_data.start_addr[0], 0);
+        if (0 != fseek(ft->index_data.fp, ft->index_data.start_addr[0], 0)) {
+            fprintf(stderr, "ERROR: %s:%d: fseek failed", __FILE__, __LINE__);
+           /* TODO(schwehr): Set error codes and bail out. */
+        }
         for (i = 0; i < ft->index_data.number_of_records[0]; i++)
         {
             fread(&ft->index_data.scale_factor_addr[i], sizeof(INDEX_REC), 1,
@@ -925,7 +928,10 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
             /* Rewind the temp file and set the start address and record
              * type.
              */
-            fseek(temp[i], 0, 0);
+            if (0 != fseek(temp[i], 0, 0)) {
+                fprintf(stderr, "ERROR: %s:%d: fseek failed", __FILE__, __LINE__);
+                /* TODO(schwehr): Set error codes and bail out. */
+            }
             ft->index_data.start_addr[i] = ftell(ft->index_data.fp);
             ft->index_data.record_type[i] = i;
 
@@ -965,7 +971,10 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
              * id, GSF file size, endian indicator, total number of record
              * types, and reserved space.
              */
-            fseek(ft->index_data.fp, (j * 16) + 48, 0);
+            if (0 != fseek(ft->index_data.fp, (j * 16) + 48, 0)) {
+                fprintf(stderr, "ERROR: %s:%d: fseek failed", __FILE__, __LINE__);
+                /* TODO(schwehr): Set error codes and bail out. */
+            }
             fwrite(&ft->index_data.record_type[i], 4, 1,
                 ft->index_data.fp);
             fwrite(&ft->index_data.start_addr[i], 8, 1,
@@ -974,7 +983,10 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
                 ft->index_data.fp);
 
             /* Advance to the end of the index file. */
-            fseek(ft->index_data.fp, 0, SEEK_END);
+            if (0 != fseek(ft->index_data.fp, 0, SEEK_END)) {
+                fprintf(stderr, "ERROR: %s:%d: fseek failed", __FILE__, __LINE__);
+                /* TODO(schwehr): Set error codes and bail out. */
+            }
 
             /* Get rid of the temp files. */
             close_temp_file(i, temp[i]);
@@ -997,7 +1009,10 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
             return (-1);
         }
 
-        fseek(ft->index_data.fp, ft->index_data.start_addr[0], 0);
+        if (0 != fseek(ft->index_data.fp, ft->index_data.start_addr[0], 0)) {
+            fprintf(stderr, "ERROR: %s:%d: fseek failed", __FILE__, __LINE__);
+            /* TODO(schwehr): Set error codes and bail out. */
+        }
         for (i = 0; i < ft->index_data.number_of_records[0]; i++)
         {
             fread(&ft->index_data.scale_factor_addr[i], sizeof(INDEX_REC), 1,
@@ -1255,7 +1270,10 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
             return (-1);
         }
     }
-    fseek(ft->fp, save_pos, SEEK_SET);
+    if (0 != fseek(ft->fp, save_pos, SEEK_SET)) {
+        fprintf(stderr, "ERROR: %s:%d: fseek failed", __FILE__, __LINE__);
+        /* TODO(schwehr): Set error codes and bail out. */
+    }
 
     /* Get the address of the end of file so we can compute percentage
      * processed for creating the index file.
@@ -1748,7 +1766,10 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
             /* Rewind the temp file and set the start address and record
              * type.
              */
-            fseek(temp[i], 0, 0);
+            if (0 != fseek(temp[i], 0, 0)) {
+                fprintf(stderr, "ERROR: %s:%d: fseek failed", __FILE__, __LINE__);
+                /* TODO(schwehr): Set error codes and bail out. */
+            }
             ft->index_data.start_addr[i] = ftell(ft->index_data.fp);
             ft->index_data.record_type[i] = i;
 
@@ -1772,7 +1793,10 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
              * id, GSF file size, endian indicator, total number of record
              * types, and reserved space.
              */
-            fseek(ft->index_data.fp, (j * 16) + 48, 0);
+            if (0 != fseek(ft->index_data.fp, (j * 16) + 48, 0)) {
+                fprintf(stderr, "ERROR: %s:%d: fseek failed", __FILE__, __LINE__);
+                /* TODO(schwehr): Set error codes and bail out. */
+            }
 
             l_temp = ft->index_data.record_type[i];
             if (ft->index_data.swap)
@@ -1796,7 +1820,10 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
             fwrite(&l_temp, 4, 1, ft->index_data.fp);
 
             /* Advance to the end of the index file. */
-            fseek(ft->index_data.fp, 0, SEEK_END);
+            if (0 != fseek(ft->index_data.fp, 0, SEEK_END)) {
+                fprintf(stderr, "ERROR: %s:%d: fseek failed", __FILE__, __LINE__);
+                /* TODO(schwehr): Set error codes and bail out. */
+            }
 
             /* Get rid of the temp files. */
 
