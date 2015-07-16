@@ -43,3 +43,11 @@ real-clean: clean
 .PHONY: gsf
 gsf:
 	(cd src/gsf && make libgsf.a)
+
+gsf-test:
+	(cd src/gsf && make libgsf.a)
+	(cd tests/gsf && make test)
+
+gsfxx-test:
+	(cd src/gsfxx && make libgsfxx.a)
+	(cd tests/gsfxx && make test)
