@@ -1684,6 +1684,7 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
      * space reserved in the header for future information.
      */
     strncpy(index_header.version, GSF_INDEX_VERSION, GSF_INDEX_VERSION_SIZE);
+    index_header.version[GSF_INDEX_VERSION_SIZE] = '\0';
     fwrite(index_header.version, GSF_INDEX_VERSION_SIZE, 1, ft->index_data.fp);
 
     index_header.gsfFileSize = ft->file_size;
