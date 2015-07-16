@@ -311,7 +311,8 @@ gsfOpen(const char *filename, const int mode, int *handle)
     {
       if (gsfFileTable[fileTableIndex].occupied == 0)
       {
-        strncpy (gsfFileTable[fileTableIndex].file_name, filename, sizeof(gsfFileTable[fileTableIndex].file_name));
+        strncpy(gsfFileTable[fileTableIndex].file_name, filename, sizeof(gsfFileTable[fileTableIndex].file_name) - 1);
+        gsfFileTable[fileTableIndex].file_name[sizeof(gsfFileTable[fileTableIndex].file_name) - 1] = '\0';
         /* This is the first open for this file, so clear the
          * pointers to dynamic memory.
          */
@@ -655,6 +656,13 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
                 break;
             }
         }
+    }
+
+    /* Already checked against numOpenFiles, but do a double check. */
+    if (fileTableIndex >= GSF_MAX_OPEN_FILES) {
+      fprintf(stderr, "ERROR: %s:%d: Went past the end of the file table.\n", __FILE__, __LINE__);
+        gsfError = GSF_TOO_MANY_OPEN_FILES;
+        return (-1);
     }
 
     gsfFileTable[fileTableIndex].fp = fp;

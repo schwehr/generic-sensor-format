@@ -26,7 +26,8 @@ DBG += -O0
 
 OPT := -O3
 OPT += -funroll-loops
-OPT += -fexpensive-optimizations
+# Not supposed by clang.
+# OPT += -fexpensive-optimizations
 OPT += -ffast-math
 OPT += -DNDEBUG
 
