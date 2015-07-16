@@ -1129,7 +1129,10 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
         if (ft->index_data.number_of_records[i] > 0)
         {
             /* Move the index file's pointer to the first record for this type. */
-            fseek(ft->index_data.fp, ft->index_data.start_addr[i], 0);
+            if (0 != fseek(ft->index_data.fp, ft->index_data.start_addr[i], 0)) {
+                fprintf(stderr, "ERROR: %s:%d: fseek failed", __FILE__, __LINE__);
+                /* TODO(schwehr): Set error codes and bail out. */
+            }
 
             for(j=0; j<ft->index_data.number_of_records[i]; j++)
             {
@@ -1178,7 +1181,10 @@ gsfAppendIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
             return (-1);
         }
 
-        fseek(ft->index_data.fp, ft->index_data.start_addr[0], 0);
+        if (0 != fseek(ft->index_data.fp, ft->index_data.start_addr[0], 0)) {
+            fprintf(stderr, "ERROR: %s:%d: fseek failed", __FILE__, __LINE__);
+            /* TODO(schwehr): Set error codes and bail out. */
+        }
         for (i = 0; i < ft->index_data.number_of_records[0]; i++)
         {
             fread(&ft->index_data.scale_factor_addr[i], sizeof(INDEX_REC), 1,
