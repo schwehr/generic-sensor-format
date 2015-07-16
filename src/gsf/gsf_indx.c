@@ -485,6 +485,7 @@ gsfCreateIndexFile(const char *ndx_file, int handle, GSF_FILE_TABLE *ft)
     /* Initialize the contents of the index file header. */
     memset (&index_header, 0, sizeof(index_header));
     strncpy(index_header.version, GSF_INDEX_VERSION, GSF_INDEX_VERSION_SIZE);
+    index_header.version[GSF_INDEX_VERSION_SIZE] = '\0';
     index_header.endian = endian;
     index_header.gsfFileSize = ft->file_size;
 
