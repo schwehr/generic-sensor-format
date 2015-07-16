@@ -39,3 +39,7 @@ clean:
 real-clean: clean
 	find . -name \*.pyc | xargs rm
 	find . -name \*.egg-info | xargs rm -r
+
+.PHONY: gsf
+gsf:
+	(cd src/gsf && make libgsf.a)
