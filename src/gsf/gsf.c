@@ -8663,7 +8663,6 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
     double          maximum;
     double          multiplier;
     double          offset;
-    int             ret_code = 0;
 
     /* Make sure that we received a valid subrecordID. */
     if ((subrecordID < 1) || (subrecordID > GSF_MAX_PING_ARRAY_SUBRECORDS))
@@ -8794,6 +8793,9 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     minimum = GSF_S_SHORT_MIN;
                     maximum = GSF_S_SHORT_MAX;
                     break;
+                default:
+                    fprintf(stderr, "ERROR: %s:%d: What to do here?\n", __FILE__, __LINE__);
+                    return (-1);
             }
             break;
         case (GSF_SWATH_BATHY_SUBRECORD_MEAN_REL_AMPLITUDE_ARRAY):
@@ -8808,6 +8810,9 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     minimum = GSF_U_SHORT_MIN;
                     maximum = GSF_U_SHORT_MAX;
                     break;
+                default:
+                    fprintf(stderr, "ERROR: %s:%d: What to do here?\n", __FILE__, __LINE__);
+                    return (-1);
             }
             break;
         case (GSF_SWATH_BATHY_SUBRECORD_ECHO_WIDTH_ARRAY):
@@ -8890,17 +8895,12 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
             break;
         default:
             gsfError = GSF_UNRECOGNIZED_ARRAY_SUBRECORD_ID;
-            ret_code = -1;
-            break;
+            return (-1);
     }
 
-    if (ret_code == 0)
-    {
-        *min_value = ((minimum / multiplier) - offset);
-        *max_value = ((maximum / multiplier) - offset);
-    }
-
-    return (ret_code);
+    *min_value = ((minimum / multiplier) - offset);
+    *max_value = ((maximum / multiplier) - offset);
+    return (0);
 }
 
 /********************************************************************
