@@ -331,7 +331,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
   if (setvbuf(fp, NULL, _IOFBF, GSF_STREAM_BUF_SIZE))
   {
     gsfError = GSF_SETVBUF_ERROR;
-    gsfClose ((int) *handle);
+    gsfClose(*handle);
     *handle = 0;
     return (-1);
   }
@@ -340,7 +340,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
   if (gsfStat (filename, &stsize))
   {
     gsfError = GSF_READ_ERROR;
-    gsfClose ((int) *handle);
+    gsfClose(*handle);
     *handle = 0;
     return (-1);
   }
@@ -369,7 +369,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
     if (fflush (gsfFileTable[fileTableIndex].fp))
     {
       gsfError = GSF_FLUSH_ERROR;
-      gsfClose ((int) *handle);
+      gsfClose(*handle);
       *handle = 0;
       return (-1);
     }
@@ -384,7 +384,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
       if (fseek(gsfFileTable[fileTableIndex].fp, 0, SEEK_SET))
       {
         gsfError = GSF_FILE_SEEK_ERROR;
-        gsfClose ((int) *handle);
+        gsfClose(*handle);
         *handle = 0;
         return (-1);
       }
@@ -412,7 +412,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
       if (fseek(gsfFileTable[fileTableIndex].fp, 0, SEEK_END))
       {
         gsfError = GSF_FILE_SEEK_ERROR;
-        gsfClose ((int) *handle);
+        gsfClose(*handle);
         *handle = 0;
         return (-1);
       }
@@ -426,7 +426,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
   if (ret != 2)
   {
     gsfError = GSF_UNRECOGNIZED_FILE;
-    gsfClose ((int) *handle);
+    gsfClose(*handle);
     *handle = 0;
     return (-1);
   }
@@ -453,7 +453,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
     {
       gsfFileTable[fileTableIndex].direct_access = 0;
       gsfError = GSF_INDEX_FILE_OPEN_ERROR;
-      gsfClose ((int) *handle);
+      gsfClose(*handle);
       *handle = 0;
       return (-1);
     }
@@ -464,7 +464,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
     if (fseek(gsfFileTable[fileTableIndex].fp, headerSize, SEEK_SET))
     {
       gsfError = GSF_FILE_SEEK_ERROR;
-      gsfClose ((int) *handle);
+      gsfClose(*handle);
       *handle = 0;
       return (-1);
     }
@@ -503,7 +503,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
 
     default:
       gsfError = GSF_BAD_ACCESS_MODE;
-      gsfClose ((int) *handle);
+      gsfClose(*handle);
       *handle = 0;
       return (-1);
   }
@@ -675,7 +675,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
     /* Set the desired buffer size. */
     if (setvbuf(fp, NULL, _IOFBF, buf_size))
     {
-        gsfClose ((int) *handle);
+        gsfClose(handle);
         gsfError = GSF_SETVBUF_ERROR;
         *handle = 0;
         return (-1);
@@ -885,7 +885,7 @@ gsfClose(const int handle)
         return (-1);
     }
 
-    if (gsfFileTable[handle -1].direct_access)
+    if (gsfFileTable[handle - 1].direct_access)
     {
         gsfCloseIndex (&gsfFileTable[handle - 1]);
     }
