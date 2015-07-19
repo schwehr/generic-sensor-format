@@ -662,7 +662,9 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
     if (fileTableIndex >= GSF_MAX_OPEN_FILES) {
         fprintf(stderr, "ERROR: %s:%d: Went past the end of the file table.\n", __FILE__, __LINE__);
         gsfError = GSF_TOO_MANY_OPEN_FILES;
-        gsfClose (*handle);
+        if (0 != fclose(fp)) {
+          fprintf(stderr, "ERROR: %s: %d: fclose trouble.\n", __FILE__, __LINE__);
+        }
         *handle = 0;
         return (-1);
     }
