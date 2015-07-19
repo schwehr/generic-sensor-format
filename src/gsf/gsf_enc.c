@@ -689,27 +689,27 @@ gsfEncodeSinglebeam(unsigned char *sptr, gsfSingleBeamPing * ping)
 
     switch (ping->sensor_id)
     {
-        case (GSF_SINGLE_BEAM_SUBRECORD_ECHOTRAC_SPECIFIC):
+        case GSF_SINGLE_BEAM_SUBRECORD_ECHOTRAC_SPECIFIC:
             sensor_size = EncodeEchotracSpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SINGLE_BEAM_SUBRECORD_BATHY2000_SPECIFIC):
+        case GSF_SINGLE_BEAM_SUBRECORD_BATHY2000_SPECIFIC:
             sensor_size = EncodeEchotracSpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SINGLE_BEAM_SUBRECORD_MGD77_SPECIFIC):
+        case GSF_SINGLE_BEAM_SUBRECORD_MGD77_SPECIFIC:
             sensor_size = EncodeMGD77Specific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SINGLE_BEAM_SUBRECORD_BDB_SPECIFIC):
+        case GSF_SINGLE_BEAM_SUBRECORD_BDB_SPECIFIC:
             sensor_size = EncodeBDBSpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SINGLE_BEAM_SUBRECORD_NOSHDB_SPECIFIC):
+        case GSF_SINGLE_BEAM_SUBRECORD_NOSHDB_SPECIFIC:
             sensor_size = EncodeNOSHDBSpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_UNKNOWN):
+        case GSF_SWATH_BATHY_SUBRECORD_UNKNOWN:
             sensor_size = 0;
             break;
 
@@ -1455,166 +1455,166 @@ gsfEncodeSwathBathymetryPing(unsigned char *sptr, gsfSwathBathyPing * ping, GSF_
 
     switch (ping->sensor_id)
     {
-        case (GSF_SWATH_BATHY_SUBRECORD_UNKNOWN):
+        case GSF_SWATH_BATHY_SUBRECORD_UNKNOWN:
             sensor_size = 0;
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SEABEAM_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEABEAM_SPECIFIC:
             sensor_size = EncodeSeabeamSpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM100_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM100_SPECIFIC:
             sensor_size = EncodeEM100Specific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM12_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM12_SPECIFIC:
             sensor_size = EncodeEM12Specific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM950_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM950_SPECIFIC:
             sensor_size = EncodeEM950Specific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM121A_SPECIFIC:
             sensor_size = EncodeEM121ASpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM121_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM121_SPECIFIC:
             sensor_size = EncodeEM121Specific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SASS_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SASS_SPECIFIC:
             sensor_size = EncodeSASSSpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SEAMAP_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEAMAP_SPECIFIC:
             sensor_size = EncodeSeaMapSpecific(p, &ping->sensor_data, ft);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SEABAT_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEABAT_SPECIFIC:
             sensor_size = EncodeSeaBatSpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM1000_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM1000_SPECIFIC:
             sensor_size = EncodeEM1000Specific(p, &ping->sensor_data);
             break;
 
         /* Obsolete. */
-        case (GSF_SWATH_BATHY_SUBRECORD_TYPEIII_SEABEAM_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_TYPEIII_SEABEAM_SPECIFIC:
             sensor_size = EncodeTypeIIISeaBeamSpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SB_AMP_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SB_AMP_SPECIFIC:
             sensor_size = EncodeSBAmpSpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SEABAT_II_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEABAT_II_SPECIFIC:
             sensor_size = EncodeSeaBatIISpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SEABAT_8101_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEABAT_8101_SPECIFIC:
             sensor_size = EncodeSeaBat8101Specific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SEABEAM_2112_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEABEAM_2112_SPECIFIC:
             sensor_size = EncodeSeaBeam2112Specific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_ELAC_MKII_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_ELAC_MKII_SPECIFIC:
             sensor_size = EncodeElacMkIISpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_CMP_SASS_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_CMP_SASS_SPECIFIC:
             sensor_size = EncodeCmpSassSpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2000_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM1002_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM300_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM120_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000D_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002D_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM2000_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM1002_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM300_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM120_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000D_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002D_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_SPECIFIC:
             sensor_size = EncodeEM3Specific(p, &ping->sensor_data, ft);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2000_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM1002_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM300_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM120_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_RAW_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM2000_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM1002_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM300_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM120_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_RAW_SPECIFIC:
             sensor_size = EncodeEM3RawSpecific(p, &ping->sensor_data, ft);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8101_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8111_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8124_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8125_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8150_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8160_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8101_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8111_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8124_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8125_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8150_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8160_SPECIFIC:
             sensor_size = EncodeReson8100Specific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_7125_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_7125_SPECIFIC:
             sensor_size = EncodeReson7100Specific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SB_SUBRECORD_ECHOTRAC_SPECIFIC):
+        case GSF_SWATH_BATHY_SB_SUBRECORD_ECHOTRAC_SPECIFIC:
             sensor_size = EncodeSBEchotracSpecific(p, &ping->sensor_data.gsfSBEchotracSpecific);
             break;
 
-        case (GSF_SWATH_BATHY_SB_SUBRECORD_BATHY2000_SPECIFIC):
+        case GSF_SWATH_BATHY_SB_SUBRECORD_BATHY2000_SPECIFIC:
             sensor_size = EncodeSBEchotracSpecific(p, &ping->sensor_data.gsfSBEchotracSpecific);
             break;
 
-        case (GSF_SWATH_BATHY_SB_SUBRECORD_MGD77_SPECIFIC):
+        case GSF_SWATH_BATHY_SB_SUBRECORD_MGD77_SPECIFIC:
             sensor_size = EncodeSBMGD77Specific(p, &ping->sensor_data.gsfSBMGD77Specific);
             break;
 
-        case (GSF_SWATH_BATHY_SB_SUBRECORD_BDB_SPECIFIC):
+        case GSF_SWATH_BATHY_SB_SUBRECORD_BDB_SPECIFIC:
             sensor_size = EncodeSBBDBSpecific(p, &ping->sensor_data.gsfSBBDBSpecific);
             break;
 
-        case (GSF_SWATH_BATHY_SB_SUBRECORD_NOSHDB_SPECIFIC):
+        case GSF_SWATH_BATHY_SB_SUBRECORD_NOSHDB_SPECIFIC:
             sensor_size = EncodeSBNOSHDBSpecific(p, &ping->sensor_data.gsfSBNOSHDBSpecific);
             break;
 
-        case (GSF_SWATH_BATHY_SB_SUBRECORD_PDD_SPECIFIC):
+        case GSF_SWATH_BATHY_SB_SUBRECORD_PDD_SPECIFIC:
             sensor_size = EncodeSBEchotracSpecific(p, &ping->sensor_data.gsfSBPDDSpecific);
             break;
 
-        case (GSF_SWATH_BATHY_SB_SUBRECORD_NAVISOUND_SPECIFIC):
+        case GSF_SWATH_BATHY_SB_SUBRECORD_NAVISOUND_SPECIFIC:
             sensor_size = EncodeSBNavisoundSpecific(p, &ping->sensor_data.gsfSBNavisoundSpecific);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM710_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM302_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM122_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM710_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM302_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM122_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC:
             sensor_size = EncodeEM4Specific(p, &ping->sensor_data, ft);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_GEOSWATH_PLUS_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_GEOSWATH_PLUS_SPECIFIC:
             sensor_size = EncodeGeoSwathPlusSpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC:
             sensor_size = EncodeKlein5410BssSpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_DELTA_T_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_DELTA_T_SPECIFIC:
             sensor_size = EncodeDeltaTSpecific(p, &ping->sensor_data);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2020_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2022_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2024_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2020_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2022_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2024_SPECIFIC:
             sensor_size = EncodeR2SonicSpecific(p, &ping->sensor_data);
             break;
 
@@ -7162,54 +7162,54 @@ EncodeBRBIntensity(unsigned char *sptr, gsfBRBIntensity *idata, int num_beams, i
     /* Write the sensor specifiuc imagery info. */
     switch (sensor_id)
     {
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2000_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM1002_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM300_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM120_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000D_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002D_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2000_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM1002_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM300_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM120_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_RAW_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM2000_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM1002_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM300_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM120_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000D_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002D_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM2000_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM1002_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM300_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM120_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_RAW_SPECIFIC:
             sensor_size = EncodeEM3ImagerySpecific(ptr, &idata->sensor_imagery);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_7125_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_7125_SPECIFIC:
             sensor_size = EncodeReson7100ImagerySpecific(ptr, &idata->sensor_imagery);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8101_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8111_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8124_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8125_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8150_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8160_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8101_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8111_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8124_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8125_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8150_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8160_SPECIFIC:
             sensor_size = EncodeReson8100ImagerySpecific(ptr, &idata->sensor_imagery);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM122_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM302_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM710_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM122_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM302_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM710_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC:
             sensor_size = EncodeEM4ImagerySpecific(ptr, &idata->sensor_imagery);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC:
             sensor_size = EncodeKlein5410BssImagerySpecific(ptr, &idata->sensor_imagery);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2020_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2022_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2024_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2020_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2022_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2024_SPECIFIC:
             sensor_size = EncodeR2SonicImagerySpecific(ptr, &idata->sensor_imagery);
             break;
 

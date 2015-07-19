@@ -557,33 +557,33 @@ gsfDecodeSinglebeam(gsfSingleBeamPing * ping, unsigned char *sptr, UNUSED GSF_FI
 
         switch (subrecord_id)
         {
-          case (GSF_SINGLE_BEAM_SUBRECORD_ECHOTRAC_SPECIFIC):
+          case GSF_SINGLE_BEAM_SUBRECORD_ECHOTRAC_SPECIFIC:
              p += DecodeEchotracSpecific(&ping->sensor_data, p);
              ping->sensor_id = GSF_SINGLE_BEAM_SUBRECORD_ECHOTRAC_SPECIFIC;
           break;
 
-          case (GSF_SINGLE_BEAM_SUBRECORD_BATHY2000_SPECIFIC):
+          case GSF_SINGLE_BEAM_SUBRECORD_BATHY2000_SPECIFIC:
              p += DecodeEchotracSpecific(&ping->sensor_data, p);
              ping->sensor_id = GSF_SINGLE_BEAM_SUBRECORD_BATHY2000_SPECIFIC;
 
           break;
 
-          case (GSF_SINGLE_BEAM_SUBRECORD_MGD77_SPECIFIC):
+          case GSF_SINGLE_BEAM_SUBRECORD_MGD77_SPECIFIC:
              p += DecodeMGD77Specific (&ping->sensor_data, p);
              ping->sensor_id = GSF_SINGLE_BEAM_SUBRECORD_MGD77_SPECIFIC;
           break;
 
-          case (GSF_SINGLE_BEAM_SUBRECORD_BDB_SPECIFIC):
+          case GSF_SINGLE_BEAM_SUBRECORD_BDB_SPECIFIC:
              p += DecodeBDBSpecific (&ping->sensor_data, p);
              ping->sensor_id = GSF_SINGLE_BEAM_SUBRECORD_BDB_SPECIFIC;
           break;
 
-          case (GSF_SINGLE_BEAM_SUBRECORD_NOSHDB_SPECIFIC):
+          case GSF_SINGLE_BEAM_SUBRECORD_NOSHDB_SPECIFIC:
              p += DecodeNOSHDBSpecific (&ping->sensor_data, p);
              ping->sensor_id = GSF_SINGLE_BEAM_SUBRECORD_NOSHDB_SPECIFIC;
           break;
 
-          case (GSF_SWATH_BATHY_SUBRECORD_UNKNOWN):
+          case GSF_SWATH_BATHY_SUBRECORD_UNKNOWN:
             ping->sensor_id =  GSF_SWATH_BATHY_SUBRECORD_UNKNOWN;
           break;
 
@@ -918,11 +918,11 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
 
         switch (subrecord_id)
         {
-            case (GSF_SWATH_BATHY_SUBRECORD_UNKNOWN):
+            case GSF_SWATH_BATHY_SUBRECORD_UNKNOWN:
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_UNKNOWN;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_SCALE_FACTORS):
+            case GSF_SWATH_BATHY_SUBRECORD_SCALE_FACTORS:
                 ret = DecodeScaleFactors(&ft->rec.mb_ping.scaleFactors, p);
                 if (ret < 0)
                 {
@@ -957,7 +957,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 }
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_DEPTH_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_DEPTH_ARRAY:
                 switch (field_size)
                 {
                     default:
@@ -978,7 +978,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_NOMINAL_DEPTH_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_NOMINAL_DEPTH_ARRAY:
                 switch (field_size)
                 {
                     default:
@@ -999,7 +999,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_ACROSS_TRACK_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_ACROSS_TRACK_ARRAY:
                 switch (field_size)
                 {
                     default:
@@ -1020,7 +1020,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_ALONG_TRACK_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_ALONG_TRACK_ARRAY:
                 switch (field_size)
                 {
                     default:
@@ -1041,7 +1041,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_TRAVEL_TIME_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_TRAVEL_TIME_ARRAY:
                 switch (field_size)
                 {
                     default:
@@ -1062,7 +1062,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_BEAM_ANGLE_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_BEAM_ANGLE_ARRAY:
                 ret = DecodeSignedTwoByteArray(&ft->rec.mb_ping.beam_angle, (char *)p, ping->number_beams,
                     &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_BEAM_ANGLE_ARRAY, handle);
                 if (ret < 0)
@@ -1073,7 +1073,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_MEAN_CAL_AMPLITUDE_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_MEAN_CAL_AMPLITUDE_ARRAY:
                 switch (field_size)
                 {
                     default:
@@ -1094,7 +1094,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_MEAN_REL_AMPLITUDE_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_MEAN_REL_AMPLITUDE_ARRAY:
                 switch (field_size)
                 {
                     default:
@@ -1115,7 +1115,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_ECHO_WIDTH_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_ECHO_WIDTH_ARRAY:
                 switch (field_size)
                 {
                     default:
@@ -1136,7 +1136,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_QUALITY_FACTOR_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_QUALITY_FACTOR_ARRAY:
                 ret = DecodeByteArray(&ft->rec.mb_ping.quality_factor, p, ping->number_beams,
                     &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_QUALITY_FACTOR_ARRAY, handle);
                 if (ret < 0)
@@ -1147,7 +1147,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_RECEIVE_HEAVE_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_RECEIVE_HEAVE_ARRAY:
                 ret = DecodeSignedByteArray(&ft->rec.mb_ping.receive_heave, (char *)p, ping->number_beams,
                     &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_RECEIVE_HEAVE_ARRAY, handle);
                 if (ret < 0)
@@ -1158,7 +1158,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_DEPTH_ERROR_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_DEPTH_ERROR_ARRAY:
                 ret = DecodeTwoByteArray(&ft->rec.mb_ping.depth_error, p, ping->number_beams,
                     &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_DEPTH_ERROR_ARRAY, handle);
                 if (ret < 0)
@@ -1169,7 +1169,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_ACROSS_TRACK_ERROR_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_ACROSS_TRACK_ERROR_ARRAY:
                 ret = DecodeTwoByteArray(&ft->rec.mb_ping.across_track_error, p, ping->number_beams,
                     &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_ACROSS_TRACK_ERROR_ARRAY, handle);
                 if (ret < 0)
@@ -1180,7 +1180,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_ALONG_TRACK_ERROR_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_ALONG_TRACK_ERROR_ARRAY:
                 ret = DecodeTwoByteArray(&ft->rec.mb_ping.along_track_error, p, ping->number_beams,
                     &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_ALONG_TRACK_ERROR_ARRAY, handle);
                 if (ret < 0)
@@ -1191,7 +1191,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_BEAM_FLAGS_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_BEAM_FLAGS_ARRAY:
                 ret = DecodeBeamFlagsArray(&ft->rec.mb_ping.beam_flags, p, ping->number_beams, handle);
                 if (ret < 0)
                 {
@@ -1201,7 +1201,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_QUALITY_FLAGS_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_QUALITY_FLAGS_ARRAY:
                 /* If the update flag is TRUE and the quality flags array
                  * is not fully encoded, return an error.
                  */
@@ -1222,7 +1222,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_SIGNAL_TO_NOISE_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_SIGNAL_TO_NOISE_ARRAY:
                 ret = DecodeSignedByteArray(&ft->rec.mb_ping.signal_to_noise, (char *)p, ping->number_beams,
                     &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_SIGNAL_TO_NOISE_ARRAY, handle);
                 if (ret < 0)
@@ -1233,7 +1233,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_BEAM_ANGLE_FORWARD_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_BEAM_ANGLE_FORWARD_ARRAY:
                 ret = DecodeTwoByteArray(&ft->rec.mb_ping.beam_angle_forward, p, ping->number_beams,
                     &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_BEAM_ANGLE_FORWARD_ARRAY, handle);
                 if (ret < 0)
@@ -1244,7 +1244,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_VERTICAL_ERROR_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_VERTICAL_ERROR_ARRAY:
                 ret = DecodeTwoByteArray(&ft->rec.mb_ping.vertical_error, p, ping->number_beams,
                     &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_VERTICAL_ERROR_ARRAY, handle);
                 if (ret < 0)
@@ -1255,7 +1255,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_HORIZONTAL_ERROR_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_HORIZONTAL_ERROR_ARRAY:
                 ret = DecodeTwoByteArray(&ft->rec.mb_ping.horizontal_error, p, ping->number_beams,
                     &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_HORIZONTAL_ERROR_ARRAY, handle);
                 if (ret < 0)
@@ -1266,7 +1266,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_SECTOR_NUMBER_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_SECTOR_NUMBER_ARRAY:
 
                 ret = DecodeFromByteToUnsignedShortArray(&ft->rec.mb_ping.sector_number, p, ping->number_beams,
                     &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_SECTOR_NUMBER_ARRAY, handle);
@@ -1278,7 +1278,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                 p += ret;
                 break;
 
-             case (GSF_SWATH_BATHY_SUBRECORD_DETECTION_INFO_ARRAY):
+             case GSF_SWATH_BATHY_SUBRECORD_DETECTION_INFO_ARRAY:
                  ret = DecodeFromByteToUnsignedShortArray(&ft->rec.mb_ping.detection_info, p, ping->number_beams,
                      &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_DETECTION_INFO_ARRAY, handle);
                  if (ret < 0)
@@ -1289,7 +1289,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                  p += ret;
                  break;
 
-           case (GSF_SWATH_BATHY_SUBRECORD_INCIDENT_BEAM_ADJ_ARRAY):
+           case GSF_SWATH_BATHY_SUBRECORD_INCIDENT_BEAM_ADJ_ARRAY:
              ret = DecodeSignedByteArray(&ft->rec.mb_ping.incident_beam_adj, (char *) p, ping->number_beams,
                    &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_INCIDENT_BEAM_ADJ_ARRAY, handle);
                if (ret < 0)
@@ -1300,7 +1300,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                p += ret;
                break;
 
-           case (GSF_SWATH_BATHY_SUBRECORD_SYSTEM_CLEANING_ARRAY):
+           case GSF_SWATH_BATHY_SUBRECORD_SYSTEM_CLEANING_ARRAY:
                ret = DecodeFromByteToUnsignedShortArray(&ft->rec.mb_ping.system_cleaning, p, ping->number_beams,
                    &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_SYSTEM_CLEANING_ARRAY, handle);
                if (ret < 0)
@@ -1311,7 +1311,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                p += ret;
                break;
 
-           case (GSF_SWATH_BATHY_SUBRECORD_DOPPLER_CORRECTION_ARRAY):
+           case GSF_SWATH_BATHY_SUBRECORD_DOPPLER_CORRECTION_ARRAY:
              ret = DecodeSignedByteArray(&ft->rec.mb_ping.doppler_corr, (char *) p, ping->number_beams,
                    &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_DOPPLER_CORRECTION_ARRAY, handle);
                if (ret < 0)
@@ -1322,7 +1322,7 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                p += ret;
                break;
 
-           case (GSF_SWATH_BATHY_SUBRECORD_SONAR_VERT_UNCERT_ARRAY):
+           case GSF_SWATH_BATHY_SUBRECORD_SONAR_VERT_UNCERT_ARRAY:
              ret = DecodeTwoByteArray(&ft->rec.mb_ping.sonar_vert_uncert, (unsigned char *) p, ping->number_beams,
                    &ft->rec.mb_ping.scaleFactors, GSF_SWATH_BATHY_SUBRECORD_SONAR_VERT_UNCERT_ARRAY, handle);
                if (ret < 0)
@@ -1333,234 +1333,234 @@ gsfDecodeSwathBathymetryPing(gsfSwathBathyPing *ping, unsigned char *sptr, GSF_F
                p += ret;
                break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_SEABEAM_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_SEABEAM_SPECIFIC:
                 p += DecodeSeabeamSpecific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_SEABEAM_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM12_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM12_SPECIFIC:
                 p += DecodeEM12Specific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM12_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM100_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM100_SPECIFIC:
                 p += DecodeEM100Specific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM100_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM950_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM950_SPECIFIC:
                 p += DecodeEM950Specific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM950_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM121A_SPECIFIC:
                 p += DecodeEM121ASpecific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM121A_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM121_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM121_SPECIFIC:
                 p += DecodeEM121Specific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM121_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_SASS_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_SASS_SPECIFIC:
                 p += DecodeSASSSpecific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_SASS_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_SEAMAP_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_SEAMAP_SPECIFIC:
                 p += DecodeSeaMapSpecific(&ping->sensor_data, p, ft);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_SEAMAP_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_SEABAT_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_SEABAT_SPECIFIC:
                 p += DecodeSeaBatSpecific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_SEABAT_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM1000_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM1000_SPECIFIC:
                 p += DecodeEM1000Specific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM1000_SPECIFIC;
                 break;
 
             /* Obsolete. */
-            case (GSF_SWATH_BATHY_SUBRECORD_TYPEIII_SEABEAM_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_TYPEIII_SEABEAM_SPECIFIC:
                 p += DecodeTypeIIISeaBeamSpecific(&ping->sensor_data, p);
                 ping->sensor_id =
                   GSF_SWATH_BATHY_SUBRECORD_TYPEIII_SEABEAM_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_SB_AMP_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_SB_AMP_SPECIFIC:
                 p += DecodeSBAmpSpecific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_SB_AMP_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_SEABAT_II_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_SEABAT_II_SPECIFIC:
                 p += DecodeSeaBatIISpecific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_SEABAT_II_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_SEABAT_8101_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_SEABAT_8101_SPECIFIC:
                 p += DecodeSeaBat8101Specific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_SEABAT_8101_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_SEABEAM_2112_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_SEABEAM_2112_SPECIFIC:
                 p += DecodeSeaBeam2112Specific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_SEABEAM_2112_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_ELAC_MKII_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_ELAC_MKII_SPECIFIC:
                 p += DecodeElacMkIISpecific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_ELAC_MKII_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_CMP_SASS_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_CMP_SASS_SPECIFIC:
                 p += DecodeCmpSassSpecific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_CMP_SASS_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM2000_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM2000_SPECIFIC:
                 p += DecodeEM3Specific(&ping->sensor_data, p, ft);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM2000_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM3000_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM3000_SPECIFIC:
                 p += DecodeEM3Specific(&ping->sensor_data, p, ft);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM3000_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM1002_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM1002_SPECIFIC:
                 p += DecodeEM3Specific(&ping->sensor_data, p, ft);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM1002_SPECIFIC;
                 break;
 
-             case (GSF_SWATH_BATHY_SUBRECORD_EM300_SPECIFIC):
+             case GSF_SWATH_BATHY_SUBRECORD_EM300_SPECIFIC:
                 p += DecodeEM3Specific(&ping->sensor_data, p, ft);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM300_SPECIFIC;
                 break;
 
-             case (GSF_SWATH_BATHY_SUBRECORD_EM120_SPECIFIC):
+             case GSF_SWATH_BATHY_SUBRECORD_EM120_SPECIFIC:
                 p += DecodeEM3Specific(&ping->sensor_data, p, ft);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM120_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM3002_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM3002_SPECIFIC:
                 p += DecodeEM3Specific(&ping->sensor_data, p, ft);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM3002_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM3000D_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM3000D_SPECIFIC:
                 p += DecodeEM3Specific(&ping->sensor_data, p, ft);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM3000D_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM3002D_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM3002D_SPECIFIC:
                 p += DecodeEM3Specific(&ping->sensor_data, p, ft);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM3002D_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_SPECIFIC:
                 p += DecodeEM3Specific(&ping->sensor_data, p, ft);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM2000_RAW_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_EM3000_RAW_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_EM1002_RAW_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_EM300_RAW_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_EM120_RAW_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_EM3002_RAW_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_RAW_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM2000_RAW_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_EM3000_RAW_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_EM1002_RAW_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_EM300_RAW_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_EM120_RAW_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_EM3002_RAW_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_RAW_SPECIFIC:
                 p += DecodeEM3RawSpecific(&ping->sensor_data, p, ft);
                 ping->sensor_id = subrecord_id;
                 break;
 
 
-            case (GSF_SWATH_BATHY_SUBRECORD_RESON_8101_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_RESON_8111_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_RESON_8124_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_RESON_8125_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_RESON_8150_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_RESON_8160_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_RESON_8101_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_RESON_8111_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_RESON_8124_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_RESON_8125_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_RESON_8150_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_RESON_8160_SPECIFIC:
                 p += DecodeReson8100Specific(&ping->sensor_data, p);
                 ping->sensor_id = subrecord_id;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_RESON_7125_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_RESON_7125_SPECIFIC:
                 p += DecodeReson7100Specific(&ping->sensor_data, p);
                 ping->sensor_id = subrecord_id;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_EM710_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_EM302_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_EM122_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_EM710_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_EM302_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_EM122_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC:
                 p += DecodeEM4Specific(&ping->sensor_data, p, ft);
                 ping->sensor_id = subrecord_id;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_GEOSWATH_PLUS_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_GEOSWATH_PLUS_SPECIFIC:
                 p += DecodeGeoSwathPlusSpecific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_GEOSWATH_PLUS_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC:
                 p += DecodeKlein5410BssSpecific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_DELTA_T_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_DELTA_T_SPECIFIC:
                 p += DecodeDeltaTSpecific(&ping->sensor_data, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SUBRECORD_DELTA_T_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2020_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2022_SPECIFIC):
-            case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2024_SPECIFIC):
+            case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2020_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2022_SPECIFIC:
+            case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2024_SPECIFIC:
                 p += DecodeR2SonicSpecific(&ping->sensor_data, p);
                 ping->sensor_id = subrecord_id;
                 break;
 
-            case (GSF_SWATH_BATHY_SB_SUBRECORD_ECHOTRAC_SPECIFIC):
+            case GSF_SWATH_BATHY_SB_SUBRECORD_ECHOTRAC_SPECIFIC:
                 p += DecodeSBEchotracSpecific(&ping->sensor_data.gsfSBEchotracSpecific, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SB_SUBRECORD_ECHOTRAC_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SB_SUBRECORD_BATHY2000_SPECIFIC):
+            case GSF_SWATH_BATHY_SB_SUBRECORD_BATHY2000_SPECIFIC:
                 p += DecodeSBEchotracSpecific(&ping->sensor_data.gsfSBEchotracSpecific, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SB_SUBRECORD_BATHY2000_SPECIFIC;
 
                 break;
 
-            case (GSF_SWATH_BATHY_SB_SUBRECORD_MGD77_SPECIFIC):
+            case GSF_SWATH_BATHY_SB_SUBRECORD_MGD77_SPECIFIC:
                 p += DecodeSBMGD77Specific (&ping->sensor_data.gsfSBMGD77Specific, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SB_SUBRECORD_MGD77_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SB_SUBRECORD_BDB_SPECIFIC):
+            case GSF_SWATH_BATHY_SB_SUBRECORD_BDB_SPECIFIC:
                 p += DecodeSBBDBSpecific (&ping->sensor_data.gsfSBBDBSpecific, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SB_SUBRECORD_BDB_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SB_SUBRECORD_NOSHDB_SPECIFIC):
+            case GSF_SWATH_BATHY_SB_SUBRECORD_NOSHDB_SPECIFIC:
                 p += DecodeSBNOSHDBSpecific (&ping->sensor_data.gsfSBNOSHDBSpecific, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SB_SUBRECORD_NOSHDB_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SB_SUBRECORD_PDD_SPECIFIC):
+            case GSF_SWATH_BATHY_SB_SUBRECORD_PDD_SPECIFIC:
                 p += DecodeSBEchotracSpecific(&ping->sensor_data.gsfSBPDDSpecific, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SB_SUBRECORD_PDD_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SB_SUBRECORD_NAVISOUND_SPECIFIC):
+            case GSF_SWATH_BATHY_SB_SUBRECORD_NAVISOUND_SPECIFIC:
                 p += DecodeSBNavisoundSpecific (&ping->sensor_data.gsfSBNavisoundSpecific, p);
                 ping->sensor_id = GSF_SWATH_BATHY_SB_SUBRECORD_NAVISOUND_SPECIFIC;
                 break;
 
-            case (GSF_SWATH_BATHY_SUBRECORD_INTENSITY_SERIES_ARRAY):
+            case GSF_SWATH_BATHY_SUBRECORD_INTENSITY_SERIES_ARRAY:
                 ret = DecodeBRBIntensity(&ft->rec.mb_ping.brb_inten, p, ping->number_beams, ping->sensor_id, handle);
                 if (ret < 0)
                 {
@@ -6654,54 +6654,54 @@ DecodeBRBIntensity(gsfBRBIntensity ** idata, unsigned char *sptr, int num_beams,
     /* Read the sensor specific imagery info. */
     switch (sensor_id)
     {
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2000_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM1002_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM300_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM120_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000D_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002D_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2000_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM1002_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM300_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM120_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_RAW_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM2000_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM1002_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM300_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM120_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000D_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002D_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM2000_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM1002_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM300_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM120_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_RAW_SPECIFIC:
             sensor_size = DecodeEM3ImagerySpecific(&(*idata)->sensor_imagery, ptr);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_7125_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_7125_SPECIFIC:
             sensor_size = DecodeReson7100ImagerySpecific(&(*idata)->sensor_imagery, ptr);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8101_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8111_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8124_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8125_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8150_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8160_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8101_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8111_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8124_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8125_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8150_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8160_SPECIFIC:
             sensor_size = DecodeReson8100ImagerySpecific(&(*idata)->sensor_imagery, ptr);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM122_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM302_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM710_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM122_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM302_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM710_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC:
             sensor_size = DecodeEM4ImagerySpecific(&(*idata)->sensor_imagery, ptr);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC:
             sensor_size = DecodeKlein5410BssImagerySpecific(&(*idata)->sensor_imagery, ptr);
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2020_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2022_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2024_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2020_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2022_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2024_SPECIFIC:
             sensor_size = DecodeR2SonicImagerySpecific(&(*idata)->sensor_imagery, ptr);
             break;
 

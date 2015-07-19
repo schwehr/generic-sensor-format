@@ -142,15 +142,15 @@ gsfFileSupportsRecalculateXYZ(int handle, int *status)
         switch (id.recordID)
         {
             default:
-            case (GSF_RECORD_NAVIGATION_ERROR):
-            case (GSF_RECORD_SWATH_BATHY_SUMMARY):
-            case (GSF_RECORD_HISTORY):
-            case (GSF_RECORD_SENSOR_PARAMETERS):
-            case (GSF_RECORD_COMMENT):
-            case (GSF_RECORD_HEADER):
+            case GSF_RECORD_NAVIGATION_ERROR:
+            case GSF_RECORD_SWATH_BATHY_SUMMARY:
+            case GSF_RECORD_HISTORY:
+            case GSF_RECORD_SENSOR_PARAMETERS:
+            case GSF_RECORD_COMMENT:
+            case GSF_RECORD_HEADER:
                 break;
 
-            case (GSF_RECORD_SWATH_BATHYMETRY_PING):
+            case GSF_RECORD_SWATH_BATHYMETRY_PING:
                 if ((rec.mb_ping.travel_time) && (rec.mb_ping.beam_angle))
                 {
                     switch (rec.mb_ping.sensor_id)
@@ -188,21 +188,21 @@ gsfFileSupportsRecalculateXYZ(int handle, int *status)
                 }
                 break;
 
-            case (GSF_RECORD_SOUND_VELOCITY_PROFILE):
+            case GSF_RECORD_SOUND_VELOCITY_PROFILE:
                 if (rec.svp.number_points > 1)
                 {
                     svp_rec++;
                 }
                 break;
 
-            case (GSF_RECORD_PROCESSING_PARAMETERS):
+            case GSF_RECORD_PROCESSING_PARAMETERS:
                 if (rec.process_parameters.number_parameters > 1)
                 {
                     param_rec++;
                 }
                 break;
 
-            case (GSF_RECORD_ATTITUDE):
+            case GSF_RECORD_ATTITUDE:
                 if (rec.attitude.num_measurements > 1)
                 {
                     att_rec++;
@@ -324,15 +324,15 @@ gsfFileSupportsRecalculateTPU(int handle, int *status)
         switch (id.recordID)
         {
             default:
-            case (GSF_RECORD_NAVIGATION_ERROR):
-            case (GSF_RECORD_SWATH_BATHY_SUMMARY):
-            case (GSF_RECORD_HISTORY):
-            case (GSF_RECORD_SENSOR_PARAMETERS):
-            case (GSF_RECORD_COMMENT):
-            case (GSF_RECORD_HEADER):
+            case GSF_RECORD_NAVIGATION_ERROR:
+            case GSF_RECORD_SWATH_BATHY_SUMMARY:
+            case GSF_RECORD_HISTORY:
+            case GSF_RECORD_SENSOR_PARAMETERS:
+            case GSF_RECORD_COMMENT:
+            case GSF_RECORD_HEADER:
                 break;
 
-            case (GSF_RECORD_SWATH_BATHYMETRY_PING):
+            case GSF_RECORD_SWATH_BATHYMETRY_PING:
                 if ((rec.mb_ping.depth) && (rec.mb_ping.across_track))
                 {
                     switch (rec.mb_ping.sensor_id)
@@ -353,14 +353,14 @@ gsfFileSupportsRecalculateTPU(int handle, int *status)
                 }
                 break;
 
-            case (GSF_RECORD_SOUND_VELOCITY_PROFILE):
+            case GSF_RECORD_SOUND_VELOCITY_PROFILE:
                 if (rec.svp.number_points > 1)
                 {
                     svp_rec++;
                 }
                 break;
 
-            case (GSF_RECORD_PROCESSING_PARAMETERS):
+            case GSF_RECORD_PROCESSING_PARAMETERS:
                 if (rec.process_parameters.number_parameters > 1)
                 {
                     param_rec++;
@@ -483,29 +483,29 @@ gsfFileSupportsRecalculateNominalDepth(int handle, int *status)
         switch (id.recordID)
         {
             default:
-            case (GSF_RECORD_NAVIGATION_ERROR):
-            case (GSF_RECORD_SWATH_BATHY_SUMMARY):
-            case (GSF_RECORD_HISTORY):
-            case (GSF_RECORD_SENSOR_PARAMETERS):
-            case (GSF_RECORD_COMMENT):
-            case (GSF_RECORD_HEADER):
+            case GSF_RECORD_NAVIGATION_ERROR:
+            case GSF_RECORD_SWATH_BATHY_SUMMARY:
+            case GSF_RECORD_HISTORY:
+            case GSF_RECORD_SENSOR_PARAMETERS:
+            case GSF_RECORD_COMMENT:
+            case GSF_RECORD_HEADER:
                 break;
 
-            case (GSF_RECORD_SWATH_BATHYMETRY_PING):
+            case GSF_RECORD_SWATH_BATHYMETRY_PING:
                 if ((rec.mb_ping.depth))
                 {
                      ping_rec++;
                 }
                 break;
 
-            case (GSF_RECORD_SOUND_VELOCITY_PROFILE):
+            case GSF_RECORD_SOUND_VELOCITY_PROFILE:
                 if (rec.svp.number_points > 1)
                 {
                     svp_rec++;
                 }
                 break;
 
-            case (GSF_RECORD_PROCESSING_PARAMETERS):
+            case GSF_RECORD_PROCESSING_PARAMETERS:
                 if (rec.process_parameters.number_parameters > 1)
                 {
                     param_rec++;
@@ -623,7 +623,7 @@ gsfFileContainsMBAmplitude(int handle, int *status)
 
         switch (id.recordID)
         {
-            case (GSF_RECORD_SWATH_BATHYMETRY_PING):
+            case GSF_RECORD_SWATH_BATHYMETRY_PING:
                 if ((rec.mb_ping.mc_amplitude) || (rec.mb_ping.mr_amplitude))
                 {
                     *status = 1;
@@ -740,7 +740,7 @@ gsfFileContainsMBImagery(int handle, int *status)
 
         switch (id.recordID)
         {
-            case (GSF_RECORD_SWATH_BATHYMETRY_PING):
+            case GSF_RECORD_SWATH_BATHYMETRY_PING:
                 if ((rec.mb_ping.brb_inten) && (rec.mb_ping.brb_inten->time_series))
                 {
                     *status = 1;
