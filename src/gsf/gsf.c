@@ -8826,6 +8826,9 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     minimum = GSF_U_SHORT_MIN;
                     maximum = GSF_U_SHORT_MAX;
                     break;
+                default:
+                    fprintf(stderr, "ERROR: %s:%d: What to do here?\n", __FILE__, __LINE__);
+                    return (-1);
             }
             break;
         case GSF_SWATH_BATHY_SUBRECORD_QUALITY_FACTOR_ARRAY:
