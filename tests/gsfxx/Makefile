@@ -45,7 +45,8 @@ CPPFLAGS += -I$(GTEST_DIR) -I$(GMOCK_DIR)
 LDFLAGS := -L../../src/gsfxx -lgsfxx
 # TODO(schwehr): Move the gtest build stuff to its own directory.
 LDFLAGS += -L. 
-# -lgtest_main
+# LDFLAGS += -lgtest_main
+LDFLAGS += -lpthread
 
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 		$(GTEST_DIR)/include/gtest/internal/*.h
