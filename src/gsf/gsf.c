@@ -675,7 +675,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
     /* Set the desired buffer size. */
     if (setvbuf(fp, NULL, _IOFBF, buf_size))
     {
-        gsfClose(handle);
+        gsfClose(*handle);
         gsfError = GSF_SETVBUF_ERROR;
         *handle = 0;
         return (-1);
