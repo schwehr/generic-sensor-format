@@ -30,3 +30,8 @@ gsf_index: gsf_index.o ../gsf/libgsf.a
 
 gsf_info: gsf_info.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ ${LDFLAGS} -lgsfxx
+
+SRCS := ${wildcard *.cc}
+OBJS := ${SRCS:.cc=.o}
+
+obj: ${OBJS}

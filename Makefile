@@ -51,6 +51,9 @@ gsf-test:
 	(cd src/gsf && make libgsf.a)
 	(cd tests/gsf && make test)
 
+gsf-test-obj:
+	(cd tests/gsf && make obj)
+
 gsfxx:
 	(cd src/gsfxx && make libgsfxx.a)
 
@@ -61,5 +64,12 @@ gsfxx-test:
 	(cd src/gsfxx && make libgsfxx.a)
 	(cd tests/gsfxx && make test)
 
-obj: gsf-obj gsfxx-obj
+gsfxx-test-obj:
+	(cd tests/gsfxx && make obj)
+
+bin-obj:
+	(cd src/bin && make obj)
+
+obj: gsf-obj gsfxx-obj gsf-test-obj gsfxx-test-obj bin-obj
+
 

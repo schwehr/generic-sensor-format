@@ -96,3 +96,9 @@ util_test: util_test.o libgtest_main.a
 
 records_test: records_test.o libgtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+
+SRCS := ${wildcard *.cc}
+OBJS := ${SRCS:.cc=.o}
+
+obj: ${OBJS}
