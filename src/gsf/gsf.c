@@ -331,7 +331,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
   if (setvbuf(fp, NULL, _IOFBF, GSF_STREAM_BUF_SIZE))
   {
     gsfError = GSF_SETVBUF_ERROR;
-    gsfClose ((int) *handle);
+    gsfClose(*handle);
     *handle = 0;
     return (-1);
   }
@@ -340,7 +340,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
   if (gsfStat (filename, &stsize))
   {
     gsfError = GSF_READ_ERROR;
-    gsfClose ((int) *handle);
+    gsfClose(*handle);
     *handle = 0;
     return (-1);
   }
@@ -369,7 +369,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
     if (fflush (gsfFileTable[fileTableIndex].fp))
     {
       gsfError = GSF_FLUSH_ERROR;
-      gsfClose ((int) *handle);
+      gsfClose(*handle);
       *handle = 0;
       return (-1);
     }
@@ -384,7 +384,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
       if (fseek(gsfFileTable[fileTableIndex].fp, 0, SEEK_SET))
       {
         gsfError = GSF_FILE_SEEK_ERROR;
-        gsfClose ((int) *handle);
+        gsfClose(*handle);
         *handle = 0;
         return (-1);
       }
@@ -412,7 +412,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
       if (fseek(gsfFileTable[fileTableIndex].fp, 0, SEEK_END))
       {
         gsfError = GSF_FILE_SEEK_ERROR;
-        gsfClose ((int) *handle);
+        gsfClose(*handle);
         *handle = 0;
         return (-1);
       }
@@ -426,7 +426,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
   if (ret != 2)
   {
     gsfError = GSF_UNRECOGNIZED_FILE;
-    gsfClose ((int) *handle);
+    gsfClose(*handle);
     *handle = 0;
     return (-1);
   }
@@ -453,7 +453,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
     {
       gsfFileTable[fileTableIndex].direct_access = 0;
       gsfError = GSF_INDEX_FILE_OPEN_ERROR;
-      gsfClose ((int) *handle);
+      gsfClose(*handle);
       *handle = 0;
       return (-1);
     }
@@ -464,7 +464,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
     if (fseek(gsfFileTable[fileTableIndex].fp, headerSize, SEEK_SET))
     {
       gsfError = GSF_FILE_SEEK_ERROR;
-      gsfClose ((int) *handle);
+      gsfClose(*handle);
       *handle = 0;
       return (-1);
     }
@@ -503,7 +503,7 @@ gsfOpen(const char *filename, const int mode, int *handle)
 
     default:
       gsfError = GSF_BAD_ACCESS_MODE;
-      gsfClose ((int) *handle);
+      gsfClose(*handle);
       *handle = 0;
       return (-1);
   }
@@ -660,8 +660,12 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
 
     /* Already checked against numOpenFiles, but do a double check. */
     if (fileTableIndex >= GSF_MAX_OPEN_FILES) {
-      fprintf(stderr, "ERROR: %s:%d: Went past the end of the file table.\n", __FILE__, __LINE__);
+        fprintf(stderr, "ERROR: %s:%d: Went past the end of the file table.\n", __FILE__, __LINE__);
         gsfError = GSF_TOO_MANY_OPEN_FILES;
+        if (0 != fclose(fp)) {
+          fprintf(stderr, "ERROR: %s: %d: fclose trouble.\n", __FILE__, __LINE__);
+        }
+        *handle = 0;
         return (-1);
     }
 
@@ -673,7 +677,7 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
     /* Set the desired buffer size. */
     if (setvbuf(fp, NULL, _IOFBF, buf_size))
     {
-        gsfClose ((int) *handle);
+        gsfClose(*handle);
         gsfError = GSF_SETVBUF_ERROR;
         *handle = 0;
         return (-1);
@@ -883,7 +887,7 @@ gsfClose(const int handle)
         return (-1);
     }
 
-    if (gsfFileTable[handle -1].direct_access)
+    if (gsfFileTable[handle - 1].direct_access)
     {
         gsfCloseIndex (&gsfFileTable[handle - 1]);
     }
@@ -1298,18 +1302,18 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
         /* No point in reading the "size" bytes for data if the ID is not recognized. */
         switch (thisID.recordID)
         {
-            case (GSF_RECORD_HEADER):
-            case (GSF_RECORD_SWATH_BATHY_SUMMARY):
-            case (GSF_RECORD_SWATH_BATHYMETRY_PING):
-            case (GSF_RECORD_SOUND_VELOCITY_PROFILE):
-            case (GSF_RECORD_PROCESSING_PARAMETERS):
-            case (GSF_RECORD_SENSOR_PARAMETERS):
-            case (GSF_RECORD_COMMENT):
-            case (GSF_RECORD_HISTORY):
-            case (GSF_RECORD_NAVIGATION_ERROR):
-            case (GSF_RECORD_SINGLE_BEAM_PING):
-            case (GSF_RECORD_HV_NAVIGATION_ERROR):
-            case (GSF_RECORD_ATTITUDE):
+            case GSF_RECORD_HEADER:
+            case GSF_RECORD_SWATH_BATHY_SUMMARY:
+            case GSF_RECORD_SWATH_BATHYMETRY_PING:
+            case GSF_RECORD_SOUND_VELOCITY_PROFILE:
+            case GSF_RECORD_PROCESSING_PARAMETERS:
+            case GSF_RECORD_SENSOR_PARAMETERS:
+            case GSF_RECORD_COMMENT:
+            case GSF_RECORD_HISTORY:
+            case GSF_RECORD_NAVIGATION_ERROR:
+            case GSF_RECORD_SINGLE_BEAM_PING:
+            case GSF_RECORD_HV_NAVIGATION_ERROR:
+            case GSF_RECORD_ATTITUDE:
                 break;
 
             default:
@@ -1401,7 +1405,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
      */
     switch (thisID.recordID)
     {
-        case (GSF_RECORD_HEADER):
+        case GSF_RECORD_HEADER:
             ret = gsfDecodeHeader(&rptr->header, dptr);
             if (ret < 0)
             {
@@ -1410,7 +1414,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             }
             break;
 
-        case (GSF_RECORD_SWATH_BATHY_SUMMARY):
+        case GSF_RECORD_SWATH_BATHY_SUMMARY:
             ret = gsfDecodeSwathBathySummary(&rptr->summary, dptr);
             if (ret < 0)
             {
@@ -1419,7 +1423,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             }
             break;
 
-        case (GSF_RECORD_SWATH_BATHYMETRY_PING):
+        case GSF_RECORD_SWATH_BATHYMETRY_PING:
             ret = gsfDecodeSwathBathymetryPing(&rptr->mb_ping, dptr, &gsfFileTable[handle - 1], handle, dataSize);
             if (ret < 0)
             {
@@ -1428,7 +1432,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             }
             break;
 
-        case (GSF_RECORD_SOUND_VELOCITY_PROFILE):
+        case GSF_RECORD_SOUND_VELOCITY_PROFILE:
             ret = gsfDecodeSoundVelocityProfile(&rptr->svp, &gsfFileTable[handle - 1], dptr);
             if (ret < 0)
             {
@@ -1437,7 +1441,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             }
             break;
 
-        case (GSF_RECORD_PROCESSING_PARAMETERS):
+        case GSF_RECORD_PROCESSING_PARAMETERS:
             ret = gsfDecodeProcessingParameters(&rptr->process_parameters, &gsfFileTable[handle - 1], dptr);
             if (ret < 0)
             {
@@ -1446,7 +1450,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             }
             break;
 
-        case (GSF_RECORD_SENSOR_PARAMETERS):
+        case GSF_RECORD_SENSOR_PARAMETERS:
             ret = gsfDecodeSensorParameters(&rptr->sensor_parameters, &gsfFileTable[handle - 1], dptr);
             if (ret < 0)
             {
@@ -1455,7 +1459,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             }
             break;
 
-        case (GSF_RECORD_COMMENT):
+        case GSF_RECORD_COMMENT:
             ret = gsfDecodeComment(&rptr->comment, &gsfFileTable[handle - 1], dptr);
             if (ret < 0)
             {
@@ -1464,7 +1468,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             }
             break;
 
-        case (GSF_RECORD_HISTORY):
+        case GSF_RECORD_HISTORY:
             ret = gsfDecodeHistory(&rptr->history, &gsfFileTable[handle - 1], dptr);
             if (ret < 0)
             {
@@ -1473,7 +1477,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             }
             break;
 
-        case (GSF_RECORD_NAVIGATION_ERROR):
+        case GSF_RECORD_NAVIGATION_ERROR:
             ret = gsfDecodeNavigationError(&rptr->nav_error, dptr);
             if (ret < 0)
             {
@@ -1482,7 +1486,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             }
             break;
 
-        case (GSF_RECORD_SINGLE_BEAM_PING):
+        case GSF_RECORD_SINGLE_BEAM_PING:
             ret = gsfDecodeSinglebeam(&rptr->sb_ping, dptr, &gsfFileTable[handle - 1], handle, dataSize);
             if (ret < 0)
             {
@@ -1491,7 +1495,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             }
             break;
 
-        case (GSF_RECORD_HV_NAVIGATION_ERROR):
+        case GSF_RECORD_HV_NAVIGATION_ERROR:
             ret = gsfDecodeHVNavigationError(&rptr->hv_nav_error, &gsfFileTable[handle - 1], dptr);
             if (ret < 0)
             {
@@ -1500,7 +1504,7 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
             }
             break;
 
-        case (GSF_RECORD_ATTITUDE):
+        case GSF_RECORD_ATTITUDE:
             ret = gsfDecodeAttitude(&rptr->attitude, &gsfFileTable[handle - 1], dptr);
             if (ret < 0)
             {
@@ -1790,7 +1794,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
      */
     switch (id->recordID)
     {
-        case (GSF_RECORD_HEADER):
+        case GSF_RECORD_HEADER:
             ret = gsfEncodeHeader(ucptr, &rptr->header);
             if (ret < 0)
             {
@@ -1799,7 +1803,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             }
             break;
 
-        case (GSF_RECORD_SWATH_BATHY_SUMMARY):
+        case GSF_RECORD_SWATH_BATHY_SUMMARY:
             ret = gsfEncodeSwathBathySummary(ucptr, &rptr->summary);
             if (ret < 0)
             {
@@ -1808,7 +1812,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             }
             break;
 
-        case (GSF_RECORD_SWATH_BATHYMETRY_PING):
+        case GSF_RECORD_SWATH_BATHYMETRY_PING:
             ret = gsfEncodeSwathBathymetryPing(ucptr, &rptr->mb_ping, &gsfFileTable[handle - 1], handle);
             if (ret < 0)
             {
@@ -1817,7 +1821,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             }
             break;
 
-        case (GSF_RECORD_SOUND_VELOCITY_PROFILE):
+        case GSF_RECORD_SOUND_VELOCITY_PROFILE:
             ret = gsfEncodeSoundVelocityProfile(ucptr, &rptr->svp);
             if (ret < 0)
             {
@@ -1826,7 +1830,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             }
             break;
 
-        case (GSF_RECORD_PROCESSING_PARAMETERS):
+        case GSF_RECORD_PROCESSING_PARAMETERS:
             ret = gsfEncodeProcessingParameters(ucptr, &rptr->process_parameters);
             if (ret < 0)
             {
@@ -1835,7 +1839,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             }
             break;
 
-        case (GSF_RECORD_SENSOR_PARAMETERS):
+        case GSF_RECORD_SENSOR_PARAMETERS:
             ret = gsfEncodeSensorParameters(ucptr, &rptr->sensor_parameters);
             if (ret < 0)
             {
@@ -1844,7 +1848,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             }
             break;
 
-        case (GSF_RECORD_COMMENT):
+        case GSF_RECORD_COMMENT:
             ret = gsfEncodeComment(ucptr, &rptr->comment);
             if (ret < 0)
             {
@@ -1853,7 +1857,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             }
             break;
 
-        case (GSF_RECORD_HISTORY):
+        case GSF_RECORD_HISTORY:
             ret = gsfEncodeHistory(ucptr, &rptr->history);
             if (ret < 0)
             {
@@ -1862,7 +1866,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             }
             break;
 
-        case (GSF_RECORD_NAVIGATION_ERROR):
+        case GSF_RECORD_NAVIGATION_ERROR:
             ret = gsfEncodeNavigationError(ucptr, &rptr->nav_error);
             if (ret < 0)
             {
@@ -1871,7 +1875,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             }
             break;
 
-        case (GSF_RECORD_SINGLE_BEAM_PING):
+        case GSF_RECORD_SINGLE_BEAM_PING:
             ret = gsfEncodeSinglebeam(ucptr, &rptr->sb_ping);
             if (ret < 0)
             {
@@ -1880,7 +1884,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             }
             break;
 
-        case (GSF_RECORD_HV_NAVIGATION_ERROR):
+        case GSF_RECORD_HV_NAVIGATION_ERROR:
             ret = gsfEncodeHVNavigationError(ucptr, &rptr->hv_nav_error);
             if (ret < 0)
             {
@@ -1889,7 +1893,7 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
             }
             break;
 
-        case (GSF_RECORD_ATTITUDE):
+        case GSF_RECORD_ATTITUDE:
             ret = gsfEncodeAttitude(ucptr, &rptr->attitude);
             if (ret < 0)
             {
@@ -7010,14 +7014,13 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
      */
     switch (p->horizontal_datum)
     {
-        case (GSF_H_DATUM_WGE):
+        case GSF_H_DATUM_WGE:
             sprintf(temp, "GEOID=WGS-84");
             break;
 
         default:
             sprintf(temp, "GEOID=UNKNWN");
             break;
-
     }
     ret = gsfSetParam(handle, number_parameters++, temp, rec);
     if (ret)
@@ -7030,55 +7033,55 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
      */
     switch (p->vertical_datum)
     {
-        case (GSF_V_DATUM_MLLW):
+        case GSF_V_DATUM_MLLW:
             sprintf(temp, "TIDAL_DATUM=MLLW   ");
             break;
 
-        case (GSF_V_DATUM_MLW):
+        case GSF_V_DATUM_MLW:
             sprintf(temp, "TIDAL_DATUM=MLW    ");
             break;
 
-        case (GSF_V_DATUM_ALAT):
+        case GSF_V_DATUM_ALAT:
              sprintf(temp, "TIDAL_DATUM=ALAT  ");
              break;
 
-        case (GSF_V_DATUM_ESLW):
+        case GSF_V_DATUM_ESLW:
              sprintf(temp, "TIDAL_DATUM=ESLW  ");
              break;
 
-        case (GSF_V_DATUM_ISLW):
+        case GSF_V_DATUM_ISLW:
              sprintf(temp, "TIDAL_DATUM=ISLW  ");
              break;
 
-        case (GSF_V_DATUM_LAT):
+        case GSF_V_DATUM_LAT:
              sprintf(temp, "TIDAL_DATUM=LAT   ");
              break;
 
-        case (GSF_V_DATUM_LLW):
+        case GSF_V_DATUM_LLW:
              sprintf(temp, "TIDAL_DATUM=LLW   ");
              break;
 
-        case (GSF_V_DATUM_LNLW):
+        case GSF_V_DATUM_LNLW:
              sprintf(temp, "TIDAL_DATUM=LNLW  ");
              break;
 
-        case (GSF_V_DATUM_LWD):
+        case GSF_V_DATUM_LWD:
              sprintf(temp, "TIDAL_DATUM=LWD   ");
              break;
 
-        case (GSF_V_DATUM_MLHW):
+        case GSF_V_DATUM_MLHW:
              sprintf(temp, "TIDAL_DATUM=MLHW  ");
              break;
 
-        case (GSF_V_DATUM_MLLWS):
+        case GSF_V_DATUM_MLLWS:
              sprintf(temp, "TIDAL_DATUM=MLLWS ");
              break;
 
-        case (GSF_V_DATUM_MLWN):
+        case GSF_V_DATUM_MLWN:
              sprintf(temp, "TIDAL_DATUM=MLWN  ");
              break;
 
-        case (GSF_V_DATUM_MSL):
+        case GSF_V_DATUM_MSL:
              sprintf(temp, "TIDAL_DATUM=MSL   ");
              break;
 
@@ -8120,15 +8123,15 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
         case GSF_SWATH_BATHY_SUBRECORD_EM100_SPECIFIC:
             switch (data->mb_ping.sensor_data.gsfEM100Specific.mode)
             {
-                case(1):  /* Wide. */
+                case 1:  /* Wide. */
                    *athwartship = 2.5;
                    break;
 
-                case(2):  /* Ulta-wide. */
+                case 2:  /* Ulta-wide. */
                    *athwartship = 5.5;
                    break;
 
-                case(3):  /* Narrow. */
+                case 3:  /* Narrow. */
                    *athwartship = 2.0;
                    break;
 
@@ -8189,23 +8192,23 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
             }
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SEABAT_II_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEABAT_II_SPECIFIC:
             *fore_aft = data->mb_ping.sensor_data.gsfSeaBatIISpecific.fore_aft_bw;
             *athwartship = data->mb_ping.sensor_data.gsfSeaBatIISpecific.athwart_bw;
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SEABAT_8101_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEABAT_8101_SPECIFIC:
             *fore_aft = data->mb_ping.sensor_data.gsfSeaBat8101Specific.fore_aft_bw;
             *athwartship = data->mb_ping.sensor_data.gsfSeaBat8101Specific.athwart_bw;
             break;
 
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SEABEAM_2112_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEABEAM_2112_SPECIFIC:
             *fore_aft = 2.0;
             *athwartship = 2.0;
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_ELAC_MKII_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_ELAC_MKII_SPECIFIC:
             *fore_aft = 2.0;
             *athwartship = 2.0;
             break;
@@ -8215,15 +8218,15 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
             *athwartship = 1.0;
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM300_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM1002_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2000_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM120_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000D_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002D_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM300_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM1002_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM2000_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM120_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000D_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002D_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_SPECIFIC:
             *fore_aft = 1.5;
             *athwartship = 1.5;
             if (data->mb_ping.sensor_data.gsfEM3Specific.run_time[0].transmit_beam_width != 0.0)
@@ -8236,15 +8239,15 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
             }
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM300_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM1002_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2000_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM120_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_RAW_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM300_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM1002_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM2000_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM120_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_RAW_SPECIFIC:
             *fore_aft = 1.5;
             *athwartship = 1.5;
             if (data->mb_ping.sensor_data.gsfEM3RawSpecific.run_time.tx_beam_width != 0.0)
@@ -8258,10 +8261,10 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
             break;
 
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM122_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM302_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM710_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM122_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM302_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM710_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC:
             *fore_aft = 1.0;
             *athwartship = 1.0;
             if (data->mb_ping.sensor_data.gsfEM4Specific.run_time.tx_beam_width != 0.0)
@@ -8274,17 +8277,17 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
             }
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8101_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8111_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8124_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8125_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8150_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8160_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8101_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8111_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8124_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8125_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8150_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8160_SPECIFIC:
             *fore_aft = data->mb_ping.sensor_data.gsfReson8100Specific.fore_aft_bw;
             *athwartship = data->mb_ping.sensor_data.gsfReson8100Specific.athwart_bw;
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_7125_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_7125_SPECIFIC:
             *fore_aft = data->mb_ping.sensor_data.gsfReson7100Specific.projector_beam_wdth_vert;
             *athwartship = data->mb_ping.sensor_data.gsfReson7100Specific.receive_beam_width;
             break;
@@ -8314,12 +8317,12 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
             }
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC:
             *fore_aft = GSF_BEAM_WIDTH_UNKNOWN;
             *athwartship = GSF_BEAM_WIDTH_UNKNOWN;
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_DELTA_T_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_DELTA_T_SPECIFIC:
             *fore_aft = 3.0;
             *athwartship = 3.0;
             if (data->mb_ping.sensor_data.gsfDeltaTSpecific.fore_aft_beamwidth != 0.0)
@@ -8332,9 +8335,9 @@ gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *ath
             }
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2020_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2022_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2024_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2020_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2022_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2024_SPECIFIC:
             *fore_aft = data->mb_ping.sensor_data.gsfR2SonicSpecific.tx_beamwidth_vert;
             *athwartship = data->mb_ping.sensor_data.gsfR2SonicSpecific.tx_beamwidth_horiz;
             break;
@@ -8659,7 +8662,6 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
     double          maximum;
     double          multiplier;
     double          offset;
-    int             ret_code = 0;
 
     /* Make sure that we received a valid subrecordID. */
     if ((subrecordID < 1) || (subrecordID > GSF_MAX_PING_ARRAY_SUBRECORDS))
@@ -8679,7 +8681,7 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
     offset     = ping->scaleFactors.scaleTable[subrecordID - 1].offset;
     switch (subrecordID)
     {
-        case (GSF_SWATH_BATHY_SUBRECORD_DEPTH_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_DEPTH_ARRAY:
             switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
             {
                 case GSF_FIELD_SIZE_ONE:
@@ -8698,7 +8700,7 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     break;
             }
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_NOMINAL_DEPTH_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_NOMINAL_DEPTH_ARRAY:
             switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
             {
                 case GSF_FIELD_SIZE_ONE:
@@ -8717,7 +8719,7 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     break;
             }
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_ACROSS_TRACK_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_ACROSS_TRACK_ARRAY:
             switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
             {
                 case GSF_FIELD_SIZE_ONE:
@@ -8736,7 +8738,7 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     break;
             }
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_ALONG_TRACK_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_ALONG_TRACK_ARRAY:
             switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
             {
                 case GSF_FIELD_SIZE_ONE:
@@ -8755,7 +8757,7 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     break;
             }
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_TRAVEL_TIME_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_TRAVEL_TIME_ARRAY:
             switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
             {
                 case GSF_FIELD_SIZE_ONE:
@@ -8774,11 +8776,11 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     break;
             }
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_BEAM_ANGLE_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_BEAM_ANGLE_ARRAY:
             minimum = GSF_S_SHORT_MIN;
             maximum = GSF_S_SHORT_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_MEAN_CAL_AMPLITUDE_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_MEAN_CAL_AMPLITUDE_ARRAY:
             switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
             {
                 case GSF_FIELD_SIZE_DEFAULT:
@@ -8790,9 +8792,29 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     minimum = GSF_S_SHORT_MIN;
                     maximum = GSF_S_SHORT_MAX;
                     break;
+                default:
+                    fprintf(stderr, "ERROR: %s:%d: What to do here?\n", __FILE__, __LINE__);
+                    return (-1);
             }
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_MEAN_REL_AMPLITUDE_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_MEAN_REL_AMPLITUDE_ARRAY:
+            switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
+            {
+                case GSF_FIELD_SIZE_DEFAULT:
+                case GSF_FIELD_SIZE_ONE:
+                    minimum = GSF_U_CHAR_MIN;
+                    maximum = GSF_U_CHAR_MAX;
+                    break;
+                case GSF_FIELD_SIZE_TWO:
+                    minimum = GSF_U_SHORT_MIN;
+                    maximum = GSF_U_SHORT_MAX;
+                    break;
+                default:
+                    fprintf(stderr, "ERROR: %s:%d: What to do here?\n", __FILE__, __LINE__);
+                    return (-1);
+            }
+            break;
+        case GSF_SWATH_BATHY_SUBRECORD_ECHO_WIDTH_ARRAY:
             switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
             {
                 case GSF_FIELD_SIZE_DEFAULT:
@@ -8806,97 +8828,78 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
                     break;
             }
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_ECHO_WIDTH_ARRAY):
-            switch (ping->scaleFactors.scaleTable[subrecordID - 1].compressionFlag & 0xf0)
-            {
-                case GSF_FIELD_SIZE_DEFAULT:
-                case GSF_FIELD_SIZE_ONE:
-                    minimum = GSF_U_CHAR_MIN;
-                    maximum = GSF_U_CHAR_MAX;
-                    break;
-                case GSF_FIELD_SIZE_TWO:
-                    minimum = GSF_U_SHORT_MIN;
-                    maximum = GSF_U_SHORT_MAX;
-                    break;
-            }
-            break;
-        case (GSF_SWATH_BATHY_SUBRECORD_QUALITY_FACTOR_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_QUALITY_FACTOR_ARRAY:
             minimum = GSF_U_CHAR_MIN;
             maximum = GSF_U_CHAR_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_RECEIVE_HEAVE_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_RECEIVE_HEAVE_ARRAY:
             minimum = GSF_S_CHAR_MIN;
             maximum = GSF_S_CHAR_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_DEPTH_ERROR_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_DEPTH_ERROR_ARRAY:
             minimum = GSF_U_SHORT_MIN;
             maximum = GSF_U_SHORT_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_ACROSS_TRACK_ERROR_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_ACROSS_TRACK_ERROR_ARRAY:
             minimum = GSF_U_SHORT_MIN;
             maximum = GSF_U_SHORT_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_ALONG_TRACK_ERROR_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_ALONG_TRACK_ERROR_ARRAY:
             minimum = GSF_U_SHORT_MIN;
             maximum = GSF_U_SHORT_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_QUALITY_FLAGS_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_QUALITY_FLAGS_ARRAY:
             minimum = GSF_U_CHAR_MIN;
             maximum = GSF_U_CHAR_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_BEAM_FLAGS_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_BEAM_FLAGS_ARRAY:
             minimum = GSF_U_CHAR_MIN;
             maximum = GSF_U_CHAR_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_SIGNAL_TO_NOISE_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_SIGNAL_TO_NOISE_ARRAY:
             minimum = GSF_U_CHAR_MIN;
             maximum = GSF_U_CHAR_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_BEAM_ANGLE_FORWARD_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_BEAM_ANGLE_FORWARD_ARRAY:
             minimum = GSF_U_SHORT_MIN;
             maximum = GSF_U_SHORT_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_VERTICAL_ERROR_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_VERTICAL_ERROR_ARRAY:
             minimum = GSF_U_SHORT_MIN;
             maximum = GSF_U_SHORT_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_HORIZONTAL_ERROR_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_HORIZONTAL_ERROR_ARRAY:
             minimum = GSF_U_SHORT_MIN;
             maximum = GSF_U_SHORT_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_SECTOR_NUMBER_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_SECTOR_NUMBER_ARRAY:
             minimum = GSF_U_CHAR_MIN;
             maximum = GSF_U_CHAR_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_DETECTION_INFO_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_DETECTION_INFO_ARRAY:
             minimum = GSF_U_CHAR_MIN;
             maximum = GSF_U_CHAR_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_INCIDENT_BEAM_ADJ_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_INCIDENT_BEAM_ADJ_ARRAY:
             minimum = GSF_S_CHAR_MIN;
             maximum = GSF_S_CHAR_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_SYSTEM_CLEANING_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_SYSTEM_CLEANING_ARRAY:
             minimum = GSF_U_CHAR_MIN;
             maximum = GSF_U_CHAR_MAX;
             break;
-        case (GSF_SWATH_BATHY_SUBRECORD_DOPPLER_CORRECTION_ARRAY):
+        case GSF_SWATH_BATHY_SUBRECORD_DOPPLER_CORRECTION_ARRAY:
             minimum = GSF_S_CHAR_MIN;
             maximum = GSF_S_CHAR_MAX;
             break;
         default:
             gsfError = GSF_UNRECOGNIZED_ARRAY_SUBRECORD_ID;
-            ret_code = -1;
-            break;
+            return (-1);
     }
 
-    if (ret_code == 0)
-    {
-        *min_value = ((minimum / multiplier) - offset);
-        *max_value = ((maximum / multiplier) - offset);
-    }
-
-    return (ret_code);
+    *min_value = ((minimum / multiplier) - offset);
+    *max_value = ((maximum / multiplier) - offset);
+    return (0);
 }
 
 /********************************************************************
@@ -8923,44 +8926,44 @@ const char *gsfGetSonarTextName(const gsfSwathBathyPing *ping)
 
     switch (ping->sensor_id)
     {
-        case (GSF_SWATH_BATHY_SUBRECORD_SEABEAM_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEABEAM_SPECIFIC:
             ptr = "SeaBeam";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM12_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM12_SPECIFIC:
             ptr = "Simrad EM12";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM100_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM100_SPECIFIC:
             ptr = "Simrad EM100";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM950_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM950_SPECIFIC:
             ptr = "Simrad EM950";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM1000_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM1000_SPECIFIC:
             ptr = "Simrad EM1000";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM121A_SPECIFIC:
             ptr = "Simrad EM121A";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SASS_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SASS_SPECIFIC:
             ptr = "SASS";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SEAMAP_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEAMAP_SPECIFIC:
             ptr = "SeaMap";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SB_AMP_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SB_AMP_SPECIFIC:
             ptr = "Sea Beam (w/amp)";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SEABAT_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_SEABAT_II_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEABAT_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_SEABAT_II_SPECIFIC:
             if (ping->sensor_data.gsfSeaBatIISpecific.mode & GSF_SEABAT_9002)
             {
                 ptr = " Reson SeaBat 9002";
@@ -8975,128 +8978,128 @@ const char *gsfGetSonarTextName(const gsfSwathBathyPing *ping)
             }
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SEABAT_8101_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEABAT_8101_SPECIFIC:
             ptr = "Reson SeaBat 8101";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_SEABEAM_2112_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_SEABEAM_2112_SPECIFIC:
             ptr = "Sea Beam 2112/36";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_ELAC_MKII_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_ELAC_MKII_SPECIFIC:
             ptr = "ELAC MKII";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM120_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM120_RAW_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM120_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM120_RAW_SPECIFIC:
             ptr = "Kongsberg EM120";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM300_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM300_RAW_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM300_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM300_RAW_SPECIFIC:
             ptr = "Kongsberg EM300";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM1002_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM1002_RAW_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM1002_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM1002_RAW_SPECIFIC:
             ptr = "Kongsberg EM1002";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2000_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2000_RAW_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM2000_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM2000_RAW_SPECIFIC:
             ptr = "Kongsberg EM2000";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000_RAW_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000_RAW_SPECIFIC:
             ptr = "Kongsberg EM3000";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000D_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000D_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3000D_RAW_SPECIFIC:
             ptr = "Kongsberg EM3000D";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002_RAW_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002_RAW_SPECIFIC:
             ptr = "Kongsberg EM3002";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002D_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002D_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM3002D_RAW_SPECIFIC:
             ptr = "Kongsberg EM3002D";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_SPECIFIC):
-        case (GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_RAW_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_SPECIFIC:
+        case GSF_SWATH_BATHY_SUBRECORD_EM121A_SIS_RAW_SPECIFIC:
             ptr = "Kongsberg EM121A (SIS)";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_7125_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_7125_SPECIFIC:
             ptr = "Reson SeaBat 7125";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8101_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8101_SPECIFIC:
             ptr = "Reson SeaBat 8101";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8111_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8111_SPECIFIC:
             ptr = "Reson SeaBat 8111";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8124_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8124_SPECIFIC:
             ptr = "Reson SeaBat 8124";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8125_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8125_SPECIFIC:
             ptr = "Reson SeaBat 8125";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8150_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8150_SPECIFIC:
             ptr = "Reson SeaBat 8150";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_RESON_8160_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_RESON_8160_SPECIFIC:
             ptr = "Reson SeaBat 8160";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM122_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM122_SPECIFIC:
             ptr = "Kongsberg EM122";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM302_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM302_SPECIFIC:
             ptr = "Kongsberg EM302";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM710_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM710_SPECIFIC:
             ptr = "Kongsberg EM710";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_KLEIN_5410_BSS_SPECIFIC:
             ptr = "Klein 5410";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_GEOSWATH_PLUS_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_GEOSWATH_PLUS_SPECIFIC:
             ptr = "GeoAcoustics GeoSwath+";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_EM2040_SPECIFIC:
             ptr = "Kongsberg EM2040";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_DELTA_T_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_DELTA_T_SPECIFIC:
             ptr = "Imagenex Delta T";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2020_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2020_SPECIFIC:
             ptr = "R2Sonic 2020";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2022_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2022_SPECIFIC:
             ptr = "R2Sonic 2022";
             break;
 
-        case (GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2024_SPECIFIC):
+        case GSF_SWATH_BATHY_SUBRECORD_R2SONIC_2024_SPECIFIC:
             ptr = "R2Sonic 2024";
             break;
 

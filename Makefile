@@ -44,10 +44,32 @@ real-clean: clean
 gsf:
 	(cd src/gsf && make libgsf.a)
 
+gsf-obj:
+	(cd src/gsf && make obj)
+
 gsf-test:
 	(cd src/gsf && make libgsf.a)
 	(cd tests/gsf && make test)
 
+gsf-test-obj:
+	(cd tests/gsf && make obj)
+
+gsfxx:
+	(cd src/gsfxx && make libgsfxx.a)
+
+gsfxx-obj:
+	(cd src/gsfxx && make obj)
+
 gsfxx-test:
 	(cd src/gsfxx && make libgsfxx.a)
 	(cd tests/gsfxx && make test)
+
+gsfxx-test-obj:
+	(cd tests/gsfxx && make obj)
+
+bin-obj:
+	(cd src/bin && make obj)
+
+obj: gsf-obj gsfxx-obj gsf-test-obj gsfxx-test-obj bin-obj
+
+

@@ -12,33 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+include ../../Makefile.inc
+
 BIN := gsf_index
-
-WARN := -Wall
-WARN += -Wextra
-# WARN += -Werror
-
-DBG := -g3 -DDEBUG=1
-DBG += -O0
-
-OPT := -O3
-OPT += -funroll-loops
-OPT += -fexpensive-optimizations
-OPT += -ffast-math
-OPT += -DNDEBUG
-
-CXXFLAGS := ${WARN}
-CXXFLAGS += -std=c++11
 
 CPPFLAGS := -I../gsf -I../gsfxx
 LDFLAGS := -L../gsfxx
-
-ifdef OPTIMIZE
-  CXXFLAGS += ${OPT}
-else
-  CXXFLAGS += ${DBG}
-endif
-
 
 all: ${BIN}
 	@echo "Done"
@@ -51,3 +30,8 @@ gsf_index: gsf_index.o ../gsf/libgsf.a
 
 gsf_info: gsf_info.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ ${LDFLAGS} -lgsfxx
+
+SRCS := ${wildcard *.cc}
+OBJS := ${SRCS:.cc=.o}
+
+obj: ${OBJS}

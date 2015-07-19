@@ -12,37 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-WARN := -Wall
-WARN += -Wextra
-
-ifdef ERROR
-  WARN += -Werror
-endif
-
-DBG := -g3
-DBG += -O0
-
-OPT := -O3
-OPT += -funroll-loops
-OPT += -fexpensive-optimizations
-OPT += -ffast-math
-OPT += -DNDEBUG
-
-CPPFLAGS := ${WARN}
-
-ifdef OPTIMIZE
-  CPPFLAGS += ${OPT}
-else
-  CPPFLAGS += ${DBG}
-endif
-
-CXXFLAGS += -std=c++11
+include ../../Makefile.inc
 
 SRCS := $(wildcard *.cc)
 OBJS := ${SRCS:.cc=.o}
 LIB := libgsfxx.a
 
 all: ${LIB}
+
+obj: ${OBJS}
 
 clean:
 	-rm -f *.o
