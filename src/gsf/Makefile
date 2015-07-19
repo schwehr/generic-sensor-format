@@ -12,33 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# CC := gcc-5
-
-WARN := -Wall
-WARN += -Wextra
-
-ifdef ERROR
-  WARN += -Werror
-endif
-
-DBG := -g3
-DBG += -O0
-
-OPT := -O3
-OPT += -funroll-loops
-# Not supposed by clang.
-# OPT += -fexpensive-optimizations
-OPT += -ffast-math
-OPT += -DNDEBUG
-
-CFLAGS := ${WARN}
-
-ifdef OPTIMIZE
-  CFLAGS += ${OPT}
-else
-  CFLAGS += ${DBG}
-endif
-
+include ../../Makefile.inc
 
 SRCS := $(wildcard *.c)
 OBJS := ${SRCS:.c=.o}
@@ -49,6 +23,8 @@ ${LIB}: ${OBJS}
 	ranlib $@
 
 all: ${LIB}
+
+obj: ${OBJS}
 
 clean:
 	-rm -f *.o

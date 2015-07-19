@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+include ../../Makefile.inc
+
 TESTS := index_test
 TESTS += read_gsf_2_9_test
 TESTS += read_gsf_3_6_test
@@ -40,22 +42,6 @@ CPPFLAGS += -isystem $(GTEST_DIR)/include
 CPPFLAGS += -isystem $(GMOCK_DIR)/include
 CPPFLAGS +=  -I../../src/gsf
 CPPFLAGS += -I$(GTEST_DIR) -I$(GMOCK_DIR)
-
-CXXFLAGS += -std=c++11
-CXXFLAGS += -Wall -Wextra -pthread
-
-DBG := -g
-DBG += -O0
-
-OPT := -O3
-OPT += -funroll-loops -fexpensive-optimizations -ffast-math
-
-ifdef OPTIMIZE
-  CXXFLAGS += ${OPT}
-else
-  CXXFLAGS += ${DBG}
-endif
-
 
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 		$(GTEST_DIR)/include/gtest/internal/*.h

@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+include ../../Makefile.inc
+
 TESTS :=
 TESTS += records_test
 TESTS += util_test
@@ -39,21 +41,6 @@ CPPFLAGS += -isystem $(GTEST_DIR)/include
 CPPFLAGS += -isystem $(GMOCK_DIR)/include
 CPPFLAGS += -I../../src/gsfxx
 CPPFLAGS += -I$(GTEST_DIR) -I$(GMOCK_DIR)
-
-CXXFLAGS += -std=c++11
-CXXFLAGS += -Wall -Wextra -pthread
-
-DBG := -g
-DBG += -O0
-
-OPT := -O3
-OPT += -funroll-loops -fexpensive-optimizations -ffast-math
-
-ifdef OPTIMIZE
-  CXXFLAGS += ${OPT}
-else
-  CXXFLAGS += ${DBG}
-endif
 
 LDFLAGS := -L../../src/gsfxx -lgsfxx
 # TODO(schwehr): Move the gtest build stuff to its own directory.

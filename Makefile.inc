@@ -1,0 +1,37 @@
+# -*- makefile -*-
+
+CC := clang
+CXX := clang++
+
+WARN :=
+WARN := -Wall
+WARN += -Wextra
+
+ifdef ERROR
+  WARN += -Werror
+endif
+
+CFLAGS := ${WARN}
+
+CXXFLAGS += -std=c++11
+# CXXFLAGS += -pthread
+CXXFLAGS += ${WARN}
+
+DBG := -g
+DBG += -O0
+
+OPT := -O3
+OPT += -funroll-loops
+# Not supposed by clang.
+# OPT += -fexpensive-optimizations
+OPT += -ffast-math
+OPT += -DNDEBUG
+
+ifdef OPTIMIZE
+  CFLAGS += ${OPT}
+  CXXFLAGS += ${OPT}
+else
+  CFLAGS += ${DBG}
+  CXXFLAGS += ${DBG}
+endif
+
