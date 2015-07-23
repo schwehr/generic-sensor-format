@@ -144,6 +144,8 @@ int
 gsfStat (const char *filename, long long *sz)
 {
     int rc;
+    assert(filename);
+    assert(sz);
 
     gsfError = 0;
 
@@ -228,6 +230,9 @@ gsfOpen(const char *filename, const int mode, int *handle)
   gsfDataID       id;
   long long       stsize;
   FILE           *fp;
+
+  assert(filename);
+  assert(handle);
 
   /* Clear the gsfError value each time a new file is opened. */
   gsfError = 0;
@@ -564,6 +569,10 @@ gsfOpenBuffered(const char *filename, const int mode, int *handle, int buf_size)
     long long       stsize;
     gsfDataID       id;
     FILE           *fp;
+
+    assert(filename);
+    assert(handle);
+    assert(buf_size >= 0);
 
     /* Clear the gsfError value each time a new file is opened. */
     gsfError = 0;
@@ -1090,6 +1099,9 @@ gsfRead(int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *rptr, unsi
     int             ret;
     gsfDataID       tmpID;
 
+    assert(dataID);
+    assert(rptr);
+
     /* Clear gsfError before each read. */
     gsfError = 0;
 
@@ -1185,6 +1197,9 @@ gsfUnpackStream (int handle, int desiredRecord, gsfDataID *dataID, gsfRecords *r
     gsfuLong        temp;
     unsigned char  *dptr = streamBuff;
     gsfuLong        ckSum;
+
+    assert(dataID);
+    assert(rptr);
 
     if ((handle < 1) || (handle > GSF_MAX_OPEN_FILES))
     {
@@ -1564,6 +1579,8 @@ gsfSeekRecord(int handle, gsfDataID *id)
     gsfRecords      scalesRecord;
     INDEX_REC       index_rec;
 
+    assert(id);
+
     /* Clear gsfError before each seek. */
     gsfError = 0;
 
@@ -1767,6 +1784,9 @@ gsfWrite(int handle, gsfDataID *id, gsfRecords *rptr)
     int             i;
     int             pad;
     long long       ret;
+
+    assert(id);
+    assert(rptr);
 
     /* Clear gsfError before each write. */
     gsfError = 0;
@@ -2064,6 +2084,8 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
     unsigned int    itemp;
     double          mult;
 
+    assert(sf);
+
     /* If we're adding a new subrecord, bump counter and check bounds. */
     if (sf->scaleTable[subrecordID - 1].multiplier == 0.0)
     {
@@ -2153,6 +2175,9 @@ gsfLoadScaleFactor(gsfScaleFactors *sf, unsigned int subrecordID, char c_flag, d
 int
 gsfGetScaleFactor(int handle, unsigned int subrecordID, unsigned char *c_flag, double *multiplier, double *offset)
 {
+    assert(c_flag);
+    assert(multiplier);
+    assert(offset);
 
     if ((subrecordID < 1) || (subrecordID > GSF_MAX_PING_ARRAY_SUBRECORDS))
     {
@@ -2206,6 +2231,8 @@ void
 gsfFree (gsfRecords *rec)
 {
     int i;
+
+    assert(rec);
 
     /* Free the array subrecords in ping data structure. */
     if (rec->mb_ping.depth != (double *) NULL)
@@ -2490,6 +2517,7 @@ gsfFree (gsfRecords *rec)
 void
 gsfPrintError(FILE * fp)
 {
+    assert(fp);
 
     fprintf(fp, "%s\n", gsfStringError());
 
@@ -2785,11 +2813,14 @@ gsfStringError(void)
  ********************************************************************/
 
 int
-gsfIndexTime(int handle, int record_type, int record_number, time_t * sec, long *nsec)
+gsfIndexTime(int handle, int record_type, int record_number, time_t *sec, long *nsec)
 {
     long long       addr;
     int             offset;
     INDEX_REC       index_rec;
+
+    assert(sec);
+    assert(nsec);
 
     if ((handle < 1) || (handle > GSF_MAX_OPEN_FILES))
     {
@@ -2866,6 +2897,8 @@ gsfChecksum(unsigned char *buff, unsigned int num_bytes)
 {
     unsigned char  *ptr;
     gsfuLong        checkSum = 0;
+
+    assert(buff);
 
     /* Compute the checksum as the modulo-32 sum of all bytes
      * between the checksum value and the end of the record.
@@ -3021,7 +3054,10 @@ gsfGetNumberRecords (int handle, int desiredRecord)
 int
 gsfCopyRecords (gsfRecords *target, const gsfRecords *source)
 {
-    int             i;
+    int i;
+
+    assert(target);
+    assert(source);
 
     gsfError = 0;
 
@@ -4021,6 +4057,9 @@ gsfSetParam(int handle, int index, char *val, gsfRecords *rec)
     int             len;
     char           *ptr;
 
+    assert(val);
+    assert(rec);
+
     if ((handle < 1) || (handle > GSF_MAX_OPEN_FILES))
     {
         gsfError = GSF_BAD_FILE_HANDLE;
@@ -4103,6 +4142,9 @@ gsfPutMBParams(const gsfMBParams *p, gsfRecords *rec, int handle, int numArrays)
     char            temp2[64];
     int             ret;
     int             number_parameters = 0, num_tx = 0, num_rx = 0;
+
+    assert(p);
+    assert(rec);
 
     if ((handle < 1) || (handle > GSF_MAX_OPEN_FILES))
     {
@@ -7135,6 +7177,10 @@ gsfGetMBParams(const gsfRecords *rec, gsfMBParams *p, int *numArrays)
     char str[64];
     int num_tx = 0, num_rx = 0;
 
+    assert(rec);
+    assert(p);
+    assert(numArrays);
+
     gsfInitializeMBParams (p);   /* Set everything to "unknown". */
     /* Set this value to zero in case we can't determine it. */
     *numArrays = 0;
@@ -8058,6 +8104,8 @@ gsfNumberParams(char *param)
     char *p;
     char tmp[128];
 
+    assert(param);
+
     strncpy(tmp, param, sizeof(tmp) - 1);
     tmp[sizeof(tmp) - 1] = '\0';
     p = strtok (tmp, ",");
@@ -8106,6 +8154,10 @@ int
 gsfGetSwathBathyBeamWidths(const gsfRecords *data, double *fore_aft, double *athwartship)
 {
     int             ret=0;   /* Assume that we will be successful. */
+
+    assert(data);
+    assert(fore_aft);
+    assert(athwartship);
 
     /* Switch on the type of sonar this data came from. */
     switch (data->mb_ping.sensor_id)
@@ -8377,6 +8429,7 @@ gsfIsStarboardPing(const gsfRecords *data)
 {
     int ret = 0;
 
+    assert(data);
 
     /* Switch on the type of sonar this data came from. */
     switch (data->mb_ping.sensor_id)
@@ -8488,6 +8541,9 @@ gsfLoadDepthScaleFactorAutoOffset(gsfSwathBathyPing *ping, unsigned int subrecor
     int             dc_offset;
     int             percent;
     int             ret_code = 0;
+
+    assert(ping);
+    assert(last_corrector);
 
     if (precision < 0.01)
     {
@@ -8662,6 +8718,10 @@ gsfGetSwathBathyArrayMinMax(const gsfSwathBathyPing *ping, unsigned int subrecor
     double          maximum;
     double          multiplier;
     double          offset;
+
+    assert(ping);
+    assert(min_value);
+    assert(max_value);
 
     /* Make sure that we received a valid subrecordID. */
     if ((subrecordID < 1) || (subrecordID > GSF_MAX_PING_ARRAY_SUBRECORDS))
@@ -9154,6 +9214,9 @@ gsfIsNewSurveyLine(int handle, const gsfRecords *rec, double azimuth_change, dou
     double diff;
     int    new_line;
 
+    assert(rec);
+    assert(last_heading);
+
     new_line = 0;
 
     if ((handle < 1) || (handle > GSF_MAX_OPEN_FILES))
@@ -9204,6 +9267,8 @@ void
 gsfInitializeMBParams (gsfMBParams *p)
 {
     int i;
+
+    assert(p);
 
     /* The integer unknown values were implicitly being converted from
        DBL_MIN to 0 in GSF 3.06 and older.
