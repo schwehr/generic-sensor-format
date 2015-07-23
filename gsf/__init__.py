@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Copyright 2015 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +17,7 @@
 These files have binary records that have the data in big engian."""
 
 import datetime
+import inspect
 import os
 import struct
 import sys
@@ -61,6 +60,16 @@ class Error(Exception):
   pass
 
 
+def Checkpoint():
+    """Get a string saying where this function was called from."""
+
+    frame = inspect.currentframe().f_back
+    filename = os.path.basename(inspect.stack()[1][1])
+    line = frame.f_lineno
+    code = frame.f_code.co_name
+    return '%s:%d: %s() CHECKPOINT' % (filename, line, code)
+
+
 def GsfHeader(data):
   version = data.rstrip('\0')
   version_major, version_minor = version.split('v')[1].split('.')
@@ -75,6 +84,13 @@ def GsfHeader(data):
 
 
 def GsfComment(data):
+  """Decode a GSF Comment record from binary data.
+
+  Record type 5.
+
+  Args:
+    data: String of binary data.
+  """
   sec = struct.unpack('>I', data[:4])[0]
   nsec = struct.unpack('>I', data[4:8])[0]
   size = struct.unpack('>I', data[8:12])[0]
@@ -84,6 +100,39 @@ def GsfComment(data):
     'sec': sec,
     'nsec': nsec,
     'datetime': datetime.datetime.utcfromtimestamp(sec + 1e-9 * nsec),
+    'comment': comment
+  }
+
+
+def GsfHistory(data):
+  sec = struct.unpack('>I', data[:4])[0]
+  nsec = struct.unpack('>I', data[4:8])[0]
+  name_size = struct.unpack('>h', data[8:10])[0]
+  name = data[10:10 + name_size].rstrip('\0')
+  base = 10 + name_size
+
+  operator_size = struct.unpack('>h', data[base:base+2])[0]
+  base += 2
+  operator = data[base:base + operator_size].rstrip('\0')
+  base += operator_size
+
+  command_size = struct.unpack('>h', data[base:base+2])[0]
+  base += 2
+  command = data[base:base + command_size].rstrip('\0')
+  base += command_size
+
+  comment_size = struct.unpack('>h', data[base:base+2])[0]
+  base += 2
+  comment = data[base:base + comment_size].rstrip('\0')
+
+  return {
+    'record_type': GSF_HISTORY,
+    'sec': sec,
+    'nsec': nsec,
+    'datetime': datetime.datetime.utcfromtimestamp(sec + 1e-9 * nsec),
+    'name': name,
+    'operator' : operator,
+    'command' : command,
     'comment': comment
   }
 
@@ -119,16 +168,17 @@ class GsfIterator(object):
     reserved = record_id & RESERVED_MASK
     have_checksum = record_id & CHECKSUM_MASK
     checksum = None
-    if have_checksum:
-      checksum_text = self.gsf_file.src.read(4)
-      checksum = struct.unpack('>I', checksum_text)
-
     header_data = record_header_text
     if have_checksum:
       header_data += checksum_text
+      checksum_text = self.gsf_file.src.read(4)
+      checksum = struct.unpack('>I', checksum_text)
+
     data = self.gsf_file.src.read(data_size)
 
     record = {
+      'size_total': len(header_data) + len(data),
+      'size_data' : len(data),
       'record_type': record_type,
       'record_type_str': RECORD_TYPES[record_type],
       'reserved': reserved,
@@ -150,7 +200,7 @@ class GsfIterator(object):
     elif record_type == GSF_COMMENT:
       record.update(GsfComment(data))
     elif record_type == GSF_HISTORY:
-      pass
+      record.update(GsfHistory(data))
     elif record_type == GSF_NAVIGATION_ERROR:
       pass
     elif record_type == GSF_SWATH_BATHY_SUMMARY:
