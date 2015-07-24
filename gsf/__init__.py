@@ -105,6 +105,7 @@ def GsfComment(data):
 
 
 def GsfHistory(data):
+  print 'GsfHistory len(data):', len(data), 8+2*4
   sec = struct.unpack('>I', data[:4])[0]
   nsec = struct.unpack('>I', data[4:8])[0]
   name_size = struct.unpack('>h', data[8:10])[0]
@@ -113,17 +114,26 @@ def GsfHistory(data):
 
   operator_size = struct.unpack('>h', data[base:base+2])[0]
   base += 2
-  operator = data[base:base + operator_size].rstrip('\0')
-  base += operator_size
+  if operator_size:
+    operator = data[base:base + operator_size].rstrip('\0')
+    base += operator_size
+  else:
+    operator = ''
 
   command_size = struct.unpack('>h', data[base:base+2])[0]
   base += 2
-  command = data[base:base + command_size].rstrip('\0')
-  base += command_size
+  if command_size:
+    command = data[base:base + command_size].rstrip('\0')
+    base += command_size
+  else:
+    command = ''
 
   comment_size = struct.unpack('>h', data[base:base+2])[0]
   base += 2
-  comment = data[base:base + comment_size].rstrip('\0')
+  if comment_size:
+    comment = data[base:base + comment_size].rstrip('\0')
+  else:
+    comment = ''
 
   return {
     'record_type': GSF_HISTORY,

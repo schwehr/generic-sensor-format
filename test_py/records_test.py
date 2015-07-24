@@ -38,6 +38,19 @@ class HistoryTest(unittest.TestCase):
     self.assertEqual(history['command'], 'command line')
     self.assertEqual(history['comment'], 'comment')
 
+  def testAllFieldsEmpty(self):
+    data = (
+        0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x06, 0x00, 0x01, 0x00,
+        0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00)
+
+    history = gsf.GsfHistory(''.join(chr(v) for v in data))
+    self.assertEqual(history['record_type'], gsf.GSF_HISTORY)
+    self.assertEqual(history['sec'], 5)
+    self.assertEqual(history['nsec'], 6)
+    self.assertEqual(history['name'], '')
+    self.assertEqual(history['operator'], '')
+    self.assertEqual(history['command'], '')
+    self.assertEqual(history['comment'], '')
 
 if __name__ == '__main__':
   unittest.main()
