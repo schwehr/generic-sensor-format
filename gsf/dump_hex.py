@@ -48,7 +48,9 @@ def DumpHex(filename, include_cpp=True):
     header_hex = [Hex2(v) for v in header_data]
     data_hex = [Hex2(v) for v in data]
     print 'record:  ', record_num, type_str
-    print 'sizes  = (%d, %d, %d)' % (record['size_total'], len(header_hex), len(data_hex))
+    print 'sizes  = (%d, %d, %d)' % (record['size_total'],
+                                     len(header_hex),
+                                     len(data_hex))
     print 'header = (', ', '.join(header_hex), ')'
     print 'data   = (', ', '.join(data_hex), ')'
 
