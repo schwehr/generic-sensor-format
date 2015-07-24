@@ -105,7 +105,6 @@ def GsfComment(data):
 
 
 def GsfHistory(data):
-  print 'GsfHistory len(data):', len(data), 8+2*4
   sec = struct.unpack('>I', data[:4])[0]
   nsec = struct.unpack('>I', data[4:8])[0]
   name_size = struct.unpack('>h', data[8:10])[0]
