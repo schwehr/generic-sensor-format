@@ -170,9 +170,9 @@ class GsfIterator(object):
     checksum = None
     header_data = record_header_text
     if have_checksum:
-      header_data += checksum_text
       checksum_text = self.gsf_file.src.read(4)
       checksum = struct.unpack('>I', checksum_text)
+      header_data += checksum_text
 
     data = self.gsf_file.src.read(data_size)
 
