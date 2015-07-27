@@ -83,6 +83,48 @@ def GsfHeader(data):
   }
 
 
+def GsfAttitude(data):
+  sec = struct.unpack('>I', data[:4])[0]
+  nsec = struct.unpack('>I', data[4:8])[0]
+  base_time = datetime.datetime.utcfromtimestamp(sec + 1e-9 * nsec)
+  num_measurements = struct.unpack('>h', data[8:10])[0]
+
+  result = {
+        'record_type': GSF_ATTITUDE,
+        'sec': sec,
+        'nsec': nsec,
+        'datetime': base_time,
+        'times': [],
+        'pitches': [],
+        'rolls': [],
+        'heaves': [],
+        'headings': [],
+  }
+
+  if not num_measurements:
+    return result
+
+  base = 10
+  # 5 2-byte values.
+  record_size = 10
+  for rec_num in range(num_measurements):
+    start = base + rec_num * record_size
+    end = base + (rec_num + 1) * record_size
+
+    fields = struct.unpack('>4hH', data[start:end])
+    time_raw, pitch_raw, roll_raw, heave_raw, heading_raw = fields
+    offset = time_raw / 1000.0
+    time = base_time + datetime.timedelta(seconds=offset)
+
+    result['times'].append(time)
+    result['pitches'].append(pitch_raw / 100.0)
+    result['rolls'].append(roll_raw / 100.0)
+    result['heaves'].append(heave_raw / 100.0)
+    result['headings'].append(heading_raw / 100.0)
+
+  return result
+
+
 def GsfComment(data):
   """Decode a GSF Comment record from binary data.
 
