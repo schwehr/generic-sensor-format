@@ -45,6 +45,7 @@
 #include "gsf.h"
 #include "gsf_dec.h"
 #include "gsf_enc.h"
+#include "gsf_priv.h"
 
 #if defined(__GNUC__) && __GNUC__ >= 4
 #  define UNUSED __attribute((__unused__))
@@ -7540,7 +7541,8 @@ gsfDecodeHVNavigationError(gsfHVNavigationError *hv_nav_error, GSF_FILE_TABLE *f
     return (p - sptr);
 }
 
-static void LocalAddTimes (struct timespec *base_time, double delta_time, struct timespec *sum_time)
+/* static */
+void LocalAddTimes (const struct timespec *base_time, double delta_time, struct timespec *sum_time)
 {
     double fraction = 0.0;
     double tmp      = 0.0;
