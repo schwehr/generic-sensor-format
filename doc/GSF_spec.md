@@ -1428,6 +1428,10 @@ measurement.  The number of measurements is variable and user-definable, but any
 attitude record should contain no more than sixty seconds worth of measurements.  Table
 4-14 defines the format of an Attitude record.
 
+TODO(schwehr): What are the units on the values in this table?  gsf.h has the decoded units, but what is supposed to be over the network or in a file.
+
+TODO(schwehr): On disk, GSF has records of time offest, pitch, roll, heave and heading, but scaled.  Not like in table 4-14.
+
 **Table 4-14** Attitude Record Definition.
 
 Field Name | Description | Field Type | Count
