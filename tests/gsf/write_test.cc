@@ -322,6 +322,21 @@ TEST(GsfWriteSimple, AttitudeRounding) {
   VerifyAttitude(expected, *dst);
 }
 
+TEST(GsfWriteSimple, AttitudeLength2) {
+  // TODO(schwehr): Why do the nanoseconds not match?
+  const struct timespec times[] = {{1438016822, 0},
+                                   {1438016823, 0}};
+  const double pitch[] = {1.2, -3.4};
+  const double roll[] = {-100.1, 100.2};
+  const double heave[] = {-200.2, -200.3};
+  // Stored as a int16 with value * 100, so cannot test negative.
+  const double heading[] = {181, 359};
+  const gsfAttitude attitude =
+      GsfAttitude(2, times, pitch, roll, heave, heading);
+  ValidateWriteAttitude("attitude-length2.gsf", false, 40, attitude, 60);
+}
+
+
 }  // namespace
 }  // namespace test
 }  // namespace generic_sensor_format
