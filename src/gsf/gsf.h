@@ -1452,8 +1452,8 @@ typedef struct t_gsfSVP
 {
     struct timespec observation_time;   /* Time the SVP measurement was made. */
     struct timespec application_time;   /* Time the SVP was used by the sonar. */
-    double          latitude;           /* Latitude (degrees) of SVP measurement. */
     double          longitude;          /* Longitude (degrees) of SVP measurement. */
+    double          latitude;           /* Latitude (degrees) of SVP measurement. */
     int             number_points;      /* Number of data points in the profile. */
     double         *depth;              /* Array of profile depth values in meters. */
     double         *sound_speed;        /* Array of profile sound velocity values in m/s. */
