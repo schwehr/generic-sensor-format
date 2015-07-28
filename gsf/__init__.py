@@ -188,6 +188,46 @@ def GsfHistory(data):
   }
 
 
+def GsfSvp(data):
+  # if len(data) < ??:
+  #   raise
+  sec = struct.unpack('>I', data[:4])[0]
+  nsec = struct.unpack('>I', data[4:8])[0]
+  when = datetime.datetime.utcfromtimestamp(sec + 1e-9 * nsec)
+  application_sec = struct.unpack('>I', data[8:12])[0]
+  application_nsec = struct.unpack('>I', data[12:16])[0]
+  application_when = datetime.datetime.utcfromtimestamp(
+      application_sec + 1e-9 * application_nsec)
+
+  longitude = struct.unpack('>i', data[16:20])[0] / 1.0e7
+  latitude = struct.unpack('>i', data[20:24])[0] / 1.0e7
+
+  num_points = struct.unpack('>I', data[24:28])[0]
+  depth = []
+  sound_speed = []
+
+  for i in range(num_points):
+    start = 28 + 8 * i
+    end = 28 + 8 * (i + 1)
+    depth_raw, sound_speed_raw = struct.unpack('>2I', data[start:end])
+    depth.append(depth_raw / 100.0)
+    sound_speed.append(sound_speed_raw / 100.0)
+
+  return {
+    'record_type': GSF_SOUND_VELOCITY_PROFILE,
+    'sec': sec,
+    'nsec': nsec,
+    'datetime': when,
+    'application_sec': application_sec,
+    'application_nsec': application_nsec,
+    'application_datetime': application_when,
+    'latitude': latitude,
+    'longitude': longitude,
+    'depth': depth,
+    'sound_speed': sound_speed,
+  }
+
+
 class GsfFile(object):
   """A simple GSF file reader."""
 

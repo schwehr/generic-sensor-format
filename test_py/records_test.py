@@ -147,5 +147,93 @@ class HistoryTest(unittest.TestCase):
     self.assertEqual(history['command'], '')
     self.assertEqual(history['comment'], '')
 
+
+class SvpTest(unittest.TestCase):
+
+  def testEmpty(self):
+    data = (
+        0x00, 0x00, 0x00, 0x01, 0x01, 0x31, 0x2D, 0x00, 0x00, 0x00, 0x00,
+        0x03, 0x02, 0x62, 0x5A, 0x00, 0x04, 0xA6, 0x2F, 0x80, 0x03, 0x56,
+        0x7E, 0x00, 0x00, 0x00, 0x00, 0x00)
+
+    svp = gsf.GsfSvp(''.join(chr(v) for v in data))
+    self.assertEqual(svp['record_type'], gsf.GSF_SOUND_VELOCITY_PROFILE)
+    self.assertEqual(svp['sec'], 1)
+    self.assertEqual(svp['nsec'], 20000000)
+    self.assertEqual(svp['application_sec'], 3)
+    self.assertEqual(svp['application_nsec'], 40000000)
+    self.assertEqual(svp['longitude'], 7.8)
+    self.assertEqual(svp['latitude'], 5.6)
+    self.assertEqual(svp['depth'], [])
+    self.assertEqual(svp['sound_speed'], [])
+
+  def testLength1Zeros(self):
+    data = (
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00)
+
+    svp = gsf.GsfSvp(''.join(chr(v) for v in data))
+    self.assertEqual(svp['record_type'], gsf.GSF_SOUND_VELOCITY_PROFILE)
+    self.assertEqual(svp['sec'], 0)
+    self.assertEqual(svp['nsec'], 0)
+
+    self.assertEqual(svp['application_sec'], 0)
+    self.assertEqual(svp['application_nsec'], 0)
+
+    self.assertEqual(svp['latitude'], 0.0)
+    self.assertEqual(svp['longitude'], 0.0)
+    self.assertEqual(svp['depth'], [0.0])
+    self.assertEqual(svp['sound_speed'], [0.0])
+
+  def testLength1(self):
+    data = (
+        0x55, 0xB7, 0xDF, 0x74, 0x1F, 0x3E, 0x5A, 0x20, 0x55, 0xB7, 0xDF,
+        0x75, 0x07, 0x5B, 0xB2, 0x90, 0x1B, 0x2E, 0x02, 0x00, 0x07, 0x54,
+        0xD4, 0xC0, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x78, 0x00,
+        0x00, 0x00, 0xE6)
+
+    svp = gsf.GsfSvp(''.join(chr(v) for v in data))
+    self.assertEqual(svp['record_type'], gsf.GSF_SOUND_VELOCITY_PROFILE)
+    self.assertEqual(svp['sec'], 1438113652)
+    self.assertEqual(svp['nsec'], 524180000)
+    self.assertEqual(svp['datetime'],
+                     datetime.datetime(2015, 7, 28, 20, 0, 52, 524180))
+
+    self.assertEqual(svp['application_sec'], 1438113653)
+    self.assertEqual(svp['application_nsec'], 123450000)
+    self.assertEqual(svp['application_datetime'],
+                     datetime.datetime(2015, 7, 28, 20, 0, 53, 123450))
+
+    self.assertEqual(svp['longitude'], 45.6)
+    self.assertEqual(svp['latitude'], 12.3)
+    self.assertEqual(svp['depth'], [1.2])
+    self.assertEqual(svp['sound_speed'], [2.3])
+
+  def testLength2(self):
+    data = (
+        0x55, 0xB7, 0xDF, 0x76, 0x1F, 0x3E, 0x81, 0x30, 0x55, 0xB7, 0xDF,
+        0x77, 0x07, 0x5B, 0xD9, 0xA0, 0xE4, 0xD1, 0xFE, 0x00, 0xF8, 0xAB,
+        0x2B, 0x40, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x78, 0x00,
+        0x00, 0x01, 0xC2, 0x00, 0x00, 0x00, 0xE6, 0x00, 0x00, 0x02, 0x9E)
+
+    svp = gsf.GsfSvp(''.join(chr(v) for v in data))
+    self.assertEqual(svp['record_type'], gsf.GSF_SOUND_VELOCITY_PROFILE)
+    self.assertEqual(svp['sec'], 1438113654)
+    self.assertEqual(svp['nsec'], 524190000)
+    self.assertEqual(svp['datetime'],
+                     datetime.datetime(2015, 7, 28, 20, 0, 54, 524190))
+    self.assertEqual(svp['application_sec'], 1438113655)
+    self.assertEqual(svp['application_nsec'], 123460000)
+    self.assertEqual(svp['application_datetime'],
+                     datetime.datetime(2015, 7, 28, 20, 0, 55, 123460))
+    # self.assertEqual(svp['application_time'], datetime.datetime())
+    self.assertEqual(svp['longitude'], -45.6)
+    self.assertEqual(svp['latitude'], -12.3)
+    self.assertEqual(svp['depth'], [1.2, 2.3])
+    self.assertEqual(svp['sound_speed'], [4.5, 6.7])
+
+
 if __name__ == '__main__':
   unittest.main()

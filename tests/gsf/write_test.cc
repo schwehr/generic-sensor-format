@@ -401,9 +401,9 @@ TEST(GsfWriteSimple, SvpLength2) {
   // Cannot do negative sound speed.
   const double depth[] = {1.2, 2.3};
   const double sound_speed[] = {4.5, 6.7};
-  const gsfSVP svp = GsfSvp(observation_time, application_time, -12.3, -45.6, 1,
+  const gsfSVP svp = GsfSvp(observation_time, application_time, -12.3, -45.6, 2,
                             depth, sound_speed);
-  ValidateWriteSvp("svp-length2.gsf", false, 44, svp, 64);
+  ValidateWriteSvp("svp-length2.gsf", false, 52, svp, 72);
 }
 
 }  // namespace
