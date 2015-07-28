@@ -199,8 +199,6 @@ def GsfSvp(data):
   application_when = datetime.datetime.utcfromtimestamp(
       application_sec + 1e-9 * application_nsec)
 
-  print struct.unpack('>2I', data[16:24])
-
   longitude = struct.unpack('>i', data[16:20])[0] / 1.0e7
   latitude = struct.unpack('>i', data[20:24])[0] / 1.0e7
 
