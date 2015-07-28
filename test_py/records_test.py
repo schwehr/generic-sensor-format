@@ -61,6 +61,24 @@ class AttitudeTest(unittest.TestCase):
     self.assertEqual(attitude['heaves'], [-5.6])
     self.assertEqual(attitude['headings'], [7.8])
 
+  def testAttitudeLengthTwo(self):
+    data = (
+        0x55, 0xB6, 0x65, 0x36, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00,
+        0x00, 0x00, 0x78, 0xD8, 0xE6, 0xB1, 0xCC, 0x46, 0xB4, 0x04, 0x42,
+        0xFE, 0xAC, 0x27, 0x24, 0xB1, 0xC2, 0x8C, 0x3C, 0x00, 0x00)
+
+    attitude = gsf.GsfAttitude(''.join(chr(v) for v in data))
+    self.assertEqual(attitude['record_type'], gsf.GSF_ATTITUDE)
+    self.assertEqual(attitude['sec'], 1438016822)
+    self.assertEqual(attitude['nsec'], 1)
+    self.assertEqual(attitude['times'],
+                     [datetime.datetime(2015, 7, 27, 17, 7, 2),
+                      datetime.datetime(2015, 7, 27, 17, 7, 3, 90000)]),
+    self.assertEqual(attitude['pitches'], [1.2, -3.4])
+    self.assertEqual(attitude['rolls'], [-100.1, 100.2])
+    self.assertEqual(attitude['heaves'], [-200.2, -200.3])
+    self.assertEqual(attitude['headings'], [181, 359])
+
 
 class CommentTest(unittest.TestCase):
 

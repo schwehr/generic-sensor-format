@@ -238,6 +238,7 @@ class GsfIterator(object):
       'data': data
     }
 
+    # TODO(schwehr): Wrap in try, except and handle malformed records.
     if record_type == GSF_HEADER:
       record.update(GsfHeader(data))
     elif record_type == GSF_SWATH_BATHYMETRY_PING:
@@ -261,7 +262,7 @@ class GsfIterator(object):
     elif record_type == GSF_HV_NAVIGATION_ERROR:
       pass
     elif record_type == GSF_ATTITUDE:
-      pass
+      record.update(GsfAttitude(data))
     else:
       raise Error("Unknown record_type: %d" % record_type)
 
