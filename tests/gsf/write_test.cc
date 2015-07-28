@@ -266,31 +266,36 @@ TEST(GsfWriteSimple, AttitudeEmpty) {
   ValidateWriteAttitude("attitude-empty.gsf", false, 20, attitude, 40);
 }
 
-TEST(GsfWriteSimple, AttitudeLength1) {
+TEST(GsfWriteSimple, AttitudeLength1Zeros) {
   const struct timespec times0[] = {{5, 6}};
   const double data0[] = {0.0};
   const gsfAttitude attitude0 =
       GsfAttitude(1, times0, data0, data0, data0, data0);
   ValidateWriteAttitude("attitude-length1-0.gsf", false, 28, attitude0, 48);
+}
 
-  // Small positive values.
-  const struct timespec times1[] = {{7, 8}};
-  const double pitch1[] = {1.2};
-  const double roll1[] = {2.2};
-  const double heave1[] = {3.3};
-  const double heading1[] = {4.4};
-  const gsfAttitude attitude1 =
-      GsfAttitude(1, times1, pitch1, roll1, heave1, heading1);
-  ValidateWriteAttitude("attitude-length1-1-checksum.gsf", true, 32, attitude1,
+TEST(GsfWriteSimple, AttitudeLength1) {
+  const struct timespec times[] = {{7, 8}};
+  const double pitch[] = {1.2};
+  const double roll[] = {2.2};
+  const double heave[] = {3.3};
+  const double heading[] = {4.4};
+  const gsfAttitude attitude =
+      GsfAttitude(1, times, pitch, roll, heave, heading);
+  ValidateWriteAttitude("attitude-length1-1-checksum.gsf", true, 32, attitude,
                         52);
+}
 
-  const struct timespec times2[] = {{9, 10}};
-  const double data2[] = {-2.3};
-  // Heading is stored as a uint16 with value * 100.
-  const double heading2[] = {4.5};
-  const gsfAttitude attitude2 =
-      GsfAttitude(1, times2, data2, data2, data2, heading2);
-  ValidateWriteAttitude("attitude-length1-2neg.gsf", false, 28, attitude2, 48);
+TEST(GsfWriteSimple, AttitudeLength1Negative) {
+  const struct timespec times[] = {{9, 10}};
+  const double pitch[] = {-1.2};
+  const double roll[] = {-3.4};
+  const double heave[] = {-5.6};
+  // Stored as a int16 with value * 100, so cannot test negative.
+  const double heading[] = {7.8};
+  const gsfAttitude attitude =
+      GsfAttitude(1, times, pitch, roll, heave, heading);
+  ValidateWriteAttitude("attitude-length1-neg.gsf", false, 28, attitude, 48);
 }
 
 TEST(GsfWriteSimple, AttitudeRounding) {
@@ -316,6 +321,21 @@ TEST(GsfWriteSimple, AttitudeRounding) {
       GsfAttitude(1, times, pitch2, roll2, heave2, heading2);
   VerifyAttitude(expected, *dst);
 }
+
+TEST(GsfWriteSimple, AttitudeLength2) {
+  // TODO(schwehr): Why do the nanoseconds not match?
+  const struct timespec times[] = {{1438016822, 80000000},
+                                   {1438016823, 90000000}};
+  const double pitch[] = {1.2, -3.4};
+  const double roll[] = {-100.1, 100.2};
+  const double heave[] = {-200.2, -200.3};
+  // Stored as a int16 with value * 100, so cannot test negative.
+  const double heading[] = {181, 359};
+  const gsfAttitude attitude =
+      GsfAttitude(2, times, pitch, roll, heave, heading);
+  ValidateWriteAttitude("attitude-length2.gsf", false, 40, attitude, 60);
+}
+
 
 }  // namespace
 }  // namespace test

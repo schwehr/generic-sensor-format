@@ -42,6 +42,7 @@
 
 #include "gsf.h"
 #include "gsf_enc.h"
+#include "gsf_priv.h"
 
 #if defined(__GNUC__) && __GNUC__ >= 4
 #  define UNUSED __attribute((__unused__))
@@ -7888,7 +7889,8 @@ gsfEncodeHVNavigationError(unsigned char *sptr, gsfHVNavigationError *hv_nav_err
     return (p - sptr);
 }
 
-static void LocalSubtractTimes (struct timespec *base_time, struct timespec *subtrahend, double *difference)
+/* static */
+void LocalSubtractTimes (const struct timespec *base_time, const struct timespec *subtrahend, double *difference)
 {
     double fraction = 0.0;
     double seconds  = 0.0;
