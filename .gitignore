@@ -3,3 +3,6 @@
 .DS_Store
 *.dSYM
 *.pyc
+gsf.egg-info
+cov-int
+ve
