@@ -58,10 +58,11 @@ GMOCK_HEADERS = $(GMOCK_DIR)/include/gmock/*.h \
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 GMOCK_SRCS_ = $(GMOCK_DIR)/src/*.cc $(GMOCK_HEADERS)
 
+# Hide complaints from gtest and gmock.
+GTEST_FLAGS := -Wno-missing-field-initializers
 
 gtest_main.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c \
-	    $(GTEST_DIR)/src/gtest_main.cc
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(GTEST_DIR)/src/gtest_main.cc
 
 gtest.a : gtest-all.o
 	$(AR) $(ARFLAGS) $@ $^
@@ -73,17 +74,13 @@ gtest_main.a : gtest-all.o gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
 gtest-all.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c \
-	    $(GTEST_DIR)/src/gtest-all.cc
-
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(GTEST_FLAGS) -c $(GTEST_DIR)/src/gtest-all.cc
 
 gmock-all.o : $(GMOCK_SRCS_)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) \
-	    -c $(GMOCK_DIR)/src/gmock-all.cc
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(GTEST_FLAGS) -c $(GMOCK_DIR)/src/gmock-all.cc
 
 gmock_main.o : $(GMOCK_SRCS_)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) \
-	    -c $(GMOCK_DIR)/src/gmock_main.cc
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(GMOCK_DIR)/src/gmock_main.cc
 
 gmock.a : gmock-all.o gtest-all.o
 	$(AR) $(ARFLAGS) $@ $^

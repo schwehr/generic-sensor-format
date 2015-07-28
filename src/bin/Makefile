@@ -15,9 +15,11 @@
 include ../../Makefile.inc
 
 BIN := gsf_index
+BIN += gsf_c_info
+BIN += gsf_info
 
 CPPFLAGS := -I../gsf -I../gsfxx
-LDFLAGS := -L../gsfxx
+LDFLAGS := -L../gsf -L../gsfxx
 
 all: ${BIN}
 	@echo "Done"
@@ -28,8 +30,12 @@ clean:
 gsf_index: gsf_index.o ../gsf/libgsf.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ 
 
+gsf_c_info: gsf_c_info.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ ${LDFLAGS} -lgsf
+
 gsf_info: gsf_info.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ ${LDFLAGS} -lgsfxx
+
 
 SRCS := ${wildcard *.cc}
 OBJS := ${SRCS:.cc=.o}
