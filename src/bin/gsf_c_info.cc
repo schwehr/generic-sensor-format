@@ -1,3 +1,17 @@
+// Copyright 2015 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include <cstdio>
 #include <iostream>
 #include <string>
@@ -5,7 +19,6 @@
 #include "gsf.h"
 
 using std::string;
-// using std::vector;
 
 namespace generic_sensor_format {
 
@@ -39,8 +52,6 @@ string RecordTypeStr(unsigned int record_id) {
   return "UNKNOWN";
 }
 
-
-
 bool GsfInfo(std::ostream& out, const string filename) {
   int handle;
   if (0 != gsfOpen(filename.c_str(), GSF_READONLY, &handle)) {
@@ -54,7 +65,8 @@ bool GsfInfo(std::ostream& out, const string filename) {
   gsfRecords records;
   int num_bytes;
   int offset = 0;
-  num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, stream, max_size);
+  num_bytes = gsfRead(
+      handle, GSF_NEXT_RECORD, &data_id, &records, stream, max_size);
   while (num_bytes >= 0) {
     int start = offset;
     offset += num_bytes;
@@ -67,8 +79,7 @@ bool GsfInfo(std::ostream& out, const string filename) {
               << " " << RecordTypeStr(data_id.recordID) << "\n";
     ++record_num;
     out << "\n";
-    num_bytes
-        = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, stream, max_size);
+    num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, stream, max_size);
   }
   // ASSERT_EQ(-1, num_bytes);
   if (gsfIntError() != GSF_READ_TO_END_OF_FILE) {

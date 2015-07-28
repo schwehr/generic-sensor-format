@@ -108,9 +108,6 @@ time_test: time_test.o gtest_main.a libgsftest.a
 write_test: write_test.o gtest_main.a libgsftest.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../../src/gsf/libgsf.a
 
-# TODO(schwehr): Move out of testing.
-gsf_info: gsf_info.o
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ ../../src/gsf/libgsf.a
 
 SRCS := ${wildcard *.cc}
 OBJS := ${SRCS:.cc=.o}

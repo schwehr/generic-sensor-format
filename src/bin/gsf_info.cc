@@ -12,14 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// #include <cstdio>
-// #include <cstring>
-// #include <dirent.h>
-// #include <unistd.h>
-
 #include <iostream>
 #include <string>
-// #include <vector>
 
 #include "gsfxx.h"
 
