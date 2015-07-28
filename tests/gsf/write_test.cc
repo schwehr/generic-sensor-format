@@ -29,6 +29,7 @@
 // #include <iostream>  // TODO(schwehr): Remove.
 // using namespace std;  // TODO(schwehr): Remove.
 
+using std::string;
 using std::unique_ptr;
 
 namespace generic_sensor_format {
@@ -336,6 +337,74 @@ TEST(GsfWriteSimple, AttitudeLength2) {
   ValidateWriteAttitude("attitude-length2.gsf", false, 40, attitude, 60);
 }
 
+void ValidateWriteSvp(string filename, bool checksum, int expected_write_size,
+                      const gsfSVP &svp, int expected_file_size) {
+  ASSERT_GE(expected_write_size, 36);
+  ASSERT_GE(expected_file_size, 56);
+
+  int handle;
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
+
+  gsfDataID data_id = {checksum, 0, GSF_RECORD_SOUND_VELOCITY_PROFILE, 0};
+  gsfRecords record;
+  record.svp = svp;
+  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
+  ASSERT_EQ(0, gsfClose(handle));
+
+  struct stat buf;
+  ASSERT_EQ(0, stat(filename.c_str(), &buf));
+  ASSERT_EQ(expected_file_size, buf.st_size);
+
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
+  ASSERT_GE(handle, 0);
+  gsfRecords read_record;
+  const int num_bytes =
+      gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  ASSERT_EQ(expected_write_size, num_bytes);
+  ASSERT_EQ(GSF_RECORD_SOUND_VELOCITY_PROFILE, data_id.recordID);
+  VerifySvp(record.svp, read_record.svp);
+}
+
+TEST(GsfWriteSimple, SvpEmpty) {
+  const struct timespec observation_time = {1, 20000000};
+  const struct timespec application_time = {3, 40000000};
+  const gsfSVP svp =
+      GsfSvp(observation_time, application_time, 5.6, 7.8, 0, nullptr, nullptr);
+  ValidateWriteSvp("svp-empty.gsf", false, 36, svp, 56);
+}
+
+TEST(GsfWriteSimple, SvpLength1Zero) {
+  const struct timespec observation_time = {0, 0};
+  const struct timespec application_time = {0, 0};
+  const double depth[] = {0.0};
+  const double sound_speed[] = {0.0};
+  const gsfSVP svp = GsfSvp(observation_time, application_time, 0.0, 0.0, 1,
+                            depth, sound_speed);
+  ValidateWriteSvp("svp-length1-0.gsf", false, 44, svp, 64);
+}
+
+TEST(GsfWriteSimple, SvpLength1) {
+  const struct timespec observation_time = {1438113652, 524180000};
+  const struct timespec application_time = {1438113653, 123450000};
+  const double depth[] = {1.2};
+  const double sound_speed[] = {2.3};
+  const gsfSVP svp = GsfSvp(observation_time, application_time, 12.3, 45.6, 1,
+                            depth, sound_speed);
+  ValidateWriteSvp("svp-length1.gsf", true, 48, svp, 68);
+}
+
+// Cannot do negative depth or sound speed.
+
+TEST(GsfWriteSimple, SvpLength2) {
+  const struct timespec observation_time = {1438113654, 524190000};
+  const struct timespec application_time = {1438113655, 123460000};
+  // Cannot do negative sound speed.
+  const double depth[] = {1.2, 2.3};
+  const double sound_speed[] = {4.5, 6.7};
+  const gsfSVP svp = GsfSvp(observation_time, application_time, -12.3, -45.6, 1,
+                            depth, sound_speed);
+  ValidateWriteSvp("svp-length2.gsf", false, 44, svp, 64);
+}
 
 }  // namespace
 }  // namespace test

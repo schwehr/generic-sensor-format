@@ -146,6 +146,26 @@ const gsfScaleFactors GsfScaleFactors(const vector<gsfScaleInfo> &scale_info) {
   return scale_factors;
 }
 
+const gsfSVP GsfSvp(
+     struct timespec observation_time,
+     struct timespec application_time,
+     double latitude,
+     double longitude,
+     int number_points,
+     const double *depth,
+     const double *sound_speed
+                    ) {
+  gsfSVP svp;
+  svp.observation_time = observation_time;
+  svp.application_time = application_time;
+  svp.latitude = latitude;
+  svp.longitude = longitude;
+  svp.number_points = number_points;
+  svp.depth = const_cast<double *>(depth);
+  svp.sound_speed = const_cast<double *>(sound_speed);
+  return svp;
+}
+
 const gsfSwathBathyPing GsfSwathBathyPing(
     struct timespec ping_time,
     double latitude,
@@ -313,7 +333,6 @@ void VerifyArray(const unsigned short *expected, const unsigned short *actual,
 
 void VerifyArray(const double *expected, const double *actual,
                  int size) {
-  // std::cout << "VA: " << expected << " " << actual << "\n";
   if (size == 0) {
     ASSERT_EQ(nullptr, expected);
     ASSERT_EQ(nullptr, actual);
@@ -326,6 +345,25 @@ void VerifyArray(const double *expected, const double *actual,
   for (int i=0; i < size; ++i) {
     EXPECT_EQ(actual[i], expected[i]);
   }
+}
+
+void VerifySvp(const gsfSVP &expected, const gsfSVP &actual) {
+  EXPECT_EQ(expected.observation_time.tv_sec, actual.observation_time.tv_sec);
+  EXPECT_EQ(expected.observation_time.tv_nsec, actual.observation_time.tv_nsec);
+
+  EXPECT_EQ(expected.application_time.tv_sec, actual.application_time.tv_sec);
+  EXPECT_EQ(expected.application_time.tv_nsec, actual.application_time.tv_nsec);
+
+  EXPECT_DOUBLE_EQ(expected.latitude, actual.latitude);
+  EXPECT_DOUBLE_EQ(expected.longitude, actual.longitude);
+
+  ASSERT_EQ(expected.number_points, actual.number_points);
+  if (actual.number_points == 0) {
+    return;
+  }
+
+  VerifyArray(expected.depth, actual.depth, actual.number_points);
+  VerifyArray(expected.sound_speed, actual.sound_speed, actual.number_points);
 }
 
 void VerifySwathBathyPing(const gsfSwathBathyPing &expected,
