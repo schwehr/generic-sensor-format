@@ -17,6 +17,7 @@ include ../../Makefile.inc
 TESTS := index_test
 TESTS += read_gsf_2_9_test
 TESTS += read_gsf_3_6_test
+TESTS += time_test
 TESTS += write_test
 
 all: test
@@ -100,9 +101,14 @@ read_gsf_2_9_test: read_gsf_2_9_test.o gtest_main.a libgsftest.a
 read_gsf_3_6_test: read_gsf_3_6_test.o gtest_main.a libgsftest.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../../src/gsf/libgsf.a
 
-write_test: write_test.o gtest_main.a libgsftest.a
+# TODO(schwehr): Why does using libgsf.a not work?
+time_test: time_test.o gtest_main.a libgsftest.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../../src/gsf/gsf_enc.o ../../src/gsf/gsf_dec.o ../../src/gsf/gsf.o ../../src/gsf/gsf_indx.o
+
+write_test: write_test.o gtest_main.a 
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ ../../src/gsf/libgsf.a
 
+# TODO(schwehr): Move out of testing.
 gsf_info: gsf_info.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ ../../src/gsf/libgsf.a
 

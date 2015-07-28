@@ -23,9 +23,23 @@
  *
  ********************************************************************/
 
-void LocalSubtractTimes(const struct timespec *base_time,
-                        const struct timespec *subtrahend,
-                        double *difference);
+#ifndef  __GSF_PRIV_H__
+#define __GSF_PRIV_H__
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 void LocalAddTimes(const struct timespec *base_time,
                    double delta_time,
                    struct timespec *sum_time);
+void LocalSubtractTimes(const struct timespec *base_time,
+                        const struct timespec *subtrahend,
+                        double *difference);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __GSF_PRIV_H__ */
