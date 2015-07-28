@@ -324,7 +324,7 @@ TEST(GsfWriteSimple, AttitudeRounding) {
 
 TEST(GsfWriteSimple, AttitudeLength2) {
   // TODO(schwehr): Why do the nanoseconds not match?
-  const struct timespec times[] = {{1438016822, 2},
+  const struct timespec times[] = {{1438016822, 80000000},
                                    {1438016823, 90000000}};
   const double pitch[] = {1.2, -3.4};
   const double roll[] = {-100.1, 100.2};
