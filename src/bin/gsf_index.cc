@@ -27,8 +27,7 @@ using namespace std;
 
 namespace generic_sensor_format {
 
-int
-GsfIndex(const string &filename) {
+int GsfIndex(const string &filename) {
   int handle;
   if (GSF_NORMAL != gsfOpen(filename.c_str(), GSF_UPDATE_INDEX, &handle)) {
     cout << "ERROR\n";
@@ -36,10 +35,8 @@ GsfIndex(const string &filename) {
   return 0;
 }
 
-
-} // namespace generic_sensor_format
+}  // namespace generic_sensor_format
 
 int main(int /* argc */, char *argv[]) {
   return generic_sensor_format::GsfIndex(argv[1]);
 }
-
