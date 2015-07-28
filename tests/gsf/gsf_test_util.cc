@@ -45,6 +45,10 @@ TempDir::~TempDir() {
     return;
   }
   DIR* dir = opendir(tmp_dir_.c_str());
+  if (dir == nullptr) {
+    perror(nullptr);
+    return;
+  }
   struct dirent *entry;
   while ((entry = readdir(dir))) {
     if (entry->d_type != DT_REG) {
@@ -53,6 +57,9 @@ TempDir::~TempDir() {
     unlink(entry->d_name);
   }
   rmdir(tmp_dir_.c_str());
+  if (0 != closedir(dir)) {
+    perror(nullptr);
+  }
 }
 
 string RecordTypeStr(unsigned int record_id) {
