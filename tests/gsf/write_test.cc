@@ -445,21 +445,18 @@ TEST(GsfWriteSimple, NavigationErrorZero) {
 TEST(GsfWriteSimple, NavigationErrorPos) {
   const struct timespec time = {1438114000, 123460000};
   const gsfNavigationError nav_error =
-    // GsfNavigationError(time, 20000000, 123, 456);
-    // TODO(schwehr): What is the largest positive value that should work?
-    GsfNavigationError(time, 20000000, 0x00FFFFF0, 0x00FFFE0);
+      // TODO(schwehr): What is the largest positive value that should work?
+      GsfNavigationError(time, 20000000, 0x00FFFFF0, 0x00FFFE0);
   ValidateWriteNavigationError("nav-error-pos.gsf", true, 32, nav_error, 52);
 }
 
 TEST(GsfWriteSimple, NavigationErrorNegative) {
   const struct timespec time = {1438115678, 123470000};
-  // TODO(schwehr): Does a negative record_id work?  Or is it unsigned?
   const gsfNavigationError nav_error =
-    // TODO(schwehr): What is the smallest negative value that should work?
+      // TODO(schwehr): What is the smallest negative value that should work?
       GsfNavigationError(time, -1, -1234.5, -678.9);
   ValidateWriteNavigationError("nav-error-neg.gsf", false, 28, nav_error, 48);
 }
-
 
 }  // namespace
 }  // namespace test
