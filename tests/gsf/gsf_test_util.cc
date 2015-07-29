@@ -127,6 +127,18 @@ const gsfHistory GsfHistory(const struct timespec &when, const char *host_name,
   return history;
 }
 
+const gsfNavigationError GsfNavigationError(const struct timespec &when,
+                                            int record_id,
+                                            double longitude_error,
+                                            double latitude_error) {
+  gsfNavigationError nav_error;
+  nav_error.nav_error_time = {when.tv_sec, when.tv_nsec};
+  nav_error.record_id = record_id;
+  nav_error.longitude_error = longitude_error;
+  nav_error.latitude_error = latitude_error;
+  return nav_error;
+}
+
 const gsfScaleFactors GsfScaleFactors(const vector<gsfScaleInfo> &scale_info) {
   assert(scale_info.size() <= GSF_MAX_PING_ARRAY_SUBRECORDS);
   gsfScaleFactors scale_factors;
@@ -436,6 +448,16 @@ void VerifyHistory(const gsfHistory &expected, const gsfHistory &actual) {
   EXPECT_STREQ(expected.operator_name, actual.operator_name);
   EXPECT_STREQ(expected.command_line, actual.command_line);
   EXPECT_STREQ(expected.comment, actual.comment);
+}
+
+void VerifyNavigationError(const gsfNavigationError &expected,
+                           const gsfNavigationError &actual) {
+  EXPECT_EQ(expected.nav_error_time.tv_sec, actual.nav_error_time.tv_sec);
+  EXPECT_EQ(expected.nav_error_time.tv_nsec, actual.nav_error_time.tv_nsec);
+  EXPECT_EQ(expected.record_id, actual.record_id);
+  // TODO(schwehr): Does this abs error make sense?
+  EXPECT_NEAR(expected.longitude_error, actual.longitude_error, 0.1001);
+  EXPECT_NEAR(expected.latitude_error, actual.latitude_error, 0.1001);
 }
 
 std::ostream &operator<<(std::ostream &o, const gsfBRBIntensity &intensity) {

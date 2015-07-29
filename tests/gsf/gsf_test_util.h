@@ -53,6 +53,10 @@ const gsfComment GsfComment(const struct timespec &when, const char *comment);
 const gsfHistory GsfHistory(const struct timespec &when, const char *host_name,
                             const char *operator_name, const char *command_line,
                             const char *comment);
+const gsfNavigationError GsfNavigationError(const struct timespec &when,
+                                            int record_id,
+                                            double longitude_error,
+                                            double latitude_error);
 const gsfScaleFactors GsfScaleFactors(
     const std::vector<gsfScaleInfo> &scale_info);
 const gsfSVP GsfSvp(struct timespec observation_time,
@@ -98,6 +102,9 @@ void VerifyDataId(const gsfDataID &expected, const gsfDataID &actual);
 void VerifyComment(const gsfComment &expected, const gsfComment &actual);
 
 void VerifyHistory(const gsfHistory &expected, const gsfHistory &actual);
+
+void VerifyNavigationError(const gsfNavigationError &expected,
+                           const gsfNavigationError &actual);
 
 void VerifySvp(const gsfSVP &expected, const gsfSVP &actual);
 
