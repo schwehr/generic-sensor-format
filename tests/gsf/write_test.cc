@@ -237,8 +237,78 @@ TEST(GsfWriteSimple, NavigationErrorNegative) {
 
 // TODO(schwehr): GSF_RECORD_SWATH_BATHY_SUMMARY
 // TODO(schwehr): GSF_RECORD_SINGLE_BEAM_PING
-// TODO(schwehr): GSF_RECORD_HV_NAVIGATION_ERROR
+void ValidateWriteHvNavigationError(string filename, bool checksum,
+                                    int expected_write_size,
+                                    const gsfHVNavigationError &hv_nav_error,
+                                    int expected_file_size) {
+  ASSERT_GE(expected_write_size, 0);
+  ASSERT_GE(expected_file_size, 0);
 
+  int handle;
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
+
+  gsfDataID data_id = {checksum, 0, GSF_RECORD_HV_NAVIGATION_ERROR, 0};
+  gsfRecords record;
+  record.hv_nav_error = hv_nav_error;
+  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
+  ASSERT_EQ(0, gsfClose(handle));
+
+  struct stat buf;
+  ASSERT_EQ(0, stat(filename.c_str(), &buf));
+  ASSERT_EQ(expected_file_size, buf.st_size);
+
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
+  ASSERT_GE(handle, 0);
+  gsfRecords read_record;
+  const int num_bytes =
+      gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  ASSERT_EQ(expected_write_size, num_bytes);
+  ASSERT_EQ(GSF_RECORD_HV_NAVIGATION_ERROR, data_id.recordID);
+  VerifyHvNavigationError(record.hv_nav_error, read_record.hv_nav_error);
+}
+
+TEST(GsfWriteSimple, HvNavigationErrorZero) {
+  const struct timespec time = {0, 0};
+  const char spare[2] = {'\0', '\0'};
+  const char position_type[] = "";
+  const gsfHVNavigationError hv_nav_error =
+      GsfHvNavigationError(time, 0, 0.0, 0.0, 0.0, spare, position_type);
+  ValidateWriteHvNavigationError("hv-nav-error-0.gsf", false, 36, hv_nav_error,
+                                 56);
+}
+
+TEST(GsfWriteSimple, HvNavigationErrorPositive) {
+  const struct timespec time = {1438113659, 123450000};
+  const char spare[2] = {'a', '1'};
+  const char position_type[] = GSF_POS_TYPE_LBLN;
+  const gsfHVNavigationError hv_nav_error =
+      GsfHvNavigationError(time, 2, 3.4, 5.6, 6.7, spare, position_type);
+  ValidateWriteHvNavigationError("hv-nav-error-0.gsf", false, 40, hv_nav_error,
+                                 60);
+}
+
+TEST(GsfWriteSimple, HvNavigationErrorPositiveLarge) {
+  const struct timespec time = {1438113660, 123460000};
+  const char spare[2] = {'a', '1'};
+  const char position_type[] = "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbc";
+  const gsfHVNavigationError hv_nav_error =
+      GsfHvNavigationError(time, 2, 349, 5610, 171, spare, position_type);
+  ValidateWriteHvNavigationError("hv-nav-error-0.gsf", false, 76, hv_nav_error,
+                                 96);
+}
+
+TEST(GsfWriteSimple, HvNavigationErrorNegative) {
+  const struct timespec time = {1438113777, 123470000};
+  const char spare[2] = {'a', '1'};
+  const unsigned char position_type[6] = {127, 190, 255, 1, 3, 0};
+  const gsfHVNavigationError hv_nav_error =
+      GsfHvNavigationError(time, -42, -459, -6710, 211, spare,
+                           reinterpret_cast<const char *>(position_type));
+  ValidateWriteHvNavigationError("hv-nav-error-0.gsf", false, 40, hv_nav_error,
+                                 60);
+}
+
+// TODO(schwehr): Make filename a string here and elsewhere.
 void ValidateWriteAttitude(const char *filename, bool checksum,
                            int expected_write_size, const gsfAttitude &attitude,
                            int expected_file_size) {

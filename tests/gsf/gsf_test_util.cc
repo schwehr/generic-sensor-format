@@ -127,6 +127,23 @@ const gsfHistory GsfHistory(const struct timespec &when, const char *host_name,
   return history;
 }
 
+const gsfHVNavigationError GsfHvNavigationError(
+    const struct timespec &when, int record_id, double horizontal_error,
+    double vertical_error, double sep_uncertainty, const char spare[2],
+    const char *position_type) {
+  gsfHVNavigationError nav_error;
+  nav_error.nav_error_time = {when.tv_sec, when.tv_nsec};
+  nav_error.record_id = record_id;
+  nav_error.horizontal_error = horizontal_error;
+  nav_error.vertical_error = vertical_error;
+  nav_error.SEP_uncertainty = sep_uncertainty;
+  nav_error.spare[0] = spare[0];
+  nav_error.spare[1] = spare[1];
+  // nav_error.position_type = position_type;
+  nav_error.position_type = const_cast<char *>(position_type);
+  return nav_error;
+}
+
 const gsfNavigationError GsfNavigationError(const struct timespec &when,
                                             int record_id,
                                             double longitude_error,
@@ -448,6 +465,24 @@ void VerifyHistory(const gsfHistory &expected, const gsfHistory &actual) {
   EXPECT_STREQ(expected.operator_name, actual.operator_name);
   EXPECT_STREQ(expected.command_line, actual.command_line);
   EXPECT_STREQ(expected.comment, actual.comment);
+}
+
+void VerifyHvNavigationError(const gsfHVNavigationError &expected,
+                             const gsfHVNavigationError &actual) {
+  EXPECT_EQ(expected.nav_error_time.tv_sec, actual.nav_error_time.tv_sec);
+  EXPECT_EQ(expected.nav_error_time.tv_nsec, actual.nav_error_time.tv_nsec);
+  EXPECT_EQ(expected.record_id, actual.record_id);
+  EXPECT_DOUBLE_EQ(expected.horizontal_error, actual.horizontal_error);
+  EXPECT_DOUBLE_EQ(expected.vertical_error, actual.vertical_error);
+  EXPECT_DOUBLE_EQ(expected.SEP_uncertainty, actual.SEP_uncertainty);
+  EXPECT_EQ(expected.spare[0], actual.spare[0]);
+  EXPECT_EQ(expected.spare[1], actual.spare[1]);
+  // TODO(schwehr): Does STR_EQ handle nullptr?
+  if (expected.position_type == nullptr || actual.position_type == nullptr) {
+    EXPECT_EQ(expected.position_type, actual.position_type);
+    return;
+  }
+  EXPECT_STREQ(expected.position_type, actual.position_type);
 }
 
 void VerifyNavigationError(const gsfNavigationError &expected,

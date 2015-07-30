@@ -53,6 +53,10 @@ const gsfComment GsfComment(const struct timespec &when, const char *comment);
 const gsfHistory GsfHistory(const struct timespec &when, const char *host_name,
                             const char *operator_name, const char *command_line,
                             const char *comment);
+const gsfHVNavigationError GsfHvNavigationError(
+    const struct timespec &when, int record_id, double horizontal_error,
+    double vertical_error, double sep_uncertainty, const char spare[2],
+    const char *position_type);
 const gsfNavigationError GsfNavigationError(const struct timespec &when,
                                             int record_id,
                                             double longitude_error,
@@ -102,6 +106,9 @@ void VerifyDataId(const gsfDataID &expected, const gsfDataID &actual);
 void VerifyComment(const gsfComment &expected, const gsfComment &actual);
 
 void VerifyHistory(const gsfHistory &expected, const gsfHistory &actual);
+
+void VerifyHvNavigationError(const gsfHVNavigationError &expected,
+                             const gsfHVNavigationError &actual);
 
 void VerifyNavigationError(const gsfNavigationError &expected,
                            const gsfNavigationError &actual);
