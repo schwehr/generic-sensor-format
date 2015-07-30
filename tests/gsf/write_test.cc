@@ -54,6 +54,93 @@ TEST(GsfWriteSimple, HeaderOnly) {
 
 // TODO(schwehr): GSF_RECORD_SWATH_BATHYMETRY_PING.
 
+void ValidateWriteSwathBathyPing(string filename, bool checksum,
+                                 int expected_write_size,
+                                 const gsfSwathBathyPing &ping,
+                                 int expected_file_size) {
+  ASSERT_GE(expected_write_size, 0);  // TODO(schwehr): Set to the correct min.
+  ASSERT_GE(expected_file_size, 0);   // TODO(schwehr): Set to the correct min.
+
+  int handle;
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
+
+  gsfDataID data_id = {checksum, 0, GSF_RECORD_SWATH_BATHYMETRY_PING, 0};
+  gsfRecords record;
+  record.mb_ping = ping;
+  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
+  ASSERT_EQ(0, gsfClose(handle));
+
+  struct stat buf;
+  ASSERT_EQ(0, stat(filename.c_str(), &buf));
+  ASSERT_EQ(expected_file_size, buf.st_size);
+
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
+  ASSERT_GE(handle, 0);
+  gsfRecords read_record;
+  const int num_bytes =
+      gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  ASSERT_EQ(expected_write_size, num_bytes);
+  ASSERT_EQ(GSF_RECORD_SWATH_BATHYMETRY_PING, data_id.recordID);
+  VerifySwathBathyPing(record.mb_ping, read_record.mb_ping);
+}
+
+#if 0
+// TODO(schwehr): This is generating a -1 on the gsfWrite.
+TEST(SwathBathyPing, Empty) {
+  const struct timespec when = {0, 0};
+  gsfScaleFactors scale_factors = GsfScaleFactors({});
+
+  const gsfSwathBathyPing ping =
+      GsfSwathBathyPing(when, 0.0, 0.0,  // latitude, longitude
+                        0.0,             // height
+                        0.0,             // sep
+                        0,               // number_beams
+                        0,               // center_beam
+                        0,               // ping_flags
+                        0,               // reserved
+                        0.0,             // tide_corrector
+                        0.0,             // gps_tide_corrector
+                        0.0,             // depth_corrector
+                        0.0,             // heading
+                        0.0,             // pitch
+                        0.0,             // roll
+                        0.0,             // heave
+                        0.0,             // course
+                        0.0,             // speed
+                        scale_factors,
+                        nullptr,  // depth_data
+                        nullptr,  // nominal_depth.
+                        nullptr,  // across_track
+                        nullptr,  // along_track
+                        nullptr,  // travel_time
+                        nullptr,  // beam_angle
+                        nullptr,  // mc_amplitude.
+                        nullptr,  // mr_amplitude.
+                        nullptr,  // echo_width.
+                        nullptr,  // quality_factor.
+                        nullptr,  // receive_heave.
+                        nullptr,  // depth_error.
+                        nullptr,  // across_track_error.
+                        nullptr,  // along_track_error.
+                        nullptr,  // quality_flags.
+                        nullptr,  // beam_flags
+                        nullptr,  // signal_to_noise.
+                        nullptr,  // beam_angle_forward.
+                        nullptr,  // vertical_error.
+                        nullptr,  // horizontal_error.
+                        nullptr,  // sector_number.
+                        nullptr,  // detection_info.
+                        nullptr,  // incident_beam_adj.
+                        nullptr,  // system_cleaning.
+                        nullptr,  // doppler_corr.
+                        nullptr,  // sonar_vert_uncert.
+                        0         // sensor_id.
+                        );
+  ValidateWriteSwathBathyPing("swath-bathy-ping-empty.gsf", false, 1234, ping,
+                              5677);
+}
+#endif
+
 void ValidateWriteSvp(string filename, bool checksum, int expected_write_size,
                       const gsfSVP &svp, int expected_file_size) {
   ASSERT_GE(expected_write_size, 36);
