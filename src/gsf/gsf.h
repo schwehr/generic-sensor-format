@@ -1377,8 +1377,8 @@ typedef struct t_gsfBRBIntensity
 typedef struct t_gsfSwathBathyPing
 {
     struct timespec    ping_time;          /* Seconds and nanoseconds. */
-    double             latitude;           /* Degrees, positive going north. */
     double             longitude;          /* Degrees, positive going east. */
+    double             latitude;           /* Degrees, positive going north. */
     double             height;             /* Height above ellipsoid, positive value defines a point above ellipsoid. */
     double             sep;                /* Distance from ellipsoid to vertical datum, positive value indicates datum above ellipsoid. */
     short              number_beams;       /* In this ping. */
