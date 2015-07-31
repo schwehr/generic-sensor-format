@@ -156,6 +156,27 @@ const gsfNavigationError GsfNavigationError(const struct timespec &when,
   return nav_error;
 }
 
+// WARNING: Anything created with this needs to cleanup the strings.
+const gsfProcessingParameters GsfProcessingParameters(
+    struct timespec when, vector<string> parameters) {
+  assert(parameters.size() < GSF_MAX_PROCESSING_PARAMETERS);
+  gsfProcessingParameters param;
+  param.param_time = when;
+  param.number_parameters = parameters.size();
+  for (size_t i = 0; i < parameters.size(); ++i) {
+    param.param_size[i] = parameters[i].size();
+    param.param[i] = strdup(parameters[i].c_str());
+    assert(param.param[i]);
+  }
+  return param;
+}
+
+void GsfProcessingParametersDestroy(gsfProcessingParameters &param) {
+  for (int i = 0; i < param.number_parameters; ++i) {
+    free(param.param[i]);
+  }
+}
+
 const gsfScaleFactors GsfScaleFactors(const vector<gsfScaleInfo> &scale_info) {
   assert(scale_info.size() <= GSF_MAX_PING_ARRAY_SUBRECORDS);
   gsfScaleFactors scale_factors;
