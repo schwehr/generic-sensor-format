@@ -26,7 +26,8 @@
 #include "gsf_test_util.h"
 #include "gtest/gtest.h"
 
-// #include <iostream>  // TODO(schwehr): Remove.
+#include <iostream>  // TODO(schwehr): Remove.
+using std::cerr;
 // using namespace std;  // TODO(schwehr): Remove.
 
 using std::string;
@@ -53,7 +54,7 @@ TEST(GsfWriteSimple, HeaderOnly) {
 }
 
 // TODO(schwehr): GSF_RECORD_SWATH_BATHYMETRY_PING.
-
+#if 0
 void ValidateWriteSwathBathyPing(string filename, bool checksum,
                                  int expected_write_size,
                                  const gsfSwathBathyPing &ping,
@@ -84,7 +85,6 @@ void ValidateWriteSwathBathyPing(string filename, bool checksum,
   VerifySwathBathyPing(record.mb_ping, read_record.mb_ping);
 }
 
-#if 0
 // TODO(schwehr): This is generating a -1 on the gsfWrite.
 TEST(SwathBathyPing, Empty) {
   const struct timespec when = {0, 0};
@@ -211,6 +211,106 @@ TEST(GsfWriteSimple, SvpLength2) {
 }
 
 // TODO(schwehr): GSF_RECORD_PROCESSING_PARAMETERS
+
+void ValidateWriteProcessingParameters(string filename, bool checksum,
+                                       int expected_write_size,
+                                       const gsfProcessingParameters &params,
+                                       int expected_file_size) {
+  ASSERT_GE(expected_write_size, 20);
+  ASSERT_GE(expected_file_size, 40);
+
+  int handle;
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
+
+  gsfDataID data_id = {checksum, 0, GSF_RECORD_PROCESSING_PARAMETERS, 0};
+  gsfRecords record;
+  record.process_parameters = params;
+  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
+
+  ASSERT_EQ(0, gsfClose(handle));
+
+  struct stat buf;
+  ASSERT_EQ(0, stat(filename.c_str(), &buf));
+  ASSERT_EQ(expected_file_size, buf.st_size);
+
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
+  ASSERT_GE(handle, 0);
+  gsfRecords read_record;
+  const int num_bytes =
+      gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  ASSERT_EQ(expected_write_size, num_bytes);
+  ASSERT_EQ(GSF_RECORD_PROCESSING_PARAMETERS, data_id.recordID);
+  VerifyProcessingParameters(record.process_parameters,
+                             read_record.process_parameters);
+}
+
+class GsfProcessingParametersWrapper {
+ public:
+  GsfProcessingParametersWrapper() { params_.number_parameters = 0; }
+  ~GsfProcessingParametersWrapper() {
+    for (int i = 0; i < params_.number_parameters; ++i) {
+      free(params_.param[i]);
+    }
+  }
+
+  bool Add(string key, string value) {
+    if (params_.number_parameters + 1 >= GSF_MAX_PROCESSING_PARAMETERS) {
+      cerr << "GsfProcessingParameters ERROR: To many params: " << key << "\n";
+      return false;
+    }
+    string entry = key + "=" + value;
+    int i = params_.number_parameters;
+    params_.param[i] = strdup(entry.c_str());
+    params_.param_size[i] = entry.size() + 1;
+    params_.number_parameters++;
+    return true;
+  }
+
+  gsfProcessingParameters params_;
+};
+
+TEST(GsfProcessingParameter, Empty) {
+  GsfProcessingParametersWrapper param_wrapper;
+  param_wrapper.params_.param_time = {0, 0};
+  ValidateWriteProcessingParameters("processing-params-empty.gsf", false, 20,
+                                    param_wrapper.params_, 40);
+}
+
+TEST(GsfProcessingParameter, OneSmall) {
+  GsfProcessingParametersWrapper param_wrapper;
+  param_wrapper.params_.param_time = {1, 2};
+  param_wrapper.Add("a", "b");
+  ValidateWriteProcessingParameters("processing-params-1.gsf", true, 28,
+                                    param_wrapper.params_, 48);
+}
+
+TEST(GsfProcessingParameter, TwoSmall) {
+  GsfProcessingParametersWrapper param_wrapper;
+  param_wrapper.params_.param_time = {1, 2};
+  param_wrapper.Add("a", "b");
+  param_wrapper.Add("cd", "ef");
+  ValidateWriteProcessingParameters("processing-params-2.gsf", false, 32,
+                                    param_wrapper.params_, 52);
+}
+
+TEST(GsfProcessingParameter, OneLarge) {
+  GsfProcessingParametersWrapper param_wrapper;
+  param_wrapper.params_.param_time = {1, 2};
+  param_wrapper.Add("abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbc",
+                    "deeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeef");
+  ValidateWriteProcessingParameters("processing-params-large.gsf", false, 108,
+                                    param_wrapper.params_, 128);
+}
+
+TEST(GsfProcessingParameter, CharacterVariety) {
+  GsfProcessingParametersWrapper param_wrapper;
+  param_wrapper.params_.param_time = {1, 2};
+  param_wrapper.Add("12345678902134567890-_+';:\",./<>?`~\\",
+                    "\\~`?></.,\":;'+_-09876543120987654321");
+  ValidateWriteProcessingParameters("processing-params-variety.gsf", false, 96,
+                                    param_wrapper.params_, 116);
+}
+
 // TODO(schwehr): GSF_RECORD_SENSOR_PARAMETERS
 
 void ValidateWriteComment(const char *filename, bool checksum,

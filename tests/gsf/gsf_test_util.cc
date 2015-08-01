@@ -156,6 +156,7 @@ const gsfNavigationError GsfNavigationError(const struct timespec &when,
   return nav_error;
 }
 
+#if 0
 // WARNING: Anything created with this needs to cleanup the strings.
 const gsfProcessingParameters GsfProcessingParameters(
     struct timespec when, vector<string> parameters) {
@@ -176,6 +177,23 @@ void GsfProcessingParametersDestroy(gsfProcessingParameters &param) {
     free(param.param[i]);
   }
 }
+
+const gsfProcessingParameters GsfProcessingParameters(
+    struct timespec when,
+    int number_parameters,
+    const char *param_strings[]) {
+  assert(number_parameters < GSF_MAX_PROCESSING_PARAMETERS);
+  gsfProcessingParameters param;
+  param.param_time = when;
+  param.number_parameters = parameters.size();
+  for (size_t i = 0; i < parameters.size(); ++i) {
+    param.param_size[i] = parameters[i].size();
+    param.param[i] = strdup(parameters[i].c_str());
+    assert(param.param[i]);
+  }
+  return param;
+}
+#endif
 
 const gsfScaleFactors GsfScaleFactors(const vector<gsfScaleInfo> &scale_info) {
   assert(scale_info.size() <= GSF_MAX_PING_ARRAY_SUBRECORDS);
@@ -514,6 +532,17 @@ void VerifyNavigationError(const gsfNavigationError &expected,
   // TODO(schwehr): Does this abs error make sense?
   EXPECT_NEAR(expected.longitude_error, actual.longitude_error, 0.1001);
   EXPECT_NEAR(expected.latitude_error, actual.latitude_error, 0.1001);
+}
+
+void VerifyProcessingParameters(const gsfProcessingParameters &expected,
+                                const gsfProcessingParameters &actual) {
+  EXPECT_EQ(expected.param_time.tv_sec, actual.param_time.tv_sec);
+  EXPECT_EQ(expected.param_time.tv_nsec, actual.param_time.tv_nsec);
+  ASSERT_EQ(expected.number_parameters, actual.number_parameters);
+  for (int i = 0; i < actual.number_parameters; ++i) {
+    EXPECT_EQ(expected.param_size[i], actual.param_size[i]);
+    EXPECT_STREQ(expected.param[i], actual.param[i]);
+  }
 }
 
 std::ostream &operator<<(std::ostream &o, const gsfBRBIntensity &intensity) {
