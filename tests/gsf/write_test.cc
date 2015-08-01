@@ -43,11 +43,42 @@ std::unique_ptr<T> MakeUnique(Args &&... args) {
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
+class GsfFile {
+ public:
+  GsfFile(const string filename, int mode) : filename_(filename), ok_(false) {
+    assert(mode <= GSF_APPEND);
+    const int result = gsfOpen(filename.c_str(), mode, &handle_);
+    ok_ = (result == 0);
+    if (!ok_) {
+      cerr << "Error opening " << filename_ << ": " << gsfStringError() << "\n";
+    }
+  }
+  ~GsfFile() {
+    if (!ok_) {
+      return;
+    }
+    const int result = gsfClose(handle_);
+    if (0 != result) {
+      cerr << "Error closing " << filename_ << ": " << gsfStringError() << "\n";
+    }
+  }
+
+  bool ok() { return ok_; }
+  int handle() { return handle_; }
+  string filename() { return filename_; }
+
+ private:
+  const string filename_;
+  bool ok_;
+  int handle_;
+};
+
 TEST(GsfWriteSimple, HeaderOnly) {
-  int handle;
   string filename = "header-only.gsf";
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
-  ASSERT_EQ(0, gsfClose(handle));
+  {
+    GsfFile file(filename, GSF_CREATE);
+    ASSERT_TRUE(file.ok());
+  }
   struct stat buf;
   ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(20, buf.st_size);
@@ -67,6 +98,7 @@ void ValidateWriteSwathBathyPing(const string filename, bool checksum,
 
   gsfDataID data_id = {checksum, 0, GSF_RECORD_SWATH_BATHYMETRY_PING, 0};
   gsfRecords record;
+
   record.mb_ping = ping;
   ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
   ASSERT_EQ(0, gsfClose(handle));
@@ -142,29 +174,34 @@ TEST(SwathBathyPing, Empty) {
 #endif
 
 void ValidateWriteSvp(const string filename, bool checksum,
-                      int expected_write_size,
-                      const gsfSVP &svp, int expected_file_size) {
+                      int expected_write_size, const gsfSVP &svp,
+                      int expected_file_size) {
   ASSERT_GE(expected_write_size, 36);
   ASSERT_GE(expected_file_size, 56);
 
-  int handle;
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
-
-  gsfDataID data_id = {checksum, 0, GSF_RECORD_SOUND_VELOCITY_PROFILE, 0};
   gsfRecords record;
   record.svp = svp;
-  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
-  ASSERT_EQ(0, gsfClose(handle));
+
+  {
+    gsfDataID data_id = {checksum, 0, GSF_RECORD_SOUND_VELOCITY_PROFILE, 0};
+    GsfFile file(filename, GSF_CREATE);
+    ASSERT_TRUE(file.ok());
+    ASSERT_EQ(expected_write_size, gsfWrite(file.handle(), &data_id, &record));
+  }
 
   struct stat buf;
   ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(expected_file_size, buf.st_size);
 
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
-  ASSERT_GE(handle, 0);
+  // int handle;
+  // ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
+  GsfFile file(filename, GSF_READONLY);
+  // ASSERT_GE(handle, 0);
+  ASSERT_TRUE(file.ok());
   gsfRecords read_record;
-  const int num_bytes =
-      gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  gsfDataID data_id;
+  const int num_bytes = gsfRead(file.handle(), GSF_NEXT_RECORD, &data_id,
+                                &read_record, nullptr, 0);
   ASSERT_EQ(expected_write_size, num_bytes);
   ASSERT_EQ(GSF_RECORD_SOUND_VELOCITY_PROFILE, data_id.recordID);
   VerifySvp(record.svp, read_record.svp);
@@ -261,6 +298,7 @@ class GsfProcessingParametersWrapper {
     }
     string entry = key + "=" + value;
     int i = params_.number_parameters;
+    // TODO(schwehr): Use a vector of unique_ptrs with a deleter using free.
     params_.param[i] = strdup(entry.c_str());
     params_.param_size[i] = entry.size() + 1;
     params_.number_parameters++;
