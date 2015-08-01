@@ -45,17 +45,17 @@ std::unique_ptr<T> MakeUnique(Args &&... args) {
 
 TEST(GsfWriteSimple, HeaderOnly) {
   int handle;
-  char filename[] = "header-only.gsf";
-  ASSERT_EQ(0, gsfOpen(filename, GSF_CREATE, &handle));
+  string filename = "header-only.gsf";
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
   ASSERT_EQ(0, gsfClose(handle));
   struct stat buf;
-  ASSERT_EQ(0, stat(filename, &buf));
+  ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(20, buf.st_size);
 }
 
 // TODO(schwehr): GSF_RECORD_SWATH_BATHYMETRY_PING.
 #if 0
-void ValidateWriteSwathBathyPing(string filename, bool checksum,
+void ValidateWriteSwathBathyPing(const string filename, bool checksum,
                                  int expected_write_size,
                                  const gsfSwathBathyPing &ping,
                                  int expected_file_size) {
@@ -141,7 +141,8 @@ TEST(SwathBathyPing, Empty) {
 }
 #endif
 
-void ValidateWriteSvp(string filename, bool checksum, int expected_write_size,
+void ValidateWriteSvp(const string filename, bool checksum,
+                      int expected_write_size,
                       const gsfSVP &svp, int expected_file_size) {
   ASSERT_GE(expected_write_size, 36);
   ASSERT_GE(expected_file_size, 56);
@@ -212,7 +213,7 @@ TEST(GsfWriteSimple, SvpLength2) {
 
 // TODO(schwehr): GSF_RECORD_PROCESSING_PARAMETERS
 
-void ValidateWriteProcessingParameters(string filename, bool checksum,
+void ValidateWriteProcessingParameters(const string filename, bool checksum,
                                        int expected_write_size,
                                        const gsfProcessingParameters &params,
                                        int expected_file_size) {
@@ -313,16 +314,15 @@ TEST(GsfProcessingParameter, CharacterVariety) {
 
 // TODO(schwehr): GSF_RECORD_SENSOR_PARAMETERS
 
-void ValidateWriteComment(const char *filename, bool checksum,
+void ValidateWriteComment(const string filename, bool checksum,
                           int expected_write_size, const char *comment,
                           int expected_file_size) {
-  ASSERT_NE(nullptr, filename);
   ASSERT_GE(expected_write_size, 20);
   ASSERT_NE(nullptr, comment);
   ASSERT_GE(expected_file_size, 40);
 
   int handle;
-  ASSERT_EQ(0, gsfOpen(filename, GSF_CREATE, &handle));
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
 
   gsfDataID data_id = {checksum, 0, GSF_RECORD_COMMENT, 0};
   gsfRecords record;
@@ -332,10 +332,10 @@ void ValidateWriteComment(const char *filename, bool checksum,
   ASSERT_EQ(0, gsfClose(handle));
 
   struct stat buf;
-  ASSERT_EQ(0, stat(filename, &buf));
+  ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(expected_file_size, buf.st_size);
 
-  ASSERT_EQ(0, gsfOpen(filename, GSF_READONLY, &handle));
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
   ASSERT_GE(handle, 0);
   gsfRecords read_record;
   const int num_bytes =
@@ -346,9 +346,8 @@ void ValidateWriteComment(const char *filename, bool checksum,
 }
 
 TEST(GsfWriteSimple, CommentEmpty) {
-  char filename[] = "comment-empty.gsf";
   char comment[] = "";
-  ValidateWriteComment(filename, false, 20, comment, 40);
+  ValidateWriteComment("comment-empty.gsf", false, 20, comment, 40);
 }
 
 TEST(GsfWriteSimple, CommentEmptyChecksum) {
@@ -392,11 +391,10 @@ TEST(GsfWriteSimple, CommentLarge) {
   ValidateWriteComment(filename, false, 656, comment, 676);
 }
 
-void ValidateWriteHistory(const char *filename, bool checksum,
+void ValidateWriteHistory(const string filename, bool checksum,
                           int expected_write_size, const char *host_name,
                           const char *operator_name, const char *command_line,
                           const char *comment, int expected_file_size) {
-  ASSERT_NE(nullptr, filename);
   ASSERT_GE(expected_write_size, 28);
   ASSERT_NE(nullptr, host_name);
   ASSERT_LE(strlen(host_name), GSF_HOST_NAME_LENGTH);
@@ -407,7 +405,7 @@ void ValidateWriteHistory(const char *filename, bool checksum,
   ASSERT_GE(expected_file_size, 48);
 
   int handle;
-  ASSERT_EQ(0, gsfOpen(filename, GSF_CREATE, &handle));
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
 
   gsfDataID data_id = {checksum, 0, GSF_RECORD_HISTORY, 0};
   gsfRecords record;
@@ -417,10 +415,10 @@ void ValidateWriteHistory(const char *filename, bool checksum,
   ASSERT_EQ(0, gsfClose(handle));
 
   struct stat buf;
-  ASSERT_EQ(0, stat(filename, &buf));
+  ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(expected_file_size, buf.st_size);
 
-  ASSERT_EQ(0, gsfOpen(filename, GSF_READONLY, &handle));
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
   ASSERT_GE(handle, 0);
   gsfRecords read_record;
   const int num_bytes =
@@ -565,15 +563,14 @@ TEST(GsfWriteSimple, HvNavigationErrorNegative) {
 }
 
 // TODO(schwehr): Make filename a string here and elsewhere.
-void ValidateWriteAttitude(const char *filename, bool checksum,
+void ValidateWriteAttitude(const string filename, bool checksum,
                            int expected_write_size, const gsfAttitude &attitude,
                            int expected_file_size) {
-  ASSERT_NE(nullptr, filename);
   ASSERT_GE(expected_write_size, 20);
   ASSERT_GE(expected_file_size, 40);
 
   int handle;
-  ASSERT_EQ(0, gsfOpen(filename, GSF_CREATE, &handle));
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
 
   gsfDataID data_id = {checksum, 0, GSF_RECORD_ATTITUDE, 0};
   gsfRecords record;
@@ -582,10 +579,10 @@ void ValidateWriteAttitude(const char *filename, bool checksum,
   ASSERT_EQ(0, gsfClose(handle));
 
   struct stat buf;
-  ASSERT_EQ(0, stat(filename, &buf));
+  ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(expected_file_size, buf.st_size);
 
-  ASSERT_EQ(0, gsfOpen(filename, GSF_READONLY, &handle));
+  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
   ASSERT_GE(handle, 0);
   gsfRecords read_record;
   const int num_bytes =
@@ -595,13 +592,13 @@ void ValidateWriteAttitude(const char *filename, bool checksum,
   VerifyAttitude(record.attitude, read_record.attitude);
 }
 
-unique_ptr<gsfAttitude> WriteAttitudeAndReturnRead(const char *filename,
+unique_ptr<gsfAttitude> WriteAttitudeAndReturnRead(const string filename,
                                                    const gsfAttitude &attitude,
                                                    int *file_size,
                                                    int *num_bytes) {
   // TODO(schwehr): Add error handling.
   int handle;
-  if (0 != gsfOpen(filename, GSF_CREATE, &handle)) {
+  if (0 != gsfOpen(filename.c_str(), GSF_CREATE, &handle)) {
     return nullptr;
   }
 
@@ -618,12 +615,12 @@ unique_ptr<gsfAttitude> WriteAttitudeAndReturnRead(const char *filename,
   }
 
   struct stat buf;
-  if (0 != stat(filename, &buf)) {
+  if (0 != stat(filename.c_str(), &buf)) {
     return nullptr;
   }
   *file_size = buf.st_size;
 
-  if (0 != gsfOpen(filename, GSF_READONLY, &handle)) {
+  if (0 != gsfOpen(filename.c_str(), GSF_READONLY, &handle)) {
     return nullptr;
   }
 
