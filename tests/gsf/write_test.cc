@@ -45,39 +45,44 @@ std::unique_ptr<T> MakeUnique(Args &&... args) {
 
 class GsfFile {
  public:
-  GsfFile(const string filename, int mode) : filename_(filename), ok_(false) {
-    assert(mode <= GSF_APPEND);
-    const int result = gsfOpen(filename.c_str(), mode, &handle_);
-    ok_ = (result == 0);
-    if (!ok_) {
-      cerr << "Error opening " << filename_ << ": " << gsfStringError() << "\n";
+  static std::unique_ptr<GsfFile> Open(const std::string filename, int mode) {
+    if (mode > GSF_APPEND) {
+      cerr << "ERROR: Invalid mode\n";
+      return nullptr;
     }
+
+    int handle;
+    int result = gsfOpen(filename.c_str(), mode, &handle);
+    if (result != 0) {
+      cerr << "Error opening " << filename << ": " << gsfStringError() << "\n";
+      return nullptr;
+    }
+
+    return MakeUnique<GsfFile>(filename, handle);
   }
+
+  GsfFile(const string filename, int handle)
+      : filename_(filename), handle_(handle) {}
   ~GsfFile() {
-    if (!ok_) {
-      return;
-    }
     const int result = gsfClose(handle_);
     if (0 != result) {
       cerr << "Error closing " << filename_ << ": " << gsfStringError() << "\n";
     }
   }
 
-  bool ok() { return ok_; }
-  int handle() { return handle_; }
-  string filename() { return filename_; }
+  int handle() const { return handle_; }
+  string filename() const { return filename_; }
 
  private:
   const string filename_;
-  bool ok_;
-  int handle_;
+  const int handle_;
 };
 
 TEST(GsfWriteSimple, HeaderOnly) {
   string filename = "header-only.gsf";
   {
-    GsfFile file(filename, GSF_CREATE);
-    ASSERT_TRUE(file.ok());
+    unique_ptr<GsfFile> file = GsfFile::Open(filename, GSF_CREATE);
+    ASSERT_NE(nullptr, file);
   }
   struct stat buf;
   ASSERT_EQ(0, stat(filename.c_str(), &buf));
@@ -184,23 +189,20 @@ void ValidateWriteSvp(const string filename, bool checksum,
 
   {
     gsfDataID data_id = {checksum, 0, GSF_RECORD_SOUND_VELOCITY_PROFILE, 0};
-    GsfFile file(filename, GSF_CREATE);
-    ASSERT_TRUE(file.ok());
-    ASSERT_EQ(expected_write_size, gsfWrite(file.handle(), &data_id, &record));
+    unique_ptr<GsfFile> file = GsfFile::Open(filename, GSF_CREATE);
+    ASSERT_NE(nullptr, file);
+    ASSERT_EQ(expected_write_size, gsfWrite(file->handle(), &data_id, &record));
   }
 
   struct stat buf;
   ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(expected_file_size, buf.st_size);
 
-  // int handle;
-  // ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
-  GsfFile file(filename, GSF_READONLY);
-  // ASSERT_GE(handle, 0);
-  ASSERT_TRUE(file.ok());
+  unique_ptr<GsfFile> file = GsfFile::Open(filename, GSF_READONLY);
+  ASSERT_NE(nullptr, file);
   gsfRecords read_record;
   gsfDataID data_id;
-  const int num_bytes = gsfRead(file.handle(), GSF_NEXT_RECORD, &data_id,
+  const int num_bytes = gsfRead(file->handle(), GSF_NEXT_RECORD, &data_id,
                                 &read_record, nullptr, 0);
   ASSERT_EQ(expected_write_size, num_bytes);
   ASSERT_EQ(GSF_RECORD_SOUND_VELOCITY_PROFILE, data_id.recordID);
