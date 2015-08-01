@@ -139,7 +139,6 @@ const gsfHVNavigationError GsfHvNavigationError(
   nav_error.SEP_uncertainty = sep_uncertainty;
   nav_error.spare[0] = spare[0];
   nav_error.spare[1] = spare[1];
-  // nav_error.position_type = position_type;
   nav_error.position_type = const_cast<char *>(position_type);
   return nav_error;
 }
@@ -155,45 +154,6 @@ const gsfNavigationError GsfNavigationError(const struct timespec &when,
   nav_error.latitude_error = latitude_error;
   return nav_error;
 }
-
-#if 0
-// WARNING: Anything created with this needs to cleanup the strings.
-const gsfProcessingParameters GsfProcessingParameters(
-    struct timespec when, vector<string> parameters) {
-  assert(parameters.size() < GSF_MAX_PROCESSING_PARAMETERS);
-  gsfProcessingParameters param;
-  param.param_time = when;
-  param.number_parameters = parameters.size();
-  for (size_t i = 0; i < parameters.size(); ++i) {
-    param.param_size[i] = parameters[i].size();
-    param.param[i] = strdup(parameters[i].c_str());
-    assert(param.param[i]);
-  }
-  return param;
-}
-
-void GsfProcessingParametersDestroy(gsfProcessingParameters &param) {
-  for (int i = 0; i < param.number_parameters; ++i) {
-    free(param.param[i]);
-  }
-}
-
-const gsfProcessingParameters GsfProcessingParameters(
-    struct timespec when,
-    int number_parameters,
-    const char *param_strings[]) {
-  assert(number_parameters < GSF_MAX_PROCESSING_PARAMETERS);
-  gsfProcessingParameters param;
-  param.param_time = when;
-  param.number_parameters = parameters.size();
-  for (size_t i = 0; i < parameters.size(); ++i) {
-    param.param_size[i] = parameters[i].size();
-    param.param[i] = strdup(parameters[i].c_str());
-    assert(param.param[i]);
-  }
-  return param;
-}
-#endif
 
 const gsfScaleFactors GsfScaleFactors(const vector<gsfScaleInfo> &scale_info) {
   assert(scale_info.size() <= GSF_MAX_PING_ARRAY_SUBRECORDS);
