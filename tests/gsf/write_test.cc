@@ -43,10 +43,20 @@ std::unique_ptr<T> MakeUnique(Args &&... args) {
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
-class GsfFile {
+class GsfFileReader {
  public:
-  static std::unique_ptr<GsfFile> Open(const std::string filename, int mode) {
-    if (mode > GSF_APPEND) {
+  GsfFileReader(const string filename, int handle)
+      : filename_(filename), handle_(handle) {}
+  ~GsfFileReader() {
+    const int result = gsfClose(handle_);
+    if (0 != result) {
+      cerr << "Error closing " << filename_ << ": " << gsfStringError() << "\n";
+    }
+  }
+
+  static std::unique_ptr<GsfFileReader> Open(const std::string filename,
+                                             int mode) {
+    if (mode != GSF_READONLY && mode != GSF_READONLY_INDEX) {
       cerr << "ERROR: Invalid mode\n";
       return nullptr;
     }
@@ -58,16 +68,52 @@ class GsfFile {
       return nullptr;
     }
 
-    return MakeUnique<GsfFile>(filename, handle);
+    return MakeUnique<GsfFileReader>(filename, handle);
   }
 
-  GsfFile(const string filename, int handle)
+  int ReadNext(gsfDataID *data_id, gsfRecords *record) {
+    assert(data_id);
+    assert(record);
+    const int num_bytes =
+        gsfRead(handle_, GSF_NEXT_RECORD, data_id, record, nullptr, 0);
+    return num_bytes;
+  }
+
+  int handle() const { return handle_; }
+  string filename() const { return filename_; }
+
+ private:
+  const string filename_;
+  const int handle_;
+};
+
+class GsfFileWriter {
+ public:
+  GsfFileWriter(const string filename, int handle)
       : filename_(filename), handle_(handle) {}
-  ~GsfFile() {
+  ~GsfFileWriter() {
     const int result = gsfClose(handle_);
     if (0 != result) {
       cerr << "Error closing " << filename_ << ": " << gsfStringError() << "\n";
     }
+  }
+
+  static std::unique_ptr<GsfFileWriter> Open(const std::string filename,
+                                             int mode) {
+    if (mode != GSF_CREATE && mode != GSF_UPDATE && mode != GSF_UPDATE_INDEX &&
+        mode != GSF_APPEND) {
+      cerr << "ERROR: Invalid mode\n";
+      return nullptr;
+    }
+
+    int handle;
+    int result = gsfOpen(filename.c_str(), mode, &handle);
+    if (result != 0) {
+      cerr << "Error opening " << filename << ": " << gsfStringError() << "\n";
+      return nullptr;
+    }
+
+    return MakeUnique<GsfFileWriter>(filename, handle);
   }
 
   int handle() const { return handle_; }
@@ -81,7 +127,7 @@ class GsfFile {
 TEST(GsfWriteSimple, HeaderOnly) {
   string filename = "header-only.gsf";
   {
-    unique_ptr<GsfFile> file = GsfFile::Open(filename, GSF_CREATE);
+    unique_ptr<GsfFileWriter> file = GsfFileWriter::Open(filename, GSF_CREATE);
     ASSERT_NE(nullptr, file);
   }
   struct stat buf;
@@ -189,7 +235,7 @@ void ValidateWriteSvp(const string filename, bool checksum,
 
   {
     gsfDataID data_id = {checksum, 0, GSF_RECORD_SOUND_VELOCITY_PROFILE, 0};
-    unique_ptr<GsfFile> file = GsfFile::Open(filename, GSF_CREATE);
+    unique_ptr<GsfFileWriter> file = GsfFileWriter::Open(filename, GSF_CREATE);
     ASSERT_NE(nullptr, file);
     ASSERT_EQ(expected_write_size, gsfWrite(file->handle(), &data_id, &record));
   }
@@ -198,12 +244,11 @@ void ValidateWriteSvp(const string filename, bool checksum,
   ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(expected_file_size, buf.st_size);
 
-  unique_ptr<GsfFile> file = GsfFile::Open(filename, GSF_READONLY);
+  unique_ptr<GsfFileReader> file = GsfFileReader::Open(filename, GSF_READONLY);
   ASSERT_NE(nullptr, file);
   gsfRecords read_record;
   gsfDataID data_id;
-  const int num_bytes = gsfRead(file->handle(), GSF_NEXT_RECORD, &data_id,
-                                &read_record, nullptr, 0);
+  const int num_bytes = file->ReadNext(&data_id, &read_record);
   ASSERT_EQ(expected_write_size, num_bytes);
   ASSERT_EQ(GSF_RECORD_SOUND_VELOCITY_PROFILE, data_id.recordID);
   VerifySvp(record.svp, read_record.svp);
@@ -259,25 +304,24 @@ void ValidateWriteProcessingParameters(const string filename, bool checksum,
   ASSERT_GE(expected_write_size, 20);
   ASSERT_GE(expected_file_size, 40);
 
-  int handle;
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
-
-  gsfDataID data_id = {checksum, 0, GSF_RECORD_PROCESSING_PARAMETERS, 0};
   gsfRecords record;
   record.process_parameters = params;
-  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
-
-  ASSERT_EQ(0, gsfClose(handle));
+  {
+    unique_ptr<GsfFileWriter> file = GsfFileWriter::Open(filename, GSF_CREATE);
+    ASSERT_NE(nullptr, file);
+    gsfDataID data_id = {checksum, 0, GSF_RECORD_PROCESSING_PARAMETERS, 0};
+    ASSERT_EQ(expected_write_size, gsfWrite(file->handle(), &data_id, &record));
+  }
 
   struct stat buf;
   ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(expected_file_size, buf.st_size);
 
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
-  ASSERT_GE(handle, 0);
+  unique_ptr<GsfFileReader> file = GsfFileReader::Open(filename, GSF_READONLY);
+  ASSERT_NE(nullptr, file);
   gsfRecords read_record;
-  const int num_bytes =
-      gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  gsfDataID data_id;
+  const int num_bytes = file->ReadNext(&data_id, &read_record);
   ASSERT_EQ(expected_write_size, num_bytes);
   ASSERT_EQ(GSF_RECORD_PROCESSING_PARAMETERS, data_id.recordID);
   VerifyProcessingParameters(record.process_parameters,
@@ -361,25 +405,26 @@ void ValidateWriteComment(const string filename, bool checksum,
   ASSERT_NE(nullptr, comment);
   ASSERT_GE(expected_file_size, 40);
 
-  int handle;
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
-
-  gsfDataID data_id = {checksum, 0, GSF_RECORD_COMMENT, 0};
   gsfRecords record;
-  record.comment = GsfComment({1, 2}, comment);
-  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
+  {
+    unique_ptr<GsfFileWriter> file = GsfFileWriter::Open(filename, GSF_CREATE);
+    ASSERT_NE(nullptr, file);
 
-  ASSERT_EQ(0, gsfClose(handle));
+    gsfDataID data_id = {checksum, 0, GSF_RECORD_COMMENT, 0};
+    record.comment = GsfComment({1, 2}, comment);
+    ASSERT_EQ(expected_write_size, gsfWrite(file->handle(), &data_id, &record));
+  }
 
   struct stat buf;
   ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(expected_file_size, buf.st_size);
 
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
-  ASSERT_GE(handle, 0);
+  unique_ptr<GsfFileReader> file = GsfFileReader::Open(filename, GSF_READONLY);
+  ASSERT_NE(nullptr, file);
+  gsfDataID data_id;
   gsfRecords read_record;
-  const int num_bytes =
-      gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  const int num_bytes = gsfRead(file->handle(), GSF_NEXT_RECORD, &data_id,
+                                &read_record, nullptr, 0);
   ASSERT_EQ(expected_write_size, num_bytes);
   ASSERT_EQ(GSF_RECORD_COMMENT, data_id.recordID);
   VerifyComment(record.comment, read_record.comment);
@@ -444,25 +489,26 @@ void ValidateWriteHistory(const string filename, bool checksum,
   ASSERT_NE(nullptr, comment);
   ASSERT_GE(expected_file_size, 48);
 
-  int handle;
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
-
-  gsfDataID data_id = {checksum, 0, GSF_RECORD_HISTORY, 0};
   gsfRecords record;
   record.history =
       GsfHistory({1, 2}, host_name, operator_name, command_line, comment);
-  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
-  ASSERT_EQ(0, gsfClose(handle));
+
+  {
+    unique_ptr<GsfFileWriter> file = GsfFileWriter::Open(filename, GSF_CREATE);
+    ASSERT_NE(nullptr, file);
+    gsfDataID data_id = {checksum, 0, GSF_RECORD_HISTORY, 0};
+    ASSERT_EQ(expected_write_size, gsfWrite(file->handle(), &data_id, &record));
+  }
 
   struct stat buf;
   ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(expected_file_size, buf.st_size);
 
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
-  ASSERT_GE(handle, 0);
+  unique_ptr<GsfFileReader> file = GsfFileReader::Open(filename, GSF_READONLY);
+  ASSERT_NE(nullptr, file);
   gsfRecords read_record;
-  const int num_bytes =
-      gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  gsfDataID data_id;
+  const int num_bytes = file->ReadNext(&data_id, &read_record);
   ASSERT_EQ(expected_write_size, num_bytes);
   ASSERT_EQ(GSF_RECORD_HISTORY, data_id.recordID);
   VerifyHistory(record.history, read_record.history);
@@ -484,24 +530,24 @@ void ValidateWriteNavigationError(string filename, bool checksum,
   ASSERT_GE(expected_write_size, 28);
   ASSERT_GE(expected_file_size, 48);
 
-  int handle;
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
-
-  gsfDataID data_id = {checksum, 0, GSF_RECORD_NAVIGATION_ERROR, 0};
   gsfRecords record;
   record.nav_error = nav_error;
-  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
-  ASSERT_EQ(0, gsfClose(handle));
+  {
+    unique_ptr<GsfFileWriter> file = GsfFileWriter::Open(filename, GSF_CREATE);
+    ASSERT_NE(nullptr, file);
+    gsfDataID data_id = {checksum, 0, GSF_RECORD_NAVIGATION_ERROR, 0};
+    ASSERT_EQ(expected_write_size, gsfWrite(file->handle(), &data_id, &record));
+  }
 
   struct stat buf;
   ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(expected_file_size, buf.st_size);
 
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
-  ASSERT_GE(handle, 0);
+  unique_ptr<GsfFileReader> file = GsfFileReader::Open(filename, GSF_READONLY);
+  ASSERT_NE(nullptr, file);
   gsfRecords read_record;
-  const int num_bytes =
-      gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  gsfDataID data_id;
+  const int num_bytes = file->ReadNext(&data_id, &read_record);
   ASSERT_EQ(expected_write_size, num_bytes);
   ASSERT_EQ(GSF_RECORD_NAVIGATION_ERROR, data_id.recordID);
   VerifyNavigationError(record.nav_error, read_record.nav_error);
@@ -538,24 +584,24 @@ void ValidateWriteHvNavigationError(string filename, bool checksum,
   ASSERT_GE(expected_write_size, 0);
   ASSERT_GE(expected_file_size, 0);
 
-  int handle;
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
-
-  gsfDataID data_id = {checksum, 0, GSF_RECORD_HV_NAVIGATION_ERROR, 0};
   gsfRecords record;
   record.hv_nav_error = hv_nav_error;
-  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
-  ASSERT_EQ(0, gsfClose(handle));
+  {
+    unique_ptr<GsfFileWriter> file = GsfFileWriter::Open(filename, GSF_CREATE);
+    ASSERT_NE(nullptr, file);
+    gsfDataID data_id = {checksum, 0, GSF_RECORD_HV_NAVIGATION_ERROR, 0};
+    ASSERT_EQ(expected_write_size, gsfWrite(file->handle(), &data_id, &record));
+  }
 
   struct stat buf;
   ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(expected_file_size, buf.st_size);
 
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
-  ASSERT_GE(handle, 0);
+  unique_ptr<GsfFileReader> file = GsfFileReader::Open(filename, GSF_READONLY);
+  ASSERT_NE(nullptr, file);
   gsfRecords read_record;
-  const int num_bytes =
-      gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  gsfDataID data_id;
+  const int num_bytes = file->ReadNext(&data_id, &read_record);
   ASSERT_EQ(expected_write_size, num_bytes);
   ASSERT_EQ(GSF_RECORD_HV_NAVIGATION_ERROR, data_id.recordID);
   VerifyHvNavigationError(record.hv_nav_error, read_record.hv_nav_error);
@@ -609,29 +655,30 @@ void ValidateWriteAttitude(const string filename, bool checksum,
   ASSERT_GE(expected_write_size, 20);
   ASSERT_GE(expected_file_size, 40);
 
-  int handle;
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_CREATE, &handle));
-
-  gsfDataID data_id = {checksum, 0, GSF_RECORD_ATTITUDE, 0};
   gsfRecords record;
   record.attitude = attitude;
-  ASSERT_EQ(expected_write_size, gsfWrite(handle, &data_id, &record));
-  ASSERT_EQ(0, gsfClose(handle));
+  {
+    unique_ptr<GsfFileWriter> file = GsfFileWriter::Open(filename, GSF_CREATE);
+    ASSERT_NE(nullptr, file);
+    gsfDataID data_id = {checksum, 0, GSF_RECORD_ATTITUDE, 0};
+    ASSERT_EQ(expected_write_size, gsfWrite(file->handle(), &data_id, &record));
+  }
 
   struct stat buf;
   ASSERT_EQ(0, stat(filename.c_str(), &buf));
   ASSERT_EQ(expected_file_size, buf.st_size);
 
-  ASSERT_EQ(0, gsfOpen(filename.c_str(), GSF_READONLY, &handle));
-  ASSERT_GE(handle, 0);
+  unique_ptr<GsfFileReader> file = GsfFileReader::Open(filename, GSF_READONLY);
+  ASSERT_NE(nullptr, file);
   gsfRecords read_record;
-  const int num_bytes =
-      gsfRead(handle, GSF_NEXT_RECORD, &data_id, &read_record, nullptr, 0);
+  gsfDataID data_id;
+  const int num_bytes = file->ReadNext(&data_id, &read_record);
   ASSERT_EQ(expected_write_size, num_bytes);
   ASSERT_EQ(GSF_RECORD_ATTITUDE, data_id.recordID);
   VerifyAttitude(record.attitude, read_record.attitude);
 }
 
+// TODO(schwehr): Rewrite this with GsfFileReader/Writer.
 unique_ptr<gsfAttitude> WriteAttitudeAndReturnRead(const string filename,
                                                    const gsfAttitude &attitude,
                                                    int *file_size,
