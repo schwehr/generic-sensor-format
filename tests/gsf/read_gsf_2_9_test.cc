@@ -41,8 +41,8 @@ TEST(GsfRead2_9Test, CountPackets) {
   PacketCounts counts;
   while (num_bytes >= 0) {
     counts.add(data_id.recordID);
-    num_bytes
-        = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
+    num_bytes =
+        gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   }
   ASSERT_EQ(GSF_READ_TO_END_OF_FILE, gsfIntError());
   counts.Verify({0, 0, 132, 21, 1, 0, 2, 1, 0, 1, 0, 0, 132});
@@ -63,13 +63,14 @@ TEST(GsfReadTest, ReadVersion2_9) {
 
   VerifyDataId({false, 0, GSF_RECORD_SWATH_BATHY_SUMMARY, 0}, data_id);
 
-  const gsfSwathBathySummary expected =
-      {
-        {947169642, 799999952},
-        {947171370, 700000047},
-        37.963955, -76.3502001,
-        38.0030681, -76.2895285,
-        12.12, 13.12 };
+  const gsfSwathBathySummary expected = {{947169642, 799999952},
+                                         {947171370, 700000047},
+                                         37.963955,
+                                         -76.3502001,
+                                         38.0030681,
+                                         -76.2895285,
+                                         12.12,
+                                         13.12};
   VerifySwathBathySummary(expected, records.summary);
 
   int count = 0;
@@ -129,34 +130,19 @@ TEST(GsfReadTest, ReadVersion2_9) {
   VerifyDataId({false, 0, GSF_RECORD_SWATH_BATHYMETRY_PING, 0}, data_id);
 
   gsfScaleFactors scale_factors = GsfScaleFactors(
-      {
-        gsfScaleInfo({32, 10000, -13}),
-          gsfScaleInfo({32, 100000, 0}),
-          gsfScaleInfo({32, 100000, 0}),
-          gsfScaleInfo({32, 100000, 0}),
-          gsfScaleInfo({32, 100000, 0}),
-          gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({16, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-    gsfScaleInfo({0, 1, 0}),
-          gsfScaleInfo({0, 1, 0})
-          });
+      {gsfScaleInfo({32, 10000, -13}), gsfScaleInfo({32, 100000, 0}),
+       gsfScaleInfo({32, 100000, 0}), gsfScaleInfo({32, 100000, 0}),
+       gsfScaleInfo({32, 100000, 0}), gsfScaleInfo({0, 1, 0}),
+       gsfScaleInfo({0, 1, 0}), gsfScaleInfo({0, 1, 0}),
+       gsfScaleInfo({0, 1, 0}), gsfScaleInfo({0, 1, 0}),
+       gsfScaleInfo({0, 1, 0}), gsfScaleInfo({0, 1, 0}),
+       gsfScaleInfo({0, 1, 0}), gsfScaleInfo({0, 1, 0}),
+       gsfScaleInfo({0, 1, 0}), gsfScaleInfo({16, 1, 0}),
+       gsfScaleInfo({0, 1, 0}), gsfScaleInfo({0, 1, 0}),
+       gsfScaleInfo({0, 1, 0}), gsfScaleInfo({0, 1, 0}),
+       gsfScaleInfo({0, 1, 0}), gsfScaleInfo({0, 1, 0}),
+       gsfScaleInfo({0, 1, 0}), gsfScaleInfo({0, 1, 0}),
+       gsfScaleInfo({0, 1, 0}), gsfScaleInfo({0, 1, 0})});
 
   const std::array<double, 1> depth = {{13.116}};
   const std::array<double, 1> across_track = {{0.21715}};
@@ -165,61 +151,57 @@ TEST(GsfReadTest, ReadVersion2_9) {
   const std::array<double, 1> beam_angle = {{0}};
   const std::array<unsigned char, 1> beam_flags = {{0}};
 
-  const gsfSwathBathyPing expected_ping = GsfSwathBathyPing(
-  {947169765, 600000023},  //
-  38.0007082,  // latitude
-  -76.3465419,  // longitude
-  9999.99,  // height
-  9999.99,  // sep
-  1,  //
-  1,  //
-  0,  //
-  0,  //
-  -0.1,  //
-  99.99,  //
-  99.99,  //
-  127,  //
-  -1,  //
-  -1,  //
-  0.08,  //
-  131.41,  //
-  6.04,  //
-  scale_factors,
-  depth.data(),
-  nullptr,  // nominal_depth.
-  across_track.data(),
-  along_track.data(),
-  travel_time.data(),
-  beam_angle.data(),
-  nullptr,  // mc_amplitude.
-  nullptr,  // mr_amplitude.
-  nullptr,  // echo_width.
-  nullptr,  // quality_factor.
-  nullptr,  // receive_heave.
-  nullptr,  // depth_error.
-  nullptr,  // across_track_error.
-  nullptr,  // along_track_error.
-  nullptr,  // quality_flags.
-  beam_flags.data(),
-  nullptr,  // signal_to_noise.
-  nullptr,  // beam_angle_forward.
-  nullptr,  // vertical_error.
-  nullptr,  // horizontal_error.
-  nullptr,  // sector_number.
-  nullptr,  // detection_info.
-  nullptr,  // incident_beam_adj.
-  nullptr,  // system_cleaning.
-  nullptr,  // doppler_corr.
-  nullptr,  // sonar_vert_uncert.
-  0  // sensor_id.
-);
+  const gsfSwathBathyPing expected_ping =
+      GsfSwathBathyPing({947169765, 600000023},  //
+                        38.0007082,              // latitude
+                        -76.3465419,             // longitude
+                        9999.99,                 // height
+                        9999.99,                 // sep
+                        1,                       //
+                        1,                       //
+                        0,                       //
+                        0,                       //
+                        -0.1,                    //
+                        99.99,                   //
+                        99.99,                   //
+                        127,                     //
+                        -1,                      //
+                        -1,                      //
+                        0.08,                    //
+                        131.41,                  //
+                        6.04,                    //
+                        scale_factors, depth.data(),
+                        nullptr,  // nominal_depth.
+                        across_track.data(), along_track.data(),
+                        travel_time.data(), beam_angle.data(),
+                        nullptr,  // mc_amplitude.
+                        nullptr,  // mr_amplitude.
+                        nullptr,  // echo_width.
+                        nullptr,  // quality_factor.
+                        nullptr,  // receive_heave.
+                        nullptr,  // depth_error.
+                        nullptr,  // across_track_error.
+                        nullptr,  // along_track_error.
+                        nullptr,  // quality_flags.
+                        beam_flags.data(),
+                        nullptr,  // signal_to_noise.
+                        nullptr,  // beam_angle_forward.
+                        nullptr,  // vertical_error.
+                        nullptr,  // horizontal_error.
+                        nullptr,  // sector_number.
+                        nullptr,  // detection_info.
+                        nullptr,  // incident_beam_adj.
+                        nullptr,  // system_cleaning.
+                        nullptr,  // doppler_corr.
+                        nullptr,  // sonar_vert_uncert.
+                        0         // sensor_id.
+                        );
 
   // std::cout << records.mb_ping;
   // std::cout << "\nnominal_depth ===> "
   // << records.mb_ping.nominal_depth << "\n";
 
   VerifySwathBathyPing(expected_ping, records.mb_ping);
-
 
   for (; count < 288; ++count) {
     num_bytes =
@@ -231,10 +213,7 @@ TEST(GsfReadTest, ReadVersion2_9) {
   num_bytes = gsfRead(handle, GSF_NEXT_RECORD, &data_id, &records, nullptr, 0);
   ASSERT_EQ(60, num_bytes);
   VerifyDataId({false, 0, GSF_RECORD_HISTORY, 0}, data_id);
-  VerifyHistory(GsfHistory({1253181992, 0},
-                           "PIXAR",
-                           "ltyson",
-                           "HIPStoGSF",
+  VerifyHistory(GsfHistory({1253181992, 0}, "PIXAR", "ltyson", "HIPStoGSF",
                            "version 6.1"),
                 records.history);
 
