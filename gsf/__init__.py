@@ -198,7 +198,7 @@ def GsfNavigationError(data):
   sec = struct.unpack('>I', data[:4])[0]
   nsec = struct.unpack('>I', data[4:8])[0]
   when = datetime.datetime.utcfromtimestamp(sec + 1e-9 * nsec)
-  record_id = struct.unpack('>I', data[8:12])[0]
+  record_id = struct.unpack('>i', data[8:12])[0]
   longitude_error = struct.unpack('>i', data[12:16])[0] / 10.0
   latitude_error = struct.unpack('>i', data[16:20])[0] / 10.0
 

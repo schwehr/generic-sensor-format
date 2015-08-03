@@ -167,16 +167,15 @@ class NavigationErrorTest(unittest.TestCase):
 
   def testNegative(self):
     data = (
-        0x55, 0xB7, 0xE0, 0xD0, 0x07, 0x5B, 0xD9, 0xA0, 0x01, 0x31, 0x2D,
-        0x00, 0x09, 0xFF, 0xFF, 0x60, 0x00, 0x9F, 0xFE, 0xC0)
+        0x55, 0xB7, 0xE7, 0x5E, 0x07, 0x5C, 0x00, 0xB0, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xCF, 0xC8, 0xFF, 0xFF, 0xE5, 0x7C)
     nav_error = gsf.GsfNavigationError(''.join(chr(v) for v in data))
     self.assertEqual(nav_error['record_type'], gsf.GSF_NAVIGATION_ERROR)
     self.assertEqual(nav_error['sec'], 1438115678)
     self.assertEqual(nav_error['nsec'], 123470000)
     self.assertEqual(nav_error['record_id'], -1)
-    self.assertEqual(nav_error['longitude_error'], -1234.5)
-    self.assertEqual(nav_error['latitude_error'], -678.9)
-    self.assertFalse(True)
+    self.assertEqual(nav_error['longitude_error'], -1234.4)
+    self.assertEqual(nav_error['latitude_error'], -678.8)
 
 
 # TODO(schwehr): GSF_RECORD_PROCESSING_PARAMETERS
