@@ -1513,8 +1513,8 @@ typedef struct t_gsfNavigationError
 {
     struct timespec nav_error_time;
     int             record_id;          /* Containing nav with these errors. */
-    double          latitude_error;     /* 90% CE in meters. */
     double          longitude_error;    /* 90% CE in meters. */
+    double          latitude_error;     /* 90% CE in meters. */
 }
 gsfNavigationError;
 

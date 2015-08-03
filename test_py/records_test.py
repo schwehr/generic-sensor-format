@@ -148,6 +148,41 @@ class HistoryTest(unittest.TestCase):
     self.assertEqual(history['comment'], '')
 
 
+# TODO(schwehr): GSF_RECORD_HV_NAVIGATION_ERROR
+# TODO(schwehr): GSF_RECORD_NAVIGATION_ERROR
+
+class NavigationErrorTest(unittest.TestCase):
+
+  def testZero(self):
+    data = (
+        0x55, 0xB7, 0xDF, 0x7B, 0x07, 0x5B, 0xB2, 0x90, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+    nav_error = gsf.GsfNavigationError(''.join(chr(v) for v in data))
+    self.assertEqual(nav_error['record_type'], gsf.GSF_NAVIGATION_ERROR)
+    self.assertEqual(nav_error['sec'], 1438113659)
+    self.assertEqual(nav_error['nsec'], 123450000)
+    self.assertEqual(nav_error['record_id'], 0)
+    self.assertEqual(nav_error['longitude_error'], 0)
+    self.assertEqual(nav_error['latitude_error'], 0)
+
+  def testNegative(self):
+    data = (
+        0x55, 0xB7, 0xE7, 0x5E, 0x07, 0x5C, 0x00, 0xB0, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xCF, 0xC8, 0xFF, 0xFF, 0xE5, 0x7C)
+    nav_error = gsf.GsfNavigationError(''.join(chr(v) for v in data))
+    self.assertEqual(nav_error['record_type'], gsf.GSF_NAVIGATION_ERROR)
+    self.assertEqual(nav_error['sec'], 1438115678)
+    self.assertEqual(nav_error['nsec'], 123470000)
+    self.assertEqual(nav_error['record_id'], -1)
+    self.assertEqual(nav_error['longitude_error'], -1234.4)
+    self.assertEqual(nav_error['latitude_error'], -678.8)
+
+
+# TODO(schwehr): GSF_RECORD_PROCESSING_PARAMETERS
+# TODO(schwehr): GSF_RECORD_SENSOR_PARAMETERS
+# TODO(schwehr): GSF_RECORD_SINGLE_BEAM_PING
+
+
 class SvpTest(unittest.TestCase):
 
   def testEmpty(self):
@@ -233,6 +268,10 @@ class SvpTest(unittest.TestCase):
     self.assertEqual(svp['latitude'], -12.3)
     self.assertEqual(svp['depth'], [1.2, 2.3])
     self.assertEqual(svp['sound_speed'], [4.5, 6.7])
+
+
+# TODO(schwehr): GSF_RECORD_SWATH_BATHYMETRY_PING
+# TODO(schwehr): GSF_RECORD_SWATH_BATHY_SUMMARY
 
 
 if __name__ == '__main__':
