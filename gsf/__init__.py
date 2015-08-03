@@ -188,6 +188,35 @@ def GsfHistory(data):
   }
 
 
+# TODO(schwehr): GSF_RECORD_HV_NAVIGATION_ERROR
+# TODO(schwehr): GSF_RECORD_NAVIGATION_ERROR
+
+
+def GsfNavigationError(data):
+  # if len(data) != 20:
+  #   raise
+  sec = struct.unpack('>I', data[:4])[0]
+  nsec = struct.unpack('>I', data[4:8])[0]
+  when = datetime.datetime.utcfromtimestamp(sec + 1e-9 * nsec)
+  record_id = struct.unpack('>I', data[8:12])[0]
+  longitude_error = struct.unpack('>i', data[12:16])[0] / 10.0
+  latitude_error = struct.unpack('>i', data[16:20])[0] / 10.0
+
+  return {
+    'record_type': GSF_NAVIGATION_ERROR,
+    'sec': sec,
+    'nsec': nsec,
+    'datetime': when,
+    'record_id': record_id,
+    'longitude_error': longitude_error,
+    'latitude_error': latitude_error,
+  }
+
+
+# TODO(schwehr): GSF_RECORD_PROCESSING_PARAMETERS
+# TODO(schwehr): GSF_RECORD_SENSOR_PARAMETERS
+# TODO(schwehr): GSF_RECORD_SINGLE_BEAM_PING
+
 def GsfSvp(data):
   # if len(data) < ??:
   #   raise
@@ -226,6 +255,10 @@ def GsfSvp(data):
     'depth': depth,
     'sound_speed': sound_speed,
   }
+
+
+# TODO(schwehr): GSF_RECORD_SWATH_BATHYMETRY_PING
+# TODO(schwehr): GSF_RECORD_SWATH_BATHY_SUMMARY
 
 
 class GsfFile(object):
