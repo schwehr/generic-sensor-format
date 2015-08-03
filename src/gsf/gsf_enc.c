@@ -29,6 +29,7 @@
  *
  ********************************************************************/
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7469,13 +7470,19 @@ gsfEncodeSoundVelocityProfile(unsigned char *sptr, gsfSVP * svp)
  ********************************************************************/
 
 int
-gsfEncodeProcessingParameters(unsigned char *sptr, gsfProcessingParameters * param)
+gsfEncodeProcessingParameters(unsigned char *sptr, gsfProcessingParameters *param)
 {
     unsigned char  *p = sptr;
     gsfuLong        ltemp;
     gsfuShort       stemp;
     short           len;
     int             i;
+
+    assert(sptr);
+    assert(param);
+    assert(param->number_parameters < GSF_MAX_PROCESSING_PARAMETERS);
+
+    /* TODO(schwehr): Return an error if there are too many parameters. */
 
     /* First four byte integer contains the seconds portion of the time
      * application of the new parameters.

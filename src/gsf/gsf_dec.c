@@ -31,6 +31,7 @@
  *
  ********************************************************************/
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7008,6 +7009,10 @@ gsfDecodeProcessingParameters(gsfProcessingParameters *param, GSF_FILE_TABLE *ft
     gsfuShort       stemp;
     int             i;
 
+    assert(param);
+    assert(ft);
+    assert(sptr);
+
     /* First four byte integer contains the seconds portion of the time
      * application of the new parameters.
      */
@@ -7025,13 +7030,18 @@ gsfDecodeProcessingParameters(gsfProcessingParameters *param, GSF_FILE_TABLE *ft
     p += 2;
     param->number_parameters = (int) ntohs(stemp);
 
+    if (param->number_parameters >= GSF_MAX_PROCESSING_PARAMETERS) {
+      fprintf(stderr, "WARNING: Dropping parameters beyond %d\n",
+              GSF_MAX_PROCESSING_PARAMETERS);
+      param->number_parameters = GSF_MAX_PROCESSING_PARAMETERS - 1;
+    }
+
     if (ft->rec.process_parameters.number_parameters < param->number_parameters)
     {
         ft->rec.process_parameters.number_parameters = param->number_parameters;
     }
 
-    /* Now loop to decode these parameters. */
-    for (i = 0; (i < param->number_parameters) && (i < GSF_MAX_PROCESSING_PARAMETERS); i++)
+    for (i = 0; i < param->number_parameters; i++)
     {
         /* Two byte integer contains the size of the parameter. */
         memcpy(&stemp, p, 2);
