@@ -12,6 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Test each of the GSF file record types.
+
+TODO(schwehr): It would be good to break this into a separate file for each
+               record type.  Some of the records are going to have massive
+               numbers of tests.
+TODO(schwehr): Cleanup the naming of the classes and tests.  The class should
+               have the record name and the test methods should not.
+"""
+
 import datetime
 import unittest
 
