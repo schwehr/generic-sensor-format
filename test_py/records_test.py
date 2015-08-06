@@ -156,7 +156,6 @@ class HistoryTest(unittest.TestCase):
 
 
 # TODO(schwehr): GSF_RECORD_HV_NAVIGATION_ERROR
-# TODO(schwehr): GSF_RECORD_NAVIGATION_ERROR
 
 class NavigationErrorTest(unittest.TestCase):
 
