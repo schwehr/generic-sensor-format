@@ -17,8 +17,6 @@
 TODO(schwehr): It would be good to break this into a separate file for each
                record type.  Some of the records are going to have massive
                numbers of tests.
-TODO(schwehr): Cleanup the naming of the classes and tests.  The class should
-               have the record name and the test methods should not.
 """
 
 import datetime
@@ -29,7 +27,7 @@ import gsf
 
 class AttitudeTest(unittest.TestCase):
 
-  def testEmptyAttitude(self):
+  def testEmpty(self):
     data = (
         0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00,
         0x00)
@@ -38,7 +36,7 @@ class AttitudeTest(unittest.TestCase):
     self.assertEqual(attitude['sec'], 3)
     self.assertEqual(attitude['nsec'], 4)
 
-  def testAttitudeLengthOneZeroValues(self):
+  def testLengthOneZeroValues(self):
     data = (
         0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x06, 0x00, 0x01, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
@@ -54,7 +52,7 @@ class AttitudeTest(unittest.TestCase):
     self.assertEqual(attitude['heaves'], [0.0])
     self.assertEqual(attitude['headings'], [0.0])
 
-  def testAttitudeLengthOneNonZero(self):
+  def testLengthOneNonZero(self):
     data = (
         0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x01, 0x00,
         0x00, 0xFF, 0x88, 0xFE, 0xAC, 0xFD, 0xD0, 0x03, 0x0C)
@@ -70,7 +68,7 @@ class AttitudeTest(unittest.TestCase):
     self.assertEqual(attitude['heaves'], [-5.6])
     self.assertEqual(attitude['headings'], [7.8])
 
-  def testAttitudeLengthTwo(self):
+  def testLengthTwo(self):
     data = (
         0x55, 0xB6, 0x65, 0x36, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00,
         0x00, 0x00, 0x78, 0xD8, 0xE6, 0xB1, 0xCC, 0x46, 0xB4, 0x04, 0x42,
@@ -91,7 +89,7 @@ class AttitudeTest(unittest.TestCase):
 
 class CommentTest(unittest.TestCase):
 
-  def testEmptyComment(self):
+  def testEmpty(self):
     data = (
         0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00,
         0x00)
@@ -101,7 +99,7 @@ class CommentTest(unittest.TestCase):
     self.assertEqual(comment['nsec'], 2)
     self.assertEqual(comment['comment'], '')
 
-  def test100aComment(self):
+  def test100a(self):
     data = (
         0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00,
         0x64, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61,
