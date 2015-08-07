@@ -124,7 +124,7 @@ class GsfFileWriter {
   const int handle_;
 };
 
-TEST(GsfWriteSimple, HeaderOnly) {
+TEST(Header, HeaderOnly) {
   string filename = "header-only.gsf";
   {
     unique_ptr<GsfFileWriter> file = GsfFileWriter::Open(filename, GSF_CREATE);
@@ -254,7 +254,7 @@ void ValidateWriteSvp(const string filename, bool checksum,
   VerifySvp(record.svp, read_record.svp);
 }
 
-TEST(GsfWriteSimple, SvpEmpty) {
+TEST(Svp, Empty) {
   const struct timespec observation_time = {1, 20000000};
   const struct timespec application_time = {3, 40000000};
   const gsfSVP svp =
@@ -262,7 +262,7 @@ TEST(GsfWriteSimple, SvpEmpty) {
   ValidateWriteSvp("svp-empty.gsf", false, 36, svp, 56);
 }
 
-TEST(GsfWriteSimple, SvpLength1Zero) {
+TEST(Svp, Length1Zero) {
   const struct timespec observation_time = {0, 0};
   const struct timespec application_time = {0, 0};
   const double depth[] = {0.0};
@@ -272,7 +272,7 @@ TEST(GsfWriteSimple, SvpLength1Zero) {
   ValidateWriteSvp("svp-length1-0.gsf", false, 44, svp, 64);
 }
 
-TEST(GsfWriteSimple, SvpLength1) {
+TEST(Svp, Length1) {
   const struct timespec observation_time = {1438113652, 524180000};
   const struct timespec application_time = {1438113653, 123450000};
   const double depth[] = {1.2};
@@ -284,7 +284,7 @@ TEST(GsfWriteSimple, SvpLength1) {
 
 // Cannot do negative depth or sound speed.
 
-TEST(GsfWriteSimple, SvpLength2) {
+TEST(Svp, Length2) {
   const struct timespec observation_time = {1438113654, 524190000};
   const struct timespec application_time = {1438113655, 123460000};
   // Cannot do negative sound speed.
@@ -430,18 +430,18 @@ void ValidateWriteComment(const string filename, bool checksum,
   VerifyComment(record.comment, read_record.comment);
 }
 
-TEST(GsfWriteSimple, CommentEmpty) {
+TEST(Comment, Empty) {
   char comment[] = "";
   ValidateWriteComment("comment-empty.gsf", false, 20, comment, 40);
 }
 
-TEST(GsfWriteSimple, CommentEmptyChecksum) {
+TEST(Comment, EmptyChecksum) {
   char filename[] = "comment-empty-checksum.gsf";
   char comment[] = "";
   ValidateWriteComment(filename, true, 24, comment, 44);
 }
 
-TEST(GsfWriteSimple, CommentUpTo5) {
+TEST(Comment, UpTo5) {
   char filename1[] = "comment-1.gsf";
   char comment1[] = "a";
   ValidateWriteComment(filename1, false, 24, comment1, 44);
@@ -459,7 +459,7 @@ TEST(GsfWriteSimple, CommentUpTo5) {
   ValidateWriteComment(filename5, false, 28, comment5, 48);
 }
 
-TEST(GsfWriteSimple, CommentLarge) {
+TEST(Comment, Large) {
   char filename[] = "comment-large.gsf";
   char comment[] =
       "ab"
@@ -514,11 +514,20 @@ void ValidateWriteHistory(const string filename, bool checksum,
   VerifyHistory(record.history, read_record.history);
 }
 
-TEST(GsfWriteSimple, History) {
+TEST(History, Empty) {
   ValidateWriteHistory("history-empty.gsf", false, 28, "", "", "", "", 48);
+}
+
+TEST(History, EmptyWithChecksum) {
   ValidateWriteHistory("history-empty-checksum.gsf", true, 32, "", "", "", "",
                        52);
+}
+
+TEST(History, One) {
   ValidateWriteHistory("history-1.gsf", false, 32, "a", "b", "c", "d", 52);
+}
+
+TEST(History, Longer) {
   ValidateWriteHistory("history-longer.gsf", false, 40, "ab", "cde", "fghi",
                        "jklm", 60);
 }
@@ -553,13 +562,13 @@ void ValidateWriteNavigationError(string filename, bool checksum,
   VerifyNavigationError(record.nav_error, read_record.nav_error);
 }
 
-TEST(GsfWriteSimple, NavigationErrorZero) {
+TEST(NavigationError, Zero) {
   const struct timespec time = {1438113659, 123450000};
   const gsfNavigationError nav_error = GsfNavigationError(time, 0, 0, 0);
   ValidateWriteNavigationError("nav-error-0.gsf", false, 28, nav_error, 48);
 }
 
-TEST(GsfWriteSimple, NavigationErrorPos) {
+TEST(NavigationError, Positive) {
   const struct timespec time = {1438114000, 123460000};
   const gsfNavigationError nav_error =
       // TODO(schwehr): What is the largest positive value that should work?
@@ -567,7 +576,7 @@ TEST(GsfWriteSimple, NavigationErrorPos) {
   ValidateWriteNavigationError("nav-error-pos.gsf", true, 32, nav_error, 52);
 }
 
-TEST(GsfWriteSimple, NavigationErrorNegative) {
+TEST(NavigationError, Negative) {
   const struct timespec time = {1438115678, 123470000};
   const gsfNavigationError nav_error =
       // TODO(schwehr): What is the smallest negative value that should work?
@@ -607,7 +616,7 @@ void ValidateWriteHvNavigationError(string filename, bool checksum,
   VerifyHvNavigationError(record.hv_nav_error, read_record.hv_nav_error);
 }
 
-TEST(GsfWriteSimple, HvNavigationErrorZero) {
+TEST(HvNavigationError, Zero) {
   const struct timespec time = {0, 0};
   const char spare[2] = {'\0', '\0'};
   const char position_type[] = "";
@@ -617,7 +626,7 @@ TEST(GsfWriteSimple, HvNavigationErrorZero) {
                                  56);
 }
 
-TEST(GsfWriteSimple, HvNavigationErrorPositive) {
+TEST(HvNavigationError, Positive) {
   const struct timespec time = {1438113659, 123450000};
   const char spare[2] = {'a', '1'};
   const char position_type[] = GSF_POS_TYPE_LBLN;
@@ -627,7 +636,7 @@ TEST(GsfWriteSimple, HvNavigationErrorPositive) {
                                  hv_nav_error, 60);
 }
 
-TEST(GsfWriteSimple, HvNavigationErrorPositiveLarge) {
+TEST(HvNavigationError, PositiveLarge) {
   const struct timespec time = {1438113660, 123460000};
   const char spare[2] = {'a', '1'};
   const char position_type[] = "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbc";
@@ -637,7 +646,7 @@ TEST(GsfWriteSimple, HvNavigationErrorPositiveLarge) {
                                  hv_nav_error, 96);
 }
 
-TEST(GsfWriteSimple, HvNavigationErrorNegative) {
+TEST(HvNavigationError, Negative) {
   const struct timespec time = {1438113777, 123470000};
   const char spare[2] = {'a', '1'};
   const unsigned char position_type[6] = {127, 190, 255, 1, 3, 0};
@@ -721,14 +730,14 @@ unique_ptr<gsfAttitude> WriteAttitudeAndReturnRead(const string filename,
   return MakeUnique<gsfAttitude>(read_record.attitude);
 }
 
-TEST(GsfWriteSimple, AttitudeEmpty) {
+TEST(Attitude, Empty) {
   const struct timespec times[] = {{3, 4}};
   const gsfAttitude attitude =
       GsfAttitude(0, times, nullptr, nullptr, nullptr, nullptr);
   ValidateWriteAttitude("attitude-empty.gsf", false, 20, attitude, 40);
 }
 
-TEST(GsfWriteSimple, AttitudeLength1Zeros) {
+TEST(Attitude, Length1Zeros) {
   const struct timespec times0[] = {{5, 6}};
   const double data0[] = {0.0};
   const gsfAttitude attitude0 =
@@ -736,7 +745,7 @@ TEST(GsfWriteSimple, AttitudeLength1Zeros) {
   ValidateWriteAttitude("attitude-length1-0.gsf", false, 28, attitude0, 48);
 }
 
-TEST(GsfWriteSimple, AttitudeLength1) {
+TEST(Attitude, Length1) {
   const struct timespec times[] = {{7, 8}};
   const double pitch[] = {1.2};
   const double roll[] = {2.2};
@@ -748,7 +757,7 @@ TEST(GsfWriteSimple, AttitudeLength1) {
                         52);
 }
 
-TEST(GsfWriteSimple, AttitudeLength1Negative) {
+TEST(Attitude, Length1Negative) {
   const struct timespec times[] = {{9, 10}};
   const double pitch[] = {-1.2};
   const double roll[] = {-3.4};
@@ -760,7 +769,7 @@ TEST(GsfWriteSimple, AttitudeLength1Negative) {
   ValidateWriteAttitude("attitude-length1-neg.gsf", false, 28, attitude, 48);
 }
 
-TEST(GsfWriteSimple, AttitudeRounding) {
+TEST(Attitude, Rounding) {
   const struct timespec times[] = {{11, 12}};
   const double pitch[] = {-1.002};
   const double roll[] = {-2.0052};
@@ -784,7 +793,7 @@ TEST(GsfWriteSimple, AttitudeRounding) {
   VerifyAttitude(expected, *dst);
 }
 
-TEST(GsfWriteSimple, AttitudeLength2) {
+TEST(Attitude, Length2) {
   // TODO(schwehr): Why do the nanoseconds not match?
   const struct timespec times[] = {{1438016822, 80000000},
                                    {1438016823, 90000000}};
