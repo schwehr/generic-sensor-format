@@ -623,8 +623,8 @@ TEST(GsfWriteSimple, HvNavigationErrorPositive) {
   const char position_type[] = GSF_POS_TYPE_LBLN;
   const gsfHVNavigationError hv_nav_error =
       GsfHvNavigationError(time, 2, 3.4, 5.6, 6.7, spare, position_type);
-  ValidateWriteHvNavigationError("hv-nav-error-0.gsf", false, 40, hv_nav_error,
-                                 60);
+  ValidateWriteHvNavigationError("hv-nav-error-positive.gsf", false, 40,
+                                 hv_nav_error, 60);
 }
 
 TEST(GsfWriteSimple, HvNavigationErrorPositiveLarge) {
@@ -633,8 +633,8 @@ TEST(GsfWriteSimple, HvNavigationErrorPositiveLarge) {
   const char position_type[] = "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbc";
   const gsfHVNavigationError hv_nav_error =
       GsfHvNavigationError(time, 2, 349, 5610, 171, spare, position_type);
-  ValidateWriteHvNavigationError("hv-nav-error-0.gsf", false, 76, hv_nav_error,
-                                 96);
+  ValidateWriteHvNavigationError("hv-nav-error-positive-large.gsf", false, 76,
+                                 hv_nav_error, 96);
 }
 
 TEST(GsfWriteSimple, HvNavigationErrorNegative) {
@@ -644,8 +644,8 @@ TEST(GsfWriteSimple, HvNavigationErrorNegative) {
   const gsfHVNavigationError hv_nav_error =
       GsfHvNavigationError(time, -42, -459, -6710, 211, spare,
                            reinterpret_cast<const char *>(position_type));
-  ValidateWriteHvNavigationError("hv-nav-error-0.gsf", false, 40, hv_nav_error,
-                                 60);
+  ValidateWriteHvNavigationError("hv-nav-error-negative.gsf", false, 40,
+                                 hv_nav_error, 60);
 }
 
 // TODO(schwehr): Make filename a string here and elsewhere.
