@@ -399,11 +399,13 @@ TEST(GsfProcessingParameter, CharacterVariety) {
 // TODO(schwehr): GSF_RECORD_SENSOR_PARAMETERS
 
 void ValidateWriteComment(const string filename, bool checksum,
-                          int expected_write_size, const char *comment,
+                          int expected_write_size, const string comment,
                           int expected_file_size) {
   ASSERT_GE(expected_write_size, 20);
-  ASSERT_NE(nullptr, comment);
   ASSERT_GE(expected_file_size, 40);
+
+  auto comment_c_str = std::unique_ptr<char, decltype(std::free) *>{
+      reinterpret_cast<char *>(strdup(comment.c_str())), std::free};
 
   gsfRecords record;
   {
@@ -411,7 +413,7 @@ void ValidateWriteComment(const string filename, bool checksum,
     ASSERT_NE(nullptr, file);
 
     gsfDataID data_id = {checksum, 0, GSF_RECORD_COMMENT, 0};
-    record.comment = GsfComment({1, 2}, comment);
+    record.comment = GsfComment({1, 2}, comment_c_str.get());
     ASSERT_EQ(expected_write_size, gsfWrite(file->handle(), &data_id, &record));
   }
 
@@ -442,16 +444,11 @@ TEST(Comment, EmptyChecksum) {
 }
 
 TEST(Comment, Length1To5) {
-  char comment1[] = "a";
-  ValidateWriteComment("comment-1.gsf", false, 24, comment1, 44);
-  char comment2[] = "ab";
-  ValidateWriteComment("comment-2.gsf", false, 24, comment2, 44);
-  char comment3[] = "abc";
-  ValidateWriteComment("comment-3.gsf", false, 24, comment3, 44);
-  char comment4[] = "abcd";
-  ValidateWriteComment("comment-4.gsf", false, 24, comment4, 44);
-  char comment5[] = "abcde";
-  ValidateWriteComment("comment-5.gsf", false, 28, comment5, 48);
+  ValidateWriteComment("comment-1.gsf", false, 24, "a", 44);
+  ValidateWriteComment("comment-2.gsf", false, 24, "ab", 44);
+  ValidateWriteComment("comment-3.gsf", false, 24, "abc", 44);
+  ValidateWriteComment("comment-4.gsf", false, 24, "abcd", 44);
+  ValidateWriteComment("comment-5.gsf", false, 28, "abcde", 48);
 }
 
 TEST(Comment, Large) {
