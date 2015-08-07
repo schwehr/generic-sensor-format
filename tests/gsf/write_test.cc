@@ -441,22 +441,17 @@ TEST(Comment, EmptyChecksum) {
   ValidateWriteComment(filename, true, 24, comment, 44);
 }
 
-TEST(Comment, UpTo5) {
-  char filename1[] = "comment-1.gsf";
+TEST(Comment, Length1To5) {
   char comment1[] = "a";
-  ValidateWriteComment(filename1, false, 24, comment1, 44);
-  char filename2[] = "comment-2.gsf";
+  ValidateWriteComment("comment-1.gsf", false, 24, comment1, 44);
   char comment2[] = "ab";
-  ValidateWriteComment(filename2, false, 24, comment2, 44);
-  char filename3[] = "comment-3.gsf";
+  ValidateWriteComment("comment-2.gsf", false, 24, comment2, 44);
   char comment3[] = "abc";
-  ValidateWriteComment(filename3, false, 24, comment3, 44);
-  char filename4[] = "comment-4.gsf";
+  ValidateWriteComment("comment-3.gsf", false, 24, comment3, 44);
   char comment4[] = "abcd";
-  ValidateWriteComment(filename4, false, 24, comment4, 44);
-  char filename5[] = "comment-5.gsf";
+  ValidateWriteComment("comment-4.gsf", false, 24, comment4, 44);
   char comment5[] = "abcde";
-  ValidateWriteComment(filename5, false, 28, comment5, 48);
+  ValidateWriteComment("comment-5.gsf", false, 28, comment5, 48);
 }
 
 TEST(Comment, Large) {
