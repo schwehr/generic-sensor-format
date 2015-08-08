@@ -189,6 +189,38 @@ def GsfHistory(data):
 
 
 # TODO(schwehr): GSF_RECORD_HV_NAVIGATION_ERROR
+
+
+def GsfHvNavigationError(data):
+  # TODO(schwehr): Check the length of data is at least 26.
+  sec = struct.unpack('>I', data[:4])[0]
+  nsec = struct.unpack('>I', data[4:8])[0]
+  when = datetime.datetime.utcfromtimestamp(sec + 1e-9 * nsec)
+  record_id = struct.unpack('>i', data[8:12])[0]
+  horizontal_error = struct.unpack('>i', data[12:16])[0] / 1000.0
+  vertical_error = struct.unpack('>i', data[16:20])[0] / 1000.0
+  sep_uncertainty = struct.unpack('>H', data[20:22])[0] / 100.0
+  spare = data[22:24]
+  len_pos_type = struct.unpack('>H', data[24:26])[0]
+  # TODO(schwehr): Check the length of data is 26 + len_pos_type.
+  if not len_pos_type:
+    pos_type = ''
+  else:
+    pos_type = data[26:]
+
+  return {
+      'record_type': GSF_HV_NAVIGATION_ERROR,
+      'sec': sec,
+      'nsec': nsec,
+      'datetime': when,
+      'record_id': record_id,
+      'horizontal_error': horizontal_error,
+      'vertical_error': vertical_error,
+      'sep_uncertainty': sep_uncertainty,
+      'spare': spare,
+      'position_type': pos_type,
+  }
+
 # TODO(schwehr): GSF_RECORD_NAVIGATION_ERROR
 
 
