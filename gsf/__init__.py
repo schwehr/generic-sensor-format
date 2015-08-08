@@ -14,7 +14,8 @@
 
 """Read generic sensor format (GSF) sonar files.
 
-These files have binary records that have the data in big engian."""
+These files have binary records that have the data in big engian.
+"""
 
 import datetime
 import inspect
@@ -42,32 +43,33 @@ GSF_HV_NAVIGATION_ERROR = 11
 GSF_ATTITUDE = 12
 
 RECORD_TYPES = {
-  1 : 'HEADER',
-  2 : 'SWATH_BATHYMETRY_PING',
-  3 : 'SOUND_VELOCITY_PROFILE',
-  4 : 'PROCESSING_PARAMETERS',
-  5 : 'SENSOR_PARAMETERS',
-  6 : 'COMMENT',
-  7 : 'HISTORY',
-  8 : 'NAVIGATION_ERROR',
-  9 : 'SWATH_BATHY_SUMMARY',
-  10 : 'SINGLE_BEAM_PING',
-  11 : 'HV_NAVIGATION_ERROR',
-  12 : 'ATTITUDE',
+    1: 'HEADER',
+    2: 'SWATH_BATHYMETRY_PING',
+    3: 'SOUND_VELOCITY_PROFILE',
+    4: 'PROCESSING_PARAMETERS',
+    5: 'SENSOR_PARAMETERS',
+    6: 'COMMENT',
+    7: 'HISTORY',
+    8: 'NAVIGATION_ERROR',
+    9: 'SWATH_BATHY_SUMMARY',
+    10: 'SINGLE_BEAM_PING',
+    11: 'HV_NAVIGATION_ERROR',
+    12: 'ATTITUDE',
 }
+
 
 class Error(Exception):
   pass
 
 
 def Checkpoint():
-    """Get a string saying where this function was called from."""
+  """Get a string saying where this function was called from."""
 
-    frame = inspect.currentframe().f_back
-    filename = os.path.basename(inspect.stack()[1][1])
-    line = frame.f_lineno
-    code = frame.f_code.co_name
-    return '%s:%d: %s() CHECKPOINT' % (filename, line, code)
+  frame = inspect.currentframe().f_back
+  filename = os.path.basename(inspect.stack()[1][1])
+  line = frame.f_lineno
+  code = frame.f_code.co_name
+  return '%s:%d: %s() CHECKPOINT' % (filename, line, code)
 
 
 def GsfHeader(data):
@@ -76,10 +78,10 @@ def GsfHeader(data):
   version_major = int(version_major.lstrip('0'))
   version_minor = int(version_minor.lstrip('0'))
   return {
-    'record_type': GSF_HEADER,
-    'version': version,
-    'version_major': version_major,
-    'version_minor': version_minor
+      'record_type': GSF_HEADER,
+      'version': version,
+      'version_major': version_major,
+      'version_minor': version_minor
   }
 
 
@@ -90,15 +92,15 @@ def GsfAttitude(data):
   num_measurements = struct.unpack('>h', data[8:10])[0]
 
   result = {
-        'record_type': GSF_ATTITUDE,
-        'sec': sec,
-        'nsec': nsec,
-        'datetime': base_time,
-        'times': [],
-        'pitches': [],
-        'rolls': [],
-        'heaves': [],
-        'headings': [],
+      'record_type': GSF_ATTITUDE,
+      'sec': sec,
+      'nsec': nsec,
+      'datetime': base_time,
+      'times': [],
+      'pitches': [],
+      'rolls': [],
+      'heaves': [],
+      'headings': [],
   }
 
   if not num_measurements:
@@ -138,11 +140,11 @@ def GsfComment(data):
   size = struct.unpack('>I', data[8:12])[0]
   comment = data[12:12 + size].rstrip('\0')
   return {
-    'record_type': GSF_COMMENT,
-    'sec': sec,
-    'nsec': nsec,
-    'datetime': datetime.datetime.utcfromtimestamp(sec + 1e-9 * nsec),
-    'comment': comment
+      'record_type': GSF_COMMENT,
+      'sec': sec,
+      'nsec': nsec,
+      'datetime': datetime.datetime.utcfromtimestamp(sec + 1e-9 * nsec),
+      'comment': comment
   }
 
 
@@ -177,18 +179,50 @@ def GsfHistory(data):
     comment = ''
 
   return {
-    'record_type': GSF_HISTORY,
-    'sec': sec,
-    'nsec': nsec,
-    'datetime': datetime.datetime.utcfromtimestamp(sec + 1e-9 * nsec),
-    'name': name,
-    'operator' : operator,
-    'command' : command,
-    'comment': comment
+      'record_type': GSF_HISTORY,
+      'sec': sec,
+      'nsec': nsec,
+      'datetime': datetime.datetime.utcfromtimestamp(sec + 1e-9 * nsec),
+      'name': name,
+      'operator': operator,
+      'command': command,
+      'comment': comment
   }
 
 
 # TODO(schwehr): GSF_RECORD_HV_NAVIGATION_ERROR
+
+
+def GsfHvNavigationError(data):
+  # TODO(schwehr): Check the length of data is at least 26.
+  sec = struct.unpack('>I', data[:4])[0]
+  nsec = struct.unpack('>I', data[4:8])[0]
+  when = datetime.datetime.utcfromtimestamp(sec + 1e-9 * nsec)
+  record_id = struct.unpack('>i', data[8:12])[0]
+  horizontal_error = struct.unpack('>i', data[12:16])[0] / 1000.0
+  vertical_error = struct.unpack('>i', data[16:20])[0] / 1000.0
+  sep_uncertainty = struct.unpack('>H', data[20:22])[0] / 100.0
+  spare = data[22:24]
+  len_pos_type = struct.unpack('>H', data[24:26])[0]
+  # TODO(schwehr): Check the length of data is 26 + len_pos_type.
+  if not len_pos_type:
+    pos_type = ''
+  else:
+    pos_type = data[26:]
+
+  return {
+      'record_type': GSF_HV_NAVIGATION_ERROR,
+      'sec': sec,
+      'nsec': nsec,
+      'datetime': when,
+      'record_id': record_id,
+      'horizontal_error': horizontal_error,
+      'vertical_error': vertical_error,
+      'sep_uncertainty': sep_uncertainty,
+      'spare': spare,
+      'position_type': pos_type,
+  }
+
 # TODO(schwehr): GSF_RECORD_NAVIGATION_ERROR
 
 
@@ -203,19 +237,20 @@ def GsfNavigationError(data):
   latitude_error = struct.unpack('>i', data[16:20])[0] / 10.0
 
   return {
-    'record_type': GSF_NAVIGATION_ERROR,
-    'sec': sec,
-    'nsec': nsec,
-    'datetime': when,
-    'record_id': record_id,
-    'longitude_error': longitude_error,
-    'latitude_error': latitude_error,
+      'record_type': GSF_NAVIGATION_ERROR,
+      'sec': sec,
+      'nsec': nsec,
+      'datetime': when,
+      'record_id': record_id,
+      'longitude_error': longitude_error,
+      'latitude_error': latitude_error,
   }
 
 
 # TODO(schwehr): GSF_RECORD_PROCESSING_PARAMETERS
 # TODO(schwehr): GSF_RECORD_SENSOR_PARAMETERS
 # TODO(schwehr): GSF_RECORD_SINGLE_BEAM_PING
+
 
 def GsfSvp(data):
   # if len(data) < ??:
@@ -243,17 +278,17 @@ def GsfSvp(data):
     sound_speed.append(sound_speed_raw / 100.0)
 
   return {
-    'record_type': GSF_SOUND_VELOCITY_PROFILE,
-    'sec': sec,
-    'nsec': nsec,
-    'datetime': when,
-    'application_sec': application_sec,
-    'application_nsec': application_nsec,
-    'application_datetime': application_when,
-    'latitude': latitude,
-    'longitude': longitude,
-    'depth': depth,
-    'sound_speed': sound_speed,
+      'record_type': GSF_SOUND_VELOCITY_PROFILE,
+      'sec': sec,
+      'nsec': nsec,
+      'datetime': when,
+      'application_sec': application_sec,
+      'application_nsec': application_nsec,
+      'application_datetime': application_when,
+      'latitude': latitude,
+      'longitude': longitude,
+      'depth': depth,
+      'sound_speed': sound_speed,
   }
 
 
@@ -279,7 +314,7 @@ class GsfIterator(object):
     self.gsf_file = gsf_file
 
   def __iter__(self):
-    return(self)
+    return self
 
   def __next__(self):
     if self.gsf_file.src.tell() >= self.gsf_file.size:
@@ -301,14 +336,14 @@ class GsfIterator(object):
     data = self.gsf_file.src.read(data_size)
 
     record = {
-      'size_total': len(header_data) + len(data),
-      'size_data' : len(data),
-      'record_type': record_type,
-      'record_type_str': RECORD_TYPES[record_type],
-      'reserved': reserved,
-      'checksum': checksum,
-      'header_data': header_data,
-      'data': data
+        'size_total': len(header_data) + len(data),
+        'size_data': len(data),
+        'record_type': record_type,
+        'record_type_str': RECORD_TYPES[record_type],
+        'reserved': reserved,
+        'checksum': checksum,
+        'header_data': header_data,
+        'data': data
     }
 
     # TODO(schwehr): Wrap in try, except and handle malformed records.
@@ -337,7 +372,7 @@ class GsfIterator(object):
     elif record_type == GSF_ATTITUDE:
       record.update(GsfAttitude(data))
     else:
-      raise Error("Unknown record_type: %d" % record_type)
+      raise Error('Unknown record_type: %d' % record_type)
 
     return record
 

@@ -12,6 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Test each of the GSF file record types.
+
+TODO(schwehr): It would be good to break this into a separate file for each
+               record type.  Some of the records are going to have massive
+               numbers of tests.
+"""
+
 import datetime
 import unittest
 
@@ -20,7 +27,7 @@ import gsf
 
 class AttitudeTest(unittest.TestCase):
 
-  def testEmptyAttitude(self):
+  def testEmpty(self):
     data = (
         0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00,
         0x00)
@@ -29,7 +36,7 @@ class AttitudeTest(unittest.TestCase):
     self.assertEqual(attitude['sec'], 3)
     self.assertEqual(attitude['nsec'], 4)
 
-  def testAttitudeLengthOneZeroValues(self):
+  def testLengthOneZeroValues(self):
     data = (
         0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x06, 0x00, 0x01, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
@@ -45,7 +52,7 @@ class AttitudeTest(unittest.TestCase):
     self.assertEqual(attitude['heaves'], [0.0])
     self.assertEqual(attitude['headings'], [0.0])
 
-  def testAttitudeLengthOneNonZero(self):
+  def testLengthOneNonZero(self):
     data = (
         0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x01, 0x00,
         0x00, 0xFF, 0x88, 0xFE, 0xAC, 0xFD, 0xD0, 0x03, 0x0C)
@@ -61,7 +68,7 @@ class AttitudeTest(unittest.TestCase):
     self.assertEqual(attitude['heaves'], [-5.6])
     self.assertEqual(attitude['headings'], [7.8])
 
-  def testAttitudeLengthTwo(self):
+  def testLengthTwo(self):
     data = (
         0x55, 0xB6, 0x65, 0x36, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00,
         0x00, 0x00, 0x78, 0xD8, 0xE6, 0xB1, 0xCC, 0x46, 0xB4, 0x04, 0x42,
@@ -71,9 +78,9 @@ class AttitudeTest(unittest.TestCase):
     self.assertEqual(attitude['record_type'], gsf.GSF_ATTITUDE)
     self.assertEqual(attitude['sec'], 1438016822)
     self.assertEqual(attitude['nsec'], 1)
-    self.assertEqual(attitude['times'],
-                     [datetime.datetime(2015, 7, 27, 17, 7, 2),
-                      datetime.datetime(2015, 7, 27, 17, 7, 3, 90000)]),
+    expected_times = [datetime.datetime(2015, 7, 27, 17, 7, 2),
+                      datetime.datetime(2015, 7, 27, 17, 7, 3, 90000)]
+    self.assertEqual(attitude['times'], expected_times)
     self.assertEqual(attitude['pitches'], [1.2, -3.4])
     self.assertEqual(attitude['rolls'], [-100.1, 100.2])
     self.assertEqual(attitude['heaves'], [-200.2, -200.3])
@@ -82,7 +89,7 @@ class AttitudeTest(unittest.TestCase):
 
 class CommentTest(unittest.TestCase):
 
-  def testEmptyComment(self):
+  def testEmpty(self):
     data = (
         0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00,
         0x00)
@@ -92,7 +99,7 @@ class CommentTest(unittest.TestCase):
     self.assertEqual(comment['nsec'], 2)
     self.assertEqual(comment['comment'], '')
 
-  def test100aComment(self):
+  def testOneHundredLowerCaseA(self):
     data = (
         0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00,
         0x64, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61,
@@ -149,7 +156,43 @@ class HistoryTest(unittest.TestCase):
 
 
 # TODO(schwehr): GSF_RECORD_HV_NAVIGATION_ERROR
-# TODO(schwehr): GSF_RECORD_NAVIGATION_ERROR
+
+
+class HvNavigationErrorTest(unittest.TestCase):
+
+  def testZero(self):
+    data = (
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+    nav_error = gsf.GsfHvNavigationError(''.join(chr(v) for v in data))
+    self.assertEqual(nav_error['record_type'], gsf.GSF_HV_NAVIGATION_ERROR)
+    self.assertEqual(nav_error['sec'], 0)
+    self.assertEqual(nav_error['nsec'], 0)
+    self.assertEqual(nav_error['record_id'], 0)
+    self.assertEqual(nav_error['horizontal_error'], 0.0)
+    self.assertEqual(nav_error['vertical_error'], 0.0)
+    self.assertEqual(nav_error['sep_uncertainty'], 0.0)
+    self.assertEqual(nav_error['spare'], '\0\0')
+    self.assertEqual(nav_error['position_type'], '')
+
+  def testNegative(self):
+    data = (
+        0x55, 0xB7, 0xDF, 0xF1, 0x07, 0x5C, 0x00, 0xB0, 0xFF, 0xFF, 0xFF,
+        0xD6, 0xFF, 0xF8, 0xFF, 0x08, 0xFF, 0x99, 0x9D, 0x10, 0x52, 0x6C,
+        0x61, 0x31, 0x00, 0x05, 0x7F, 0xBE, 0xFF, 0x01, 0x03, 0x00)
+    nav_error = gsf.GsfHvNavigationError(''.join(chr(v) for v in data))
+    self.assertEqual(nav_error['record_type'], gsf.GSF_HV_NAVIGATION_ERROR)
+    self.assertEqual(nav_error['sec'], 1438113777)
+    self.assertEqual(nav_error['nsec'], 123470000)
+    self.assertEqual(nav_error['record_id'], -42)
+    self.assertEqual(nav_error['horizontal_error'], -459)
+    self.assertEqual(nav_error['vertical_error'], -6710)
+    self.assertEqual(nav_error['sep_uncertainty'], 211)
+    self.assertEqual(nav_error['spare'], 'a1')
+    self.assertEqual(nav_error['position_type'], '\x7f\xbe\xff\x01\x03\x00')
+    # 127, 190, 255, 1, 3, 0
+
 
 class NavigationErrorTest(unittest.TestCase):
 
