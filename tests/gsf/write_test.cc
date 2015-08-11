@@ -295,8 +295,6 @@ TEST(Svp, Length2) {
   ValidateWriteSvp("svp-length2.gsf", false, 52, svp, 72);
 }
 
-// TODO(schwehr): GSF_RECORD_PROCESSING_PARAMETERS
-
 void ValidateWriteProcessingParameters(const string filename, bool checksum,
                                        int expected_write_size,
                                        const gsfProcessingParameters &params,
@@ -338,7 +336,7 @@ class GsfProcessingParametersWrapper {
   }
 
   bool Add(string key, string value) {
-    if (params_.number_parameters + 1 >= GSF_MAX_PROCESSING_PARAMETERS) {
+    if (params_.number_parameters + 1 > GSF_MAX_PROCESSING_PARAMETERS) {
       cerr << "GsfProcessingParameters ERROR: To many params: " << key << "\n";
       return false;
     }
@@ -396,7 +394,102 @@ TEST(GsfProcessingParameter, CharacterVariety) {
                                     param_wrapper.params_, 116);
 }
 
-// TODO(schwehr): GSF_RECORD_SENSOR_PARAMETERS
+TEST(GsfProcessingParameter, MaxSmall) {
+  GsfProcessingParametersWrapper param_wrapper;
+  param_wrapper.params_.param_time = {1, 2};
+  for (int i=0; i < GSF_MAX_PROCESSING_PARAMETERS; ++i) {
+    auto entry_str = std::to_string(i);
+    param_wrapper.Add("a" + entry_str, "b" + entry_str);
+  }
+
+  ValidateWriteProcessingParameters("processing-params-max-small.gsf", true, 1340,
+                                    param_wrapper.params_, 1360);
+}
+
+void ValidateWriteSensorParameters(const string filename, bool checksum,
+                                   int expected_write_size,
+                                   const gsfSensorParameters &params,
+                                   int expected_file_size) {
+  ASSERT_GE(expected_write_size, 20);
+  ASSERT_GE(expected_file_size, 40);
+
+  gsfRecords record;
+  record.sensor_parameters = params;
+  {
+    unique_ptr<GsfFileWriter> file = GsfFileWriter::Open(filename, GSF_CREATE);
+    ASSERT_NE(nullptr, file);
+    gsfDataID data_id = {checksum, 0, GSF_RECORD_SENSOR_PARAMETERS, 0};
+    ASSERT_EQ(expected_write_size, gsfWrite(file->handle(), &data_id, &record));
+  }
+
+  struct stat buf;
+  ASSERT_EQ(0, stat(filename.c_str(), &buf));
+  ASSERT_EQ(expected_file_size, buf.st_size);
+
+  unique_ptr<GsfFileReader> file = GsfFileReader::Open(filename, GSF_READONLY);
+  ASSERT_NE(nullptr, file);
+  gsfRecords read_record;
+  gsfDataID data_id;
+  const int num_bytes = file->ReadNext(&data_id, &read_record);
+  ASSERT_EQ(expected_write_size, num_bytes);
+  ASSERT_EQ(GSF_RECORD_SENSOR_PARAMETERS, data_id.recordID);
+  VerifySensorParameters(record.sensor_parameters,
+                         read_record.sensor_parameters);
+}
+
+
+class GsfSensorParametersWrapper {
+ public:
+  GsfSensorParametersWrapper() { params_.number_parameters = 0; }
+  ~GsfSensorParametersWrapper() {
+    for (int i = 0; i < params_.number_parameters; ++i) {
+      free(params_.param[i]);
+    }
+  }
+
+  bool Add(string key, string value) {
+    if (params_.number_parameters + 1 > GSF_MAX_SENSOR_PARAMETERS) {
+      cerr << "GsfSensorParameters ERROR: To many params: " << key << "\n";
+      return false;
+    }
+    string entry = key + "=" + value;
+    int i = params_.number_parameters;
+    // TODO(schwehr): Use a vector of unique_ptrs with a deleter using free.
+    params_.param[i] = strdup(entry.c_str());
+    params_.param_size[i] = entry.size() + 1;
+    params_.number_parameters++;
+    return true;
+  }
+
+  gsfSensorParameters params_;
+};
+
+TEST(GsfSensorParameter, Empty) {
+  GsfSensorParametersWrapper param_wrapper;
+  param_wrapper.params_.param_time = {0, 0};
+  ValidateWriteSensorParameters("sensor-params-empty.gsf", false, 20,
+                                param_wrapper.params_, 40);
+}
+
+TEST(GsfSensorParameter, OneSmall) {
+  GsfSensorParametersWrapper param_wrapper;
+  param_wrapper.params_.param_time = {1, 2};
+  param_wrapper.Add("a", "b");
+  ValidateWriteSensorParameters("sensor-params-1.gsf", true, 28,
+                                param_wrapper.params_, 48);
+}
+
+TEST(GsfSensorParameter, MaxSmall) {
+  GsfSensorParametersWrapper param_wrapper;
+  param_wrapper.params_.param_time = {1, 2};
+  for (int i=0; i < GSF_MAX_SENSOR_PARAMETERS; ++i) {
+    auto entry_str = std::to_string(i);
+    param_wrapper.Add("a" + entry_str, "b" + entry_str);
+  }
+
+  ValidateWriteSensorParameters("sensor-params-max-small.gsf", true, 1340,
+                                param_wrapper.params_, 1360);
+}
 
 void ValidateWriteComment(const string filename, bool checksum,
                           int expected_write_size, const string comment,
