@@ -404,16 +404,13 @@ void ValidateWriteComment(const string filename, bool checksum,
   ASSERT_GE(expected_write_size, 20);
   ASSERT_GE(expected_file_size, 40);
 
-  auto comment_c_str = std::unique_ptr<char, decltype(std::free) *>{
-    strdup(comment.c_str()), std::free};
-
   gsfRecords record;
   {
     unique_ptr<GsfFileWriter> file = GsfFileWriter::Open(filename, GSF_CREATE);
     ASSERT_NE(nullptr, file);
 
     gsfDataID data_id = {checksum, 0, GSF_RECORD_COMMENT, 0};
-    record.comment = GsfComment({1, 2}, comment_c_str.get());
+    record.comment = GsfComment({1, 2}, comment.c_str());
     ASSERT_EQ(expected_write_size, gsfWrite(file->handle(), &data_id, &record));
   }
 
