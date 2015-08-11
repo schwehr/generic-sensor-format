@@ -405,7 +405,7 @@ void ValidateWriteComment(const string filename, bool checksum,
   ASSERT_GE(expected_file_size, 40);
 
   auto comment_c_str = std::unique_ptr<char, decltype(std::free) *>{
-      reinterpret_cast<char *>(strdup(comment.c_str())), std::free};
+    strdup(comment.c_str()), std::free};
 
   gsfRecords record;
   {
