@@ -116,6 +116,9 @@ void VerifyNavigationError(const gsfNavigationError &expected,
 void VerifyProcessingParameters(const gsfProcessingParameters &expected,
                                 const gsfProcessingParameters &actual);
 
+void VerifySensorParameters(const gsfSensorParameters &expected,
+                            const gsfSensorParameters &actual);
+
 void VerifySvp(const gsfSVP &expected, const gsfSVP &actual);
 
 void VerifySwathBathyPing(const gsfSwathBathyPing &expected,

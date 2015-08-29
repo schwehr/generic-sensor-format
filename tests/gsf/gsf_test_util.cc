@@ -498,6 +498,19 @@ void VerifyProcessingParameters(const gsfProcessingParameters &expected,
                                 const gsfProcessingParameters &actual) {
   EXPECT_EQ(expected.param_time.tv_sec, actual.param_time.tv_sec);
   EXPECT_EQ(expected.param_time.tv_nsec, actual.param_time.tv_nsec);
+  EXPECT_LE(actual.number_parameters, GSF_MAX_PROCESSING_PARAMETERS);
+  ASSERT_EQ(expected.number_parameters, actual.number_parameters);
+  for (int i = 0; i < actual.number_parameters; ++i) {
+    EXPECT_EQ(expected.param_size[i], actual.param_size[i]);
+    EXPECT_STREQ(expected.param[i], actual.param[i]);
+  }
+}
+
+void VerifySensorParameters(const gsfSensorParameters &expected,
+                            const gsfSensorParameters &actual) {
+  EXPECT_EQ(expected.param_time.tv_sec, actual.param_time.tv_sec);
+  EXPECT_EQ(expected.param_time.tv_nsec, actual.param_time.tv_nsec);
+  EXPECT_LE(actual.number_parameters, GSF_MAX_SENSOR_PARAMETERS);
   ASSERT_EQ(expected.number_parameters, actual.number_parameters);
   for (int i = 0; i < actual.number_parameters; ++i) {
     EXPECT_EQ(expected.param_size[i], actual.param_size[i]);
